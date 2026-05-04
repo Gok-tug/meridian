@@ -1,48 +1,54 @@
 # Example: MediatR Flow
 
-MediatR analysis is planned for `0.2.0-alpha.1`. This example shows the intended core Meridian use case: connecting an HTTP endpoint to a MediatR request and handler.
+MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`.
+
+The current prototype connects source request and notification types to source handler types through generic MediatR interfaces. It does not yet detect `Send`, `Publish`, or endpoint-to-request flow.
 
 ## Source pattern
 
 ```csharp
-app.MapGet("/orders/{id}", async (Guid id, ISender sender) =>
-{
-    return await sender.Send(new GetOrderQuery(id));
-});
-
 public sealed record GetOrderQuery(Guid Id) : IRequest<OrderDto>;
 
 public sealed class GetOrderQueryHandler
     : IRequestHandler<GetOrderQuery, OrderDto>
 {
-    public async Task<OrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken)
-    {
-        // handler logic
-    }
+    public Task<OrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken) { ... }
+}
+
+public sealed record OrderUpdatedNotification(Guid Id) : INotification;
+
+public sealed class OrderUpdatedNotificationHandler
+    : INotificationHandler<OrderUpdatedNotification>
+{
+    public Task Handle(OrderUpdatedNotification notification, CancellationToken cancellationToken) { ... }
 }
 ```
 
-## Expected graph
+## Current graph
 
 ```text
-GET /orders/{id}
-  --sends--> GetOrderQuery
+GetOrderQuery
   --handled_by--> GetOrderQueryHandler
+
+OrderUpdatedNotification
+  --handled_by--> OrderUpdatedNotificationHandler
 ```
 
-## Expected edges
+## Current edges
+
+Conceptual edge shape; real node IDs include the assembly name and fully qualified symbol.
 
 ```json
 [
   {
-    "source": "endpoint:GET:/orders/{id}",
-    "target": "type:MyApp.GetOrderQuery",
-    "relation": "sends",
+    "source": "type:MyApp.GetOrderQuery",
+    "target": "type:MyApp.GetOrderQueryHandler",
+    "relation": "handled_by",
     "confidence": "EXTRACTED"
   },
   {
-    "source": "type:MyApp.GetOrderQuery",
-    "target": "type:MyApp.GetOrderQueryHandler",
+    "source": "type:MyApp.OrderUpdatedNotification",
+    "target": "type:MyApp.OrderUpdatedNotificationHandler",
     "relation": "handled_by",
     "confidence": "EXTRACTED"
   }
@@ -52,10 +58,28 @@ GET /orders/{id}
 ## CLI
 
 ```bash
-meridian path "GET /orders/{id}" "GetOrderQueryHandler"
+meridian path "GetOrderQuery" "GetOrderQueryHandler"
 ```
 
-Expected output:
+Abridged expected output:
+
+```text
+GetOrderQuery
+  --handled_by--> GetOrderQueryHandler
+```
+
+## Planned flow
+
+A later analyzer should connect endpoint or application call sites to MediatR messages:
+
+```csharp
+app.MapGet("/orders/{id}", async (Guid id, ISender sender) =>
+{
+    return await sender.Send(new GetOrderQuery(id));
+});
+```
+
+Planned graph:
 
 ```text
 GET /orders/{id}

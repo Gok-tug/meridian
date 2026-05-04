@@ -51,14 +51,16 @@ Meridian should not claim exact DI behavior when registration depends on runtime
 
 ## MediatR limits
 
-MediatR analysis is planned, not part of the current prototype. When implemented, generic request/handler relationships should be reliable when source is available.
+The current prototype emits declaration facts for source-resolved MediatR requests, notifications, and handlers. Generic request/handler relationships are reliable when both the handler and handled message type are available in analyzable source.
 
-Runtime-created requests may be ambiguous:
+MediatR call-site flow is not implemented yet. Runtime-created requests remain ambiguous:
 
 ```csharp
 object request = CreateRequestFromRuntimeData();
 await mediator.Send(request);
 ```
+
+Meridian should not claim `Send`, `Publish`, endpoint-to-request flow, or runtime handler discovery until those analyzers exist.
 
 ## Reflection limits
 

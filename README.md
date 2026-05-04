@@ -87,6 +87,7 @@ Current prototype support:
 - Type and method nodes with `contains` edges
 - Direct method `calls` edges
 - Initial DI `injects`, `registered_as`, and `implemented_by` edges for source-resolved symbols
+- MediatR declaration preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, and `handled_by`
 - JSON graph export
 - `scan`, `explain`, and `path` CLI commands
 - Golden-file analyzer tests
@@ -95,7 +96,7 @@ Planned next analyzer work:
 
 - ASP.NET Core MVC controllers and Minimal APIs
 - Expanded Microsoft.Extensions.DependencyInjection registration coverage beyond direct generic registrations
-- MediatR requests, handlers, `Send`, and `Publish`
+- MediatR `Send` and `Publish` call-site detection
 - Framework-aware `path` results that combine endpoint, DI, MediatR, and direct-call edges
 - Analyzer execution pipeline boundaries for ordered cross-framework facts
 
@@ -107,7 +108,7 @@ Planned follow-up analyzer packs:
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR flow, EF Core flow, MCP server support, full reflection resolution, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR `Send`/`Publish` call-site flow, EF Core flow, MCP server support, full reflection resolution, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -119,7 +120,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.1.0-alpha.2",
+  "generator_version": "0.2.0-alpha.1",
   "nodes": [],
   "edges": []
 }

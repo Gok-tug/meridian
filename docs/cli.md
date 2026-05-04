@@ -57,7 +57,7 @@ Kind: mediatr_request
 Source: Features/Orders/GetOrderQuery.cs:12
 
 Incoming:
-  GET /orders/{id} --sends--> GetOrderQuery
+  none
 
 Outgoing:
   GetOrderQuery --handled_by--> GetOrderQueryHandler
@@ -77,7 +77,7 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, and the initial DI relations when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, and MediatR declaration `handled_by` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"

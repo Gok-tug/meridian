@@ -23,11 +23,14 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Direct generic DI `registered_as` edges for `AddScoped`, `AddSingleton`, and `AddTransient`.
 - Generated/bin/obj source filtering by default.
 - Dependency-injection sample project and golden-file analyzer test.
+- MediatR declaration preview nodes for source-resolved requests, notifications, and handlers.
+- MediatR `handled_by` edges from source request/notification types to source handler types.
+- MediatR sample project and golden-file analyzer test.
 
 ### Changed
 
 - Split the Roslyn analyzer internals into focused loading, source filtering, graph factory, direct-call, type-declaration, and DI analyzer components.
-- Updated the prototype generator/package version to `0.1.0-alpha.2` for the type graph and DI preview output.
+- Updated the prototype generator/package version to `0.2.0-alpha.1` for the MediatR declaration preview output.
 
 ## 0.1.0-alpha.1 — Planned
 

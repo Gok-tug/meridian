@@ -8,4 +8,5 @@ public static class GraphRelations
     public const string Injects = "injects";
     public const string RegisteredAs = "registered_as";
     public const string ImplementedBy = "implemented_by";
+    public const string HandledBy = "handled_by";
 }

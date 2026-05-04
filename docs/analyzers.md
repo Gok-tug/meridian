@@ -20,7 +20,7 @@ Analyzers should:
 Framework-aware analysis should run in deterministic passes:
 
 1. Roslyn foundation facts: symbols, locations, type/method nodes, `contains`, direct `calls`, and interface implementations.
-2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, sends, and publishes.
+2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and later sends/publishes.
 3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
 
@@ -53,7 +53,7 @@ Confidence:
 
 ## ASP.NET Core analyzer
 
-Planned for `0.2.0-alpha.1`.
+Planned for later `0.2.x` alpha work.
 
 Responsibilities:
 
@@ -120,15 +120,18 @@ Confidence:
 
 ## MediatR analyzer
 
-Planned for `0.2.0-alpha.1`.
+Initial declaration support exists in `0.2.0-alpha.1`. `Send` and `Publish` call-site detection remains planned.
 
-Responsibilities:
+Current responsibilities:
 
-- discover request and notification types,
-- discover handlers,
-- connect request types to handlers,
+- discover source request and notification types,
+- discover source handlers,
+- connect request and notification types to handlers.
+
+Planned responsibilities:
+
 - detect `Send` and `Publish` calls,
-- support `IMediator`, `ISender`, and `IPublisher`.
+- support `IMediator`, `ISender`, and `IPublisher` call sites.
 
 Supported types:
 
@@ -142,21 +145,26 @@ public sealed class GetOrderQueryHandler
 }
 ```
 
-Relations:
+Current relations:
+
+```text
+GetOrderQuery --handled_by--> GetOrderQueryHandler
+OrderCreatedNotification --handled_by--> OrderCreatedNotificationHandler
+```
+
+Planned relations:
 
 ```text
 endpoint --sends--> GetOrderQuery
-GetOrderQuery --handled_by--> GetOrderQueryHandler
 publisher --publishes--> OrderCreatedNotification
-OrderCreatedNotification --handled_by--> OrderCreatedNotificationHandler
 ```
 
 Confidence:
 
 - `EXTRACTED` when generic interface arguments identify the handler relationship.
-- `EXTRACTED` when `Send(new Request(...))` resolves to a request type.
-- `INFERRED` when request type is inferred through a variable with strong symbol evidence.
-- `AMBIGUOUS` when runtime type construction prevents a single target.
+- Planned: `EXTRACTED` when `Send(new Request(...))` resolves to a request type.
+- Planned: `INFERRED` when request type is inferred through a variable with strong symbol evidence.
+- Planned: `AMBIGUOUS` when runtime type construction prevents a single target.
 
 ## EF Core analyzer
 

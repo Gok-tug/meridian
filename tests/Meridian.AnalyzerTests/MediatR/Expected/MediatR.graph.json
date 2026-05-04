@@ -1,0 +1,244 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.2.0-alpha.1",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "label": "AbstractGetOrderQueryHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L11",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "label": "GetOrderQueryHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L16",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "label": "OrderUpdatedNotificationHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L32",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)",
+      "label": "RefreshCacheCommandHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L24",
+      "metadata": {}
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler",
+      "label": "AbstractGetOrderQueryHandler",
+      "kind": "type",
+      "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L9",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.GetOrderQuery",
+      "label": "GetOrderQuery",
+      "kind": "mediatr_request",
+      "symbol": "Sample.MediatR.GetOrderQuery",
+      "source_file": "Messages.cs",
+      "source_location": "L5",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler",
+      "label": "GetOrderQueryHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.MediatR.GetOrderQueryHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L14",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.IGetOrderQueryHandlerContract",
+      "label": "IGetOrderQueryHandlerContract",
+      "kind": "type",
+      "symbol": "Sample.MediatR.IGetOrderQueryHandlerContract",
+      "source_file": "Handlers.cs",
+      "source_location": "L5",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.OrderDto",
+      "label": "OrderDto",
+      "kind": "type",
+      "symbol": "Sample.MediatR.OrderDto",
+      "source_file": "Messages.cs",
+      "source_location": "L11",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification",
+      "label": "OrderUpdatedNotification",
+      "kind": "mediatr_notification",
+      "symbol": "Sample.MediatR.OrderUpdatedNotification",
+      "source_file": "Messages.cs",
+      "source_location": "L9",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler",
+      "label": "OrderUpdatedNotificationHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L30",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.RefreshCacheCommand",
+      "label": "RefreshCacheCommand",
+      "kind": "mediatr_request",
+      "symbol": "Sample.MediatR.RefreshCacheCommand",
+      "source_file": "Messages.cs",
+      "source_location": "L7",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.RefreshCacheCommandHandler",
+      "label": "RefreshCacheCommandHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L22",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 11,
+        "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.AbstractGetOrderQueryHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.GetOrderQuery",
+      "target": "type:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 14,
+        "symbol": "Sample.MediatR.GetOrderQueryHandler",
+        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.GetOrderQuery, Sample.MediatR.OrderDto>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 16,
+        "symbol": "Sample.MediatR.GetOrderQueryHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.GetOrderQueryHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification",
+      "target": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 30,
+        "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
+        "reason": "Roslyn resolved MediatR handler interface 'MediatR.INotificationHandler<Sample.MediatR.OrderUpdatedNotification>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 32,
+        "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.OrderUpdatedNotificationHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.RefreshCacheCommand",
+      "target": "type:Sample.MediatR:Sample.MediatR.RefreshCacheCommandHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 22,
+        "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
+        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.RefreshCacheCommand>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.RefreshCacheCommandHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 24,
+        "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.RefreshCacheCommandHandler'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

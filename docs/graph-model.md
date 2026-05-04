@@ -10,8 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.1.0-alpha.2",
-  "created_at": "2026-05-04T00:00:00Z",
+  "generator_version": "0.2.0-alpha.1",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],

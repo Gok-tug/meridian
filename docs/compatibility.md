@@ -40,10 +40,10 @@ Later:
 | Framework/pattern | Current status |
 | --- | --- |
 | Direct C# calls | Current prototype |
-| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, constructor injection, and source interface implementations; broader coverage planned for `0.2.0-alpha.1` |
-| ASP.NET Core MVC | Planned for `0.2.0-alpha.1` |
-| ASP.NET Core Minimal APIs | Planned for `0.2.0-alpha.1` |
-| MediatR | Planned for `0.2.0-alpha.1` |
+| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, constructor injection, and source interface implementations; broader coverage planned for later `0.2.x` alpha work |
+| ASP.NET Core MVC | Planned for later `0.2.x` alpha work |
+| ASP.NET Core Minimal APIs | Planned for later `0.2.x` alpha work |
+| MediatR | Current preview for source request/notification/handler declarations and `handled_by`; `Send`/`Publish` flow planned |
 | MCP server | Planned for `0.3.0-alpha.1` |
 | EF Core | Planned for `0.4.0-alpha.1` |
 | Reflection/assembly scanning | Planned for `0.4.0-alpha.1` |

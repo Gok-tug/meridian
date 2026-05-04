@@ -7,13 +7,18 @@ internal sealed class RoslynGraphFactory
 {
     private readonly string _rootDirectory;
     private readonly RoslynSourceFilter _sourceFilter;
+    private readonly Func<INamedTypeSymbol, string>? _typeNodeKindSelector;
 
-    public RoslynGraphFactory(string rootDirectory, RoslynSourceFilter sourceFilter)
+    public RoslynGraphFactory(
+        string rootDirectory,
+        RoslynSourceFilter sourceFilter,
+        Func<INamedTypeSymbol, string>? typeNodeKindSelector = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(rootDirectory);
         ArgumentNullException.ThrowIfNull(sourceFilter);
         _rootDirectory = rootDirectory;
         _sourceFilter = sourceFilter;
+        _typeNodeKindSelector = typeNodeKindSelector;
     }
 
     public GraphNode CreateTypeNode(INamedTypeSymbol typeSymbol)
@@ -24,7 +29,7 @@ internal sealed class RoslynGraphFactory
         {
             Id = $"type:{typeSymbol.ContainingAssembly.Identity.Name}:{symbol}",
             Label = typeSymbol.Name,
-            Kind = GraphNodeKinds.Type,
+            Kind = _typeNodeKindSelector?.Invoke(typeSymbol) ?? GraphNodeKinds.Type,
             Symbol = symbol,
             SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
             SourceLocation = SourcePath.SourceLocation(location),

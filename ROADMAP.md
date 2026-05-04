@@ -66,34 +66,41 @@ Not in scope:
 - Scrutor or assembly scanning
 - full runtime DI container behavior
 
-## 0.2.0-alpha.1 — ASP.NET Core, expanded DI, and MediatR flow
+## 0.2.0-alpha.1 — MediatR declaration preview
 
-Goal: make Meridian useful for common real-world .NET application flow.
+Goal: add the first framework-aware MediatR graph facts without claiming runtime request dispatch behavior.
 
 Scope:
 
-- deterministic analyzer execution pipeline for cross-framework facts
-- ASP.NET Core MVC endpoint analyzer
-- ASP.NET Core Minimal API analyzer
-- expanded Microsoft.Extensions.DependencyInjection analyzer coverage:
-  - non-generic registration overloads where symbols can be resolved
-  - duplicate registrations and diagnostics
-  - service resolution facts reusable by other analyzers
-- MediatR analyzer:
+- MediatR declaration analyzer for source-resolved symbols:
   - `IRequest<TResponse>`
   - `IRequest`
   - `INotification`
   - `IRequestHandler<TRequest, TResponse>`
   - `IRequestHandler<TRequest>`
   - `INotificationHandler<TNotification>`
-  - `IMediator.Send`
-  - `ISender.Send`
-  - `IPublisher.Publish`
-- framework-aware path results that include endpoint, DI, and MediatR edges
-- sample applications:
-  - `SampleApi.MediatR`
-  - `SampleApi.MinimalApi`
-- golden-file tests for ASP.NET Core, expanded DI, and MediatR analyzers
+- specialized node kinds:
+  - `mediatr_request`
+  - `mediatr_notification`
+  - `mediatr_handler`
+- `handled_by` edges from request/notification types to handler types
+- MediatR sample project and golden-file analyzer test
+- CLI `path` traversal over emitted MediatR declaration edges
+
+Not in scope:
+
+- `IMediator.Send`, `ISender.Send`, or `IPublisher.Publish`
+- ASP.NET Core MVC endpoint analyzer
+- ASP.NET Core Minimal API analyzer
+- expanded Microsoft.Extensions.DependencyInjection registration coverage
+- framework-aware path results that stitch endpoint, DI, and MediatR call-site edges
+
+Follow-up 0.2 alpha work should add:
+
+- `IMediator.Send`, `ISender.Send`, and `IPublisher.Publish` call-site detection
+- ASP.NET Core MVC and Minimal API endpoint analyzers
+- expanded DI coverage for source-resolved non-generic registrations and diagnostics
+- framework-aware path linking across endpoint, DI, MediatR, and direct-call edges
 
 ## 0.3.0-alpha.1 — MCP server preview
 

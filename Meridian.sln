@@ -27,6 +27,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.BasicCalls", "sample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DependencyInjection", "samples\Sample.DependencyInjection\Sample.DependencyInjection.csproj", "{372E79CD-4E65-4CC9-BE4D-D07A78FD61C4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.MediatR", "samples\Sample.MediatR\Sample.MediatR.csproj", "{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -145,6 +147,18 @@ Global
 		{372E79CD-4E65-4CC9-BE4D-D07A78FD61C4}.Release|x64.Build.0 = Release|Any CPU
 		{372E79CD-4E65-4CC9-BE4D-D07A78FD61C4}.Release|x86.ActiveCfg = Release|Any CPU
 		{372E79CD-4E65-4CC9-BE4D-D07A78FD61C4}.Release|x86.Build.0 = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|x64.Build.0 = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Debug|x86.Build.0 = Debug|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|x64.ActiveCfg = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|x64.Build.0 = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|x86.ActiveCfg = Release|Any CPU
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -159,5 +173,6 @@ Global
 		{55B3AE30-694B-4D69-B7BF-D1A4624A7D01} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 		{FE24FC3D-8B1A-4863-A526-1050B48C6163} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{372E79CD-4E65-4CC9-BE4D-D07A78FD61C4} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 	EndGlobalSection
 EndGlobal
