@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\Meridian.Abstractions\Meridian.Abstractions.csproj" />
+    <ProjectReference Include="..\Meridian.Core\Meridian.Core.csproj" />
+    <ProjectReference Include="..\Meridian.Roslyn\Meridian.Roslyn.csproj" />
+    <ProjectReference Include="..\Meridian.Exporters.Json\Meridian.Exporters.Json.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>meridian</PackageId>
+    <Version>0.1.0-alpha.1</Version>
+    <Authors>.FANKI</Authors>
+    <Description>Meridian — semantic .NET application-flow graph generator for Roslyn, DI, MediatR, reflection, and AI agents.</Description>
+    <PackageTags>dotnet;roslyn;code-analysis;flow-graph;mcp;mediatr;aspnetcore</PackageTags>
+    <RepositoryUrl>https://github.com/Gok-tug/meridian</RepositoryUrl>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>meridian</ToolCommandName>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+</Project>

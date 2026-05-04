@@ -1,0 +1,43 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.1.0-alpha.1",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "method:Sample.BasicCalls:Sample.BasicCalls.OrderController.Get()",
+      "label": "OrderController.Get",
+      "kind": "method",
+      "symbol": "Sample.BasicCalls.OrderController.Get()",
+      "source_file": "OrderFlow.cs",
+      "source_location": "L5",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.BasicCalls:Sample.BasicCalls.OrderService.Load()",
+      "label": "OrderService.Load",
+      "kind": "method",
+      "symbol": "Sample.BasicCalls.OrderService.Load()",
+      "source_file": "OrderFlow.cs",
+      "source_location": "L14",
+      "metadata": {}
+    }
+  ],
+  "edges": [
+    {
+      "source": "method:Sample.BasicCalls:Sample.BasicCalls.OrderController.Get()",
+      "target": "method:Sample.BasicCalls:Sample.BasicCalls.OrderService.Load()",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "OrderFlow.cs",
+        "line": 8,
+        "symbol": "Sample.BasicCalls.OrderController.Get()",
+        "reason": "Roslyn resolved invocation 'service.Load' to 'Sample.BasicCalls.OrderService.Load()'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

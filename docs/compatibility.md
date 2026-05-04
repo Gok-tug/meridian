@@ -1,0 +1,75 @@
+# Compatibility
+
+Meridian compatibility must be documented honestly because Roslyn and MSBuild behavior depends on SDK, project type, and language version.
+
+## Current prototype
+
+The current package prototype targets `net10.0`.
+
+Before a stable release, Meridian should decide whether the distributed global tool targets `net8.0`, `net10.0`, or another supported runtime based on Roslyn/MSBuildWorkspace package compatibility and user reach.
+
+## Planned compatibility matrix
+
+| Area | Initial target |
+| --- | --- |
+| .NET SDK | current supported SDK used by the tool |
+| C# language versions | compiler-supported versions loaded by Roslyn |
+| Project system | SDK-style projects first |
+| Build system | MSBuildWorkspace |
+| Operating systems | Windows, Linux, macOS |
+| Package distribution | NuGet global tool |
+
+## Initial project types
+
+Supported first:
+
+- class libraries,
+- ASP.NET Core Web API projects,
+- ASP.NET Core Minimal API projects,
+- Worker Service projects where Roslyn loading succeeds.
+
+Later:
+
+- older non-SDK-style projects,
+- complex multi-targeted solutions,
+- source-generator-heavy projects,
+- custom MSBuild imports.
+
+## Framework support
+
+| Framework/pattern | Roadmap |
+| --- | --- |
+| Direct C# calls | `0.1.0-alpha.1` |
+| ASP.NET Core MVC | `0.2.0-alpha.1` |
+| ASP.NET Core Minimal APIs | `0.2.0-alpha.1` |
+| Microsoft.Extensions.DependencyInjection | `0.2.0-alpha.1` |
+| MediatR | `0.2.0-alpha.1` |
+| MCP server | `0.3.0-alpha.1` |
+| EF Core | `0.4.0-alpha.1` |
+| Reflection/assembly scanning | `0.4.0-alpha.1` |
+| Rust/native interop boundaries | Future |
+
+## Unsupported until documented
+
+Unless tests and docs say otherwise, assume the following are unsupported or best-effort:
+
+- runtime-generated registrations,
+- dynamic code loading,
+- non-SDK-style projects,
+- custom build systems outside MSBuildWorkspace,
+- full source generator output analysis,
+- full Rust static analysis,
+- runtime profiling,
+- binary-only dependency analysis.
+
+## Compatibility policy
+
+Each release should document:
+
+- tested .NET SDK version,
+- tested operating systems,
+- supported analyzer packs,
+- graph schema version,
+- known limitations.
+
+If a release changes graph schema or CLI machine-readable output, it must call that out in `CHANGELOG.md`.

@@ -1,0 +1,218 @@
+# Analyzers
+
+Analyzer packs are responsible for turning Roslyn and framework evidence into Meridian graph facts.
+
+Each analyzer should be small enough to test independently and should write only through the shared graph builder.
+
+## Analyzer rules
+
+Analyzers should:
+
+- use Roslyn symbols where possible,
+- add evidence for important facts,
+- classify confidence consistently,
+- avoid executing analyzed code,
+- keep output deterministic,
+- emit diagnostics when behavior is unsupported or ambiguous.
+
+## Roslyn base analyzer
+
+Planned for `0.1.0-alpha.1`.
+
+Responsibilities:
+
+- load projects and compilations,
+- index symbols,
+- create type and method nodes,
+- extract direct method calls,
+- map symbols to source locations,
+- provide shared semantic services to other analyzers.
+
+Example relation:
+
+```text
+GetOrderQueryHandler.Handle --calls--> OrderService.GetByIdAsync
+```
+
+Confidence:
+
+- `EXTRACTED` when Roslyn resolves the target symbol.
+- `AMBIGUOUS` when overload or dynamic dispatch cannot be resolved precisely.
+
+## ASP.NET Core analyzer
+
+Planned for `0.2.0-alpha.1`.
+
+Responsibilities:
+
+- discover MVC controllers,
+- discover controller actions,
+- read HTTP method attributes,
+- discover Minimal API route mappings,
+- create endpoint nodes,
+- connect endpoints to action delegates or methods.
+
+Supported patterns:
+
+```csharp
+[HttpGet("/orders/{id}")]
+public Task<OrderDto> GetById(Guid id) { ... }
+```
+
+```csharp
+app.MapGet("/orders/{id}", async (Guid id, ISender sender) =>
+    await sender.Send(new GetOrderQuery(id)));
+```
+
+Relations:
+
+```text
+endpoint --calls--> action
+endpoint --sends--> mediatr_request
+endpoint --uses--> injected_service
+```
+
+## Dependency Injection analyzer
+
+Planned for `0.2.0-alpha.1`.
+
+Responsibilities:
+
+- discover service registrations,
+- map abstractions to implementations,
+- discover constructor injection dependencies,
+- connect consumers to required services,
+- mark scanning-based registrations as inferred or ambiguous.
+
+Supported direct registrations:
+
+```csharp
+services.AddScoped<IOrderRepository, EfOrderRepository>();
+services.AddTransient<OrderService>();
+services.AddSingleton<IClock, SystemClock>();
+```
+
+Relations:
+
+```text
+IOrderRepository --registered_as--> EfOrderRepository
+GetOrderQueryHandler --injects--> IOrderRepository
+IOrderRepository --implemented_by--> EfOrderRepository
+```
+
+Confidence:
+
+- `EXTRACTED` for direct generic registrations.
+- `INFERRED` for convention-based registration.
+- `AMBIGUOUS` for assembly scanning with multiple candidates.
+
+## MediatR analyzer
+
+Planned for `0.2.0-alpha.1`.
+
+Responsibilities:
+
+- discover request and notification types,
+- discover handlers,
+- connect request types to handlers,
+- detect `Send` and `Publish` calls,
+- support `IMediator`, `ISender`, and `IPublisher`.
+
+Supported types:
+
+```csharp
+public sealed record GetOrderQuery(Guid Id) : IRequest<OrderDto>;
+
+public sealed class GetOrderQueryHandler
+    : IRequestHandler<GetOrderQuery, OrderDto>
+{
+    public Task<OrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken) { ... }
+}
+```
+
+Relations:
+
+```text
+endpoint --sends--> GetOrderQuery
+GetOrderQuery --handled_by--> GetOrderQueryHandler
+publisher --publishes--> OrderCreatedNotification
+OrderCreatedNotification --handled_by--> OrderCreatedNotificationHandler
+```
+
+Confidence:
+
+- `EXTRACTED` when generic interface arguments identify the handler relationship.
+- `EXTRACTED` when `Send(new Request(...))` resolves to a request type.
+- `INFERRED` when request type is inferred through a variable with strong symbol evidence.
+- `AMBIGUOUS` when runtime type construction prevents a single target.
+
+## EF Core analyzer
+
+Planned for `0.4.0-alpha.1`.
+
+Responsibilities:
+
+- discover `DbContext` types,
+- discover `DbSet<TEntity>` properties,
+- connect service/handler methods to DbContext usage,
+- connect DbContext access to entity types,
+- detect `_context.Set<TEntity>()`.
+
+Relations:
+
+```text
+GetOrderQueryHandler --uses--> OrderDbContext
+OrderDbContext --contains--> Orders
+GetOrderQueryHandler --queries--> Order
+```
+
+## Reflection analyzer
+
+Planned for `0.4.0-alpha.1`.
+
+Responsibilities:
+
+- detect reflection sites,
+- detect assembly loading,
+- detect type references through `typeof` and `nameof`,
+- detect `Activator.CreateInstance`,
+- classify dynamic behavior with confidence.
+
+Supported patterns:
+
+```csharp
+typeof(OrderService)
+Assembly.GetExecutingAssembly().GetTypes()
+Activator.CreateInstance(type)
+```
+
+Confidence:
+
+- `EXTRACTED` for `typeof(SomeType)`.
+- `INFERRED` for constrained assembly scanning.
+- `AMBIGUOUS` for runtime strings or multiple possible target types.
+
+## Rust/native interop analyzer
+
+Future scope.
+
+Initial support should detect .NET boundaries that call native or Rust-backed libraries.
+
+Supported patterns to investigate:
+
+```csharp
+[DllImport("orders_native")]
+private static extern int calculate_order_total(...);
+
+[LibraryImport("orders_native")]
+private static partial int calculate_order_total(...);
+```
+
+Relations:
+
+```text
+OrderPricingService --crosses_boundary--> orders_native
+orders_native --loads--> native_library
+```
+
+This is not full Rust static analysis. It is .NET-side native interop detection.
