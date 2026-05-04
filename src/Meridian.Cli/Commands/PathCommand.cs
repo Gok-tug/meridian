@@ -27,7 +27,19 @@ internal static class PathCommand
         {
             var graph = await JsonGraphExporter.ReadAsync(graphPath);
             var queryService = new GraphQueryService(graph);
-            var result = queryService.FindPath(sourceQuery, targetQuery);
+            var sourceResolution = queryService.ResolveNode(sourceQuery);
+            if (PrintResolutionFailure("Source", sourceQuery, sourceResolution))
+            {
+                return CliExitCodes.NotFound;
+            }
+
+            var targetResolution = queryService.ResolveNode(targetQuery);
+            if (PrintResolutionFailure("Target", targetQuery, targetResolution))
+            {
+                return CliExitCodes.NotFound;
+            }
+
+            var result = queryService.FindPath(sourceResolution.Node!, targetResolution.Node!);
             if (result is null)
             {
                 Console.Error.WriteLine($"No path found from '{sourceQuery}' to '{targetQuery}'.");
@@ -42,5 +54,23 @@ internal static class PathCommand
             Console.Error.WriteLine($"Meridian path failed: {exception.Message}");
             return CliExitCodes.Failure;
         }
+    }
+
+    private static bool PrintResolutionFailure(string role, string query, GraphNodeResolution resolution)
+    {
+        if (resolution.Status == GraphNodeResolutionStatus.NotFound)
+        {
+            Console.Error.WriteLine($"No {role.ToLowerInvariant()} node matched '{query}'.");
+            return true;
+        }
+
+        if (resolution.Status == GraphNodeResolutionStatus.Ambiguous)
+        {
+            Console.Error.WriteLine($"{role} node query '{query}' is ambiguous. Use a more precise label, symbol, or node ID.");
+            GraphConsoleRenderer.PrintNodeCandidates(query, resolution.Candidates, Console.Error);
+            return true;
+        }
+
+        return false;
     }
 }

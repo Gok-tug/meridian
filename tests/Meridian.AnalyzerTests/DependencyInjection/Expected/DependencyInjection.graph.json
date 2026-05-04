@@ -1,9 +1,18 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.2.0-alpha.2",
+  "generator_version": "0.2.0-alpha.3",
   "root": ".",
   "nodes": [
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.IClock.Now()",
+      "label": "IClock.Now",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.IClock.Now()",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L20",
+      "metadata": {}
+    },
     {
       "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository.Load()",
       "label": "IOrderRepository.Load",
@@ -19,7 +28,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.OrderService.Load()",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L27",
+      "source_location": "L44",
       "metadata": {}
     },
     {
@@ -28,7 +37,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L35",
+      "source_location": "L52",
       "metadata": {}
     },
     {
@@ -39,6 +48,37 @@
       "source_file": "ServiceFlow.cs",
       "source_location": "L12",
       "metadata": {}
+    },
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock.Now()",
+      "label": "SystemClock.Now",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.SystemClock.Now()",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L25",
+      "metadata": {}
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory",
+      "label": "ClockFactory",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.ClockFactory",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L31",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.IClock",
+      "label": "IClock",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.IClock",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L18",
+      "metadata": {
+        "type_kind": "interface"
+      }
     },
     {
       "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
@@ -57,7 +97,7 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.OrderService",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L18",
+      "source_location": "L35",
       "metadata": {
         "type_kind": "class"
       }
@@ -68,7 +108,7 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.ServiceRegistration",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L33",
+      "source_location": "L50",
       "metadata": {
         "type_kind": "class"
       }
@@ -83,6 +123,17 @@
       "metadata": {
         "type_kind": "class"
       }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock",
+      "label": "SystemClock",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.SystemClock",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L23",
+      "metadata": {
+        "type_kind": "class"
+      }
     }
   ],
   "edges": [
@@ -94,11 +145,71 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 29,
+        "line": 46,
         "symbol": "Sample.DependencyInjection.OrderService.Load()",
         "reason": "Roslyn resolved invocation '_repository.Load' to 'Sample.DependencyInjection.IOrderRepository.Load()'."
       },
       "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 56,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.ClockFactory' to 'Sample.DependencyInjection.ClockFactory'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IClock",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.IClock.Now()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 20,
+        "symbol": "Sample.DependencyInjection.IClock",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.IClock.Now()' in type 'Sample.DependencyInjection.IClock'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IClock",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 23,
+        "symbol": "Sample.DependencyInjection.SystemClock",
+        "reason": "Roslyn resolved 'Sample.DependencyInjection.SystemClock' as an implementation of 'Sample.DependencyInjection.IClock'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IClock",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 55,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.IClock' to 'Sample.DependencyInjection.SystemClock'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
     },
     {
       "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
@@ -136,7 +247,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 37,
+        "line": 54,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddScoped' from 'Sample.DependencyInjection.IOrderRepository' to 'Sample.DependencyInjection.SqlOrderRepository'."
       },
@@ -152,7 +263,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 27,
+        "line": 44,
         "symbol": "Sample.DependencyInjection.OrderService",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.OrderService.Load()' in type 'Sample.DependencyInjection.OrderService'."
       },
@@ -166,7 +277,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 22,
+        "line": 39,
         "symbol": "Sample.DependencyInjection.OrderService.OrderService(Sample.DependencyInjection.IOrderRepository repository)",
         "reason": "Constructor parameter 'repository' injects 'Sample.DependencyInjection.IOrderRepository'."
       },
@@ -180,7 +291,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 38,
+        "line": 60,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddTransient' from 'Sample.DependencyInjection.OrderService' to 'Sample.DependencyInjection.OrderService'."
       },
@@ -196,7 +307,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 35,
+        "line": 52,
         "symbol": "Sample.DependencyInjection.ServiceRegistration",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)' in type 'Sample.DependencyInjection.ServiceRegistration'."
       },
@@ -213,6 +324,20 @@
         "line": 12,
         "symbol": "Sample.DependencyInjection.SqlOrderRepository",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.SqlOrderRepository.Load()' in type 'Sample.DependencyInjection.SqlOrderRepository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.SystemClock.Now()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 25,
+        "symbol": "Sample.DependencyInjection.SystemClock",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.SystemClock.Now()' in type 'Sample.DependencyInjection.SystemClock'."
       },
       "metadata": {}
     }

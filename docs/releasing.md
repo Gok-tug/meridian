@@ -11,6 +11,7 @@ Use SemVer prerelease versions:
 0.1.0-alpha.2
 0.2.0-alpha.1
 0.2.0-alpha.2
+0.2.0-alpha.3
 0.3.0-alpha.1
 ```
 

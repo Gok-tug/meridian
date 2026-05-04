@@ -1,6 +1,6 @@
 # Example: ASP.NET Core Endpoints
 
-ASP.NET Core endpoint analysis is planned for later `0.2.x` alpha work. The analyzer should discover both MVC controller actions and Minimal API routes.
+ASP.NET Core endpoint analysis is planned for a later alpha milestone. The analyzer should discover both MVC controller actions and Minimal API routes.
 
 ## MVC controller
 

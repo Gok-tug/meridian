@@ -48,6 +48,30 @@ internal static class GraphConsoleRenderer
         }
     }
 
+    public static void PrintNodeCandidates(string query, IReadOnlyList<GraphNodeMatch> candidates, TextWriter writer)
+    {
+        writer.WriteLine($"Candidates for '{query}':");
+        foreach (var match in candidates.Take(20))
+        {
+            writer.WriteLine($"  {match.Node.Label} ({match.Node.Kind}) score={match.Score}");
+            if (!string.IsNullOrWhiteSpace(match.Node.Symbol))
+            {
+                writer.WriteLine($"    symbol: {match.Node.Symbol}");
+            }
+
+            writer.WriteLine($"    id: {match.Node.Id}");
+            if (!string.IsNullOrWhiteSpace(match.Node.SourceFile))
+            {
+                writer.WriteLine($"    source: {FormatLocation(match.Node.SourceFile, match.Node.SourceLocation)}");
+            }
+        }
+
+        if (candidates.Count > 20)
+        {
+            writer.WriteLine($"  ... and {candidates.Count - 20} more");
+        }
+    }
+
     private static void PrintEdges(string title, IReadOnlyList<GraphEdge> edges, string currentNodeId)
     {
         Console.WriteLine($"{title}: {edges.Count}");

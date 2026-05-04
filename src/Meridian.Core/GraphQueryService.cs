@@ -25,24 +25,61 @@ public sealed class GraphQueryService
     public IReadOnlyList<GraphNodeMatch> FindNodes(string query, int maxResults = 10)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        if (maxResults <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxResults), maxResults, "The maximum result count must be positive.");
+        }
 
-        return _graph.Nodes
-            .Select(node => new GraphNodeMatch(node, Score(node, query)))
-            .Where(match => match.Score > 0)
-            .OrderByDescending(match => match.Score)
-            .ThenBy(match => match.Node.Label, StringComparer.Ordinal)
-            .ThenBy(match => match.Node.Id, StringComparer.Ordinal)
+        return FindNodeMatches(query)
             .Take(maxResults)
             .ToArray();
     }
 
+    public GraphNodeResolution ResolveNode(string query, int maxCandidates = int.MaxValue)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(query);
+        if (maxCandidates <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxCandidates), maxCandidates, "The maximum candidate count must be positive.");
+        }
+
+        var exactIdMatch = _graph.Nodes
+            .Where(node => node.Id.Equals(query, StringComparison.OrdinalIgnoreCase))
+            .OrderBy(node => node.Id, StringComparer.Ordinal)
+            .FirstOrDefault();
+        if (exactIdMatch is not null)
+        {
+            return GraphNodeResolution.Found(query, new GraphNodeMatch(exactIdMatch, 100));
+        }
+
+        var matches = FindNodeMatches(query).ToArray();
+        if (matches.Length == 0)
+        {
+            return GraphNodeResolution.NotFound(query);
+        }
+
+        var topScore = matches[0].Score;
+        var topMatches = matches
+            .Where(match => match.Score == topScore)
+            .Take(maxCandidates)
+            .ToArray();
+
+        return topMatches.Length == 1
+            ? GraphNodeResolution.Found(query, topMatches[0])
+            : GraphNodeResolution.Ambiguous(query, topMatches);
+    }
+
     public GraphExplainResult? Explain(string query)
     {
-        var node = ResolveNode(query);
-        if (node is null)
-        {
-            return null;
-        }
+        var resolution = ResolveNode(query);
+        return resolution.Status == GraphNodeResolutionStatus.Found && resolution.Node is not null
+            ? Explain(resolution.Node)
+            : null;
+    }
+
+    public GraphExplainResult Explain(GraphNode node)
+    {
+        ArgumentNullException.ThrowIfNull(node);
 
         return new GraphExplainResult(
             node,
@@ -52,12 +89,18 @@ public sealed class GraphQueryService
 
     public GraphPathResult? FindPath(string sourceQuery, string targetQuery)
     {
-        var source = ResolveNode(sourceQuery);
-        var target = ResolveNode(targetQuery);
-        if (source is null || target is null)
-        {
-            return null;
-        }
+        var sourceResolution = ResolveNode(sourceQuery);
+        var targetResolution = ResolveNode(targetQuery);
+        return sourceResolution.Status == GraphNodeResolutionStatus.Found && sourceResolution.Node is not null &&
+            targetResolution.Status == GraphNodeResolutionStatus.Found && targetResolution.Node is not null
+            ? FindPath(sourceResolution.Node, targetResolution.Node)
+            : null;
+    }
+
+    public GraphPathResult? FindPath(GraphNode source, GraphNode target)
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(target);
 
         if (source.Id == target.Id)
         {
@@ -92,11 +135,6 @@ public sealed class GraphQueryService
         return null;
     }
 
-    private GraphNode? ResolveNode(string query)
-    {
-        return FindNodes(query, maxResults: 1).FirstOrDefault()?.Node;
-    }
-
     private GraphPathResult BuildPath(GraphNode source, GraphNode target, Dictionary<string, GraphEdge> previous)
     {
         var edges = new Stack<GraphEdge>();
@@ -113,6 +151,16 @@ public sealed class GraphQueryService
             .ToArray();
 
         return new GraphPathResult(source, target, segments);
+    }
+
+    private IEnumerable<GraphNodeMatch> FindNodeMatches(string query)
+    {
+        return _graph.Nodes
+            .Select(node => new GraphNodeMatch(node, Score(node, query)))
+            .Where(match => match.Score > 0)
+            .OrderByDescending(match => match.Score)
+            .ThenBy(match => match.Node.Label, StringComparer.Ordinal)
+            .ThenBy(match => match.Node.Id, StringComparer.Ordinal);
     }
 
     private static IEnumerable<GraphEdge> SortEdges(IEnumerable<GraphEdge> edges)
@@ -169,6 +217,35 @@ public sealed class GraphQueryService
         }
 
         return 0;
+    }
+}
+
+public enum GraphNodeResolutionStatus
+{
+    Found,
+    NotFound,
+    Ambiguous
+}
+
+public sealed record GraphNodeResolution(
+    string Query,
+    GraphNodeResolutionStatus Status,
+    GraphNode? Node,
+    IReadOnlyList<GraphNodeMatch> Candidates)
+{
+    public static GraphNodeResolution Found(string query, GraphNodeMatch match)
+    {
+        return new GraphNodeResolution(query, GraphNodeResolutionStatus.Found, match.Node, [match]);
+    }
+
+    public static GraphNodeResolution NotFound(string query)
+    {
+        return new GraphNodeResolution(query, GraphNodeResolutionStatus.NotFound, null, []);
+    }
+
+    public static GraphNodeResolution Ambiguous(string query, IReadOnlyList<GraphNodeMatch> candidates)
+    {
+        return new GraphNodeResolution(query, GraphNodeResolutionStatus.Ambiguous, null, candidates);
     }
 }
 

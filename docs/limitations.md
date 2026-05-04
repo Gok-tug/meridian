@@ -32,22 +32,32 @@ Analysis can be incomplete when:
 
 ## Dependency Injection limits
 
-Source-resolved direct generic registrations are the currently reliable DI case:
+Source-resolved direct generic registrations and narrow direct-`new` factory registrations are the currently reliable DI cases:
 
 ```csharp
 services.AddScoped<IOrderRepository, EfOrderRepository>();
+services.AddSingleton<IClock>(_ => new SystemClock());
+services.AddSingleton<ClockFactory>(_ =>
+{
+    return new ClockFactory();
+});
 ```
 
-Runtime, factory, or convention-based registrations may be inferred, ambiguous, or skipped:
+Complex factory or convention-based registrations may be inferred, ambiguous, or skipped:
 
 ```csharp
-services.AddScoped<IOrderRepository>(_ => new EfOrderRepository());
+services.AddScoped<IOrderRepository>(sp => CreateRepository(sp));
+services.AddScoped<IOrderRepository>(sp =>
+{
+    var options = sp.GetRequiredService<OrderOptions>();
+    return new EfOrderRepository(options);
+});
 services.Scan(scan => scan.FromAssemblies(...));
 ```
 
 The current prototype only emits constructor injection edges for unambiguous source class constructors. Multiple unmarked constructors and record constructors are not treated as extracted DI facts yet.
 
-Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, factory delegates, ambiguous constructor selection, or external configuration.
+Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, complex factory delegates, ambiguous constructor selection, or external configuration.
 
 ## MediatR limits
 

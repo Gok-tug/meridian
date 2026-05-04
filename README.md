@@ -17,6 +17,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.1.0-alpha.2
 0.2.0-alpha.1
 0.2.0-alpha.2
+0.2.0-alpha.3
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -87,29 +88,27 @@ Current prototype support:
 - Roslyn solution/project loading
 - Type and method nodes with `contains` edges
 - Direct method `calls` edges
-- Initial DI `injects`, `registered_as`, and `implemented_by` edges for source-resolved symbols
+- DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - JSON graph export
-- `scan`, `explain`, and `path` CLI commands
+- `scan`, `explain`, and `path` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
 - Golden-file analyzer tests
 
-Planned next analyzer work:
+Planned next product work:
+
+- MCP server preview for agent graph queries in `0.3.0-alpha.1`
+
+Planned follow-up analyzer work:
 
 - ASP.NET Core MVC controllers and Minimal APIs
-- Expanded Microsoft.Extensions.DependencyInjection registration coverage beyond direct generic registrations
 - Endpoint-to-MediatR bridging and framework-aware `path` ranking across endpoint, DI, MediatR, and direct-call edges
 - Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
-- Analyzer execution pipeline boundaries for ordered cross-framework facts
-
-Planned follow-up analyzer packs:
-
-- Entity Framework Core DbContext and DbSet usage
-- Reflection and assembly scanning
-- MCP server preview
+- Entity Framework Core DbContext and DbSet usage in `0.4.0-alpha.1`
+- Reflection and assembly scanning in `0.4.0-alpha.1`
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, MCP server support, full reflection resolution, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, MCP server support, full reflection resolution, broad DI factory/dataflow analysis, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -121,7 +120,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.2.0-alpha.2",
+  "generator_version": "0.2.0-alpha.3",
   "nodes": [],
   "edges": []
 }

@@ -15,6 +15,23 @@ public sealed class SqlOrderRepository : IOrderRepository
     }
 }
 
+public interface IClock
+{
+    DateTimeOffset Now();
+}
+
+public sealed class SystemClock : IClock
+{
+    public DateTimeOffset Now()
+    {
+        return DateTimeOffset.UtcNow;
+    }
+}
+
+public sealed class ClockFactory
+{
+}
+
 public sealed class OrderService
 {
     private readonly IOrderRepository _repository;
@@ -35,6 +52,11 @@ public static class ServiceRegistration
     public static void Configure(IServiceCollection services)
     {
         services.AddScoped<IOrderRepository, SqlOrderRepository>();
+        services.AddSingleton<IClock>(_ => new SystemClock());
+        services.AddSingleton<ClockFactory>(_ =>
+        {
+            return new ClockFactory();
+        });
         services.AddTransient<OrderService>();
     }
 }

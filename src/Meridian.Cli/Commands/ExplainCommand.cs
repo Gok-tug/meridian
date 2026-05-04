@@ -26,14 +26,21 @@ internal static class ExplainCommand
         {
             var graph = await JsonGraphExporter.ReadAsync(graphPath);
             var queryService = new GraphQueryService(graph);
-            var result = queryService.Explain(query);
-            if (result is null)
+            var resolution = queryService.ResolveNode(query);
+            if (resolution.Status == GraphNodeResolutionStatus.NotFound)
             {
                 Console.Error.WriteLine($"No node matched '{query}'.");
                 return CliExitCodes.NotFound;
             }
 
-            GraphConsoleRenderer.PrintExplain(result);
+            if (resolution.Status == GraphNodeResolutionStatus.Ambiguous)
+            {
+                Console.Error.WriteLine($"Node query '{query}' is ambiguous. Use a more precise label, symbol, or node ID.");
+                GraphConsoleRenderer.PrintNodeCandidates(query, resolution.Candidates, Console.Error);
+                return CliExitCodes.NotFound;
+            }
+
+            GraphConsoleRenderer.PrintExplain(queryService.Explain(resolution.Node!));
             return CliExitCodes.Success;
         }
         catch (Exception exception)

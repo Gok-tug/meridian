@@ -9,6 +9,7 @@ Valid alpha versions:
 0.1.0-alpha.2
 0.2.0-alpha.1
 0.2.0-alpha.2
+0.2.0-alpha.3
 0.3.0-alpha.1
 ```
 
@@ -121,11 +122,35 @@ Not in scope:
 - direct method-to-handler shortcut edges
 - expanded Microsoft.Extensions.DependencyInjection registration coverage
 
-Follow-up 0.2 alpha work should add:
+## 0.2.0-alpha.3 — .NET flow hardening
+
+Goal: harden existing .NET graph quality from real-project validation before exposing graph queries through MCP.
+
+Scope:
+
+- ambiguity-aware node resolution for `meridian explain` and `meridian path`
+- candidate output when short labels or symbols match multiple top-scoring nodes
+- exact node ID matching remains an unambiguous resolution path
+- narrow DI factory `registered_as` edges when a generic factory lambda directly returns `new Implementation(...)`
+- expression-bodied factory lambdas and block-bodied lambdas with a single direct `return new Implementation(...);`
+- dependency-injection sample and golden-file updates for factory registrations
+- validation notes from real-project scans without hard-coding project-specific behavior
+
+Not in scope:
+
+- ASP.NET Core MVC or Minimal API endpoint analyzers
+- endpoint-to-MediatR bridging
+- MediatR `CreateStream`
+- interprocedural request tracking
+- non-generic DI registrations
+- keyed services, Scrutor scanning, or runtime DI container execution
+- EF Core, reflection, assembly scanning, MCP server, or Rust/native interop implementation
+
+Later alpha analyzer work should add:
 
 - ASP.NET Core MVC and Minimal API endpoint analyzers
 - endpoint-to-MediatR flow linking
-- expanded DI coverage for source-resolved non-generic registrations and diagnostics
+- source-resolved non-generic DI registrations and diagnostics
 - framework-aware path ranking across endpoint, DI, MediatR, and direct-call edges
 
 ## 0.3.0-alpha.1 — MCP server preview

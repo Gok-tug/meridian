@@ -53,7 +53,7 @@ Confidence:
 
 ## ASP.NET Core analyzer
 
-Planned for later `0.2.x` alpha work.
+Planned for a later alpha milestone.
 
 Responsibilities:
 
@@ -86,7 +86,7 @@ endpoint --uses--> injected_service
 
 ## Dependency Injection analyzer
 
-Initial prototype support exists for direct generic registrations, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
+Current prototype support exists for direct generic registrations, narrow direct-`new` factory registrations, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
 
 Responsibilities:
 
@@ -96,13 +96,20 @@ Responsibilities:
 - connect consumers to required services,
 - mark scanning-based registrations as inferred or ambiguous.
 
-Supported direct registrations:
+Supported registrations:
 
 ```csharp
 services.AddScoped<IOrderRepository, EfOrderRepository>();
 services.AddTransient<OrderService>();
 services.AddSingleton<IClock, SystemClock>();
+services.AddSingleton<IClock>(_ => new SystemClock());
+services.AddSingleton<ClockFactory>(_ =>
+{
+    return new ClockFactory();
+});
 ```
+
+Factory support is intentionally narrow: expression-bodied lambdas must directly create the implementation, and block-bodied lambdas must contain only one direct `return new Implementation(...);` statement.
 
 Relations:
 
@@ -114,7 +121,7 @@ IOrderRepository --implemented_by--> EfOrderRepository
 
 Confidence:
 
-- `EXTRACTED` for direct generic registrations.
+- `EXTRACTED` for direct generic registrations and direct object creation factory registrations.
 - `INFERRED` for convention-based registration.
 - `AMBIGUOUS` for assembly scanning with multiple candidates.
 

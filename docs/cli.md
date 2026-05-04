@@ -63,10 +63,20 @@ Outgoing:
   GetOrderQuery --handled_by--> GetOrderQueryHandler
 ```
 
-Initial `0.1.0-alpha.1` behavior reads an existing graph file, defaulting to `meridian-out/graph.json`:
+Current behavior reads an existing graph file, defaulting to `meridian-out/graph.json`:
 
 ```bash
 meridian explain "GetOrderQuery" --graph meridian-out/graph.json
+```
+
+If a query matches multiple nodes at the same best score, Meridian reports the ambiguity and prints candidate labels, kinds, symbols, and node IDs instead of choosing one silently:
+
+```text
+Node query 'CreateGroupAsync' is ambiguous. Use a more precise label, symbol, or node ID.
+Candidates for 'CreateGroupAsync':
+  WalletGroupService.CreateGroupAsync (method) score=60
+    symbol: MyApp.WalletGroupService.CreateGroupAsync(...)
+    id: method:MyApp:MyApp.WalletGroupService.CreateGroupAsync(...)
 ```
 
 JSON mode is planned:
@@ -154,7 +164,7 @@ If multiple paths exist, Meridian should rank them by:
 3. entrypoint relevance,
 4. deterministic node ID ordering.
 
-If no path is found, Meridian should return a clear message:
+If either endpoint query is ambiguous, Meridian reports the source or target ambiguity and asks for a more precise label, symbol, or node ID before traversal. If both endpoints resolve but no path exists, Meridian returns a clear message:
 
 ```text
 No path found from "GET /orders/{id}" to "OrderDbContext".
@@ -189,7 +199,7 @@ Recommended exit codes:
 | 2 | Invalid command or arguments |
 | 3 | Solution/project could not be loaded |
 | 4 | Graph validation failed |
-| 5 | No matching node or symbol found |
+| 5 | No matching node or symbol found, or node query is ambiguous |
 
 ## Output stability
 

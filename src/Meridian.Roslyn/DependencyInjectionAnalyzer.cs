@@ -145,18 +145,84 @@ internal sealed class DependencyInjectionAnalyzer
         InvocationExpressionSyntax invocation,
         CancellationToken cancellationToken)
     {
-        if (invocation.ArgumentList.Arguments.Count > 0)
+        var typeArguments = InvocationSymbolResolver.ResolveGenericTypeArguments(methodSymbol, semanticModel, invocation, cancellationToken);
+        if (invocation.ArgumentList.Arguments.Count == 0)
+        {
+            return typeArguments.Count switch
+            {
+                1 => (typeArguments[0], typeArguments[0]),
+                >= 2 => (typeArguments[0], typeArguments[1]),
+                _ => null
+            };
+        }
+
+        if (typeArguments.Count == 0 || invocation.ArgumentList.Arguments.Count != 1)
         {
             return null;
         }
 
-        var typeArguments = InvocationSymbolResolver.ResolveGenericTypeArguments(methodSymbol, semanticModel, invocation, cancellationToken);
-        return typeArguments.Count switch
+        var factoryExpression = invocation.ArgumentList.Arguments[0].Expression;
+        return ResolveFactoryImplementationType(factoryExpression, semanticModel, cancellationToken) is { } implementationType
+            ? (typeArguments[0], implementationType)
+            : null;
+    }
+
+    private static INamedTypeSymbol? ResolveFactoryImplementationType(
+        ExpressionSyntax expression,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        if (expression is not LambdaExpressionSyntax lambda)
         {
-            1 => (typeArguments[0], typeArguments[0]),
-            >= 2 => (typeArguments[0], typeArguments[1]),
+            return null;
+        }
+
+        return lambda.Body switch
+        {
+            ExpressionSyntax bodyExpression => TryResolveObjectCreationType(bodyExpression, semanticModel, cancellationToken),
+            BlockSyntax block => ResolveSingleReturnObjectCreationType(block, semanticModel, cancellationToken),
             _ => null
         };
+    }
+
+    private static INamedTypeSymbol? ResolveSingleReturnObjectCreationType(
+        BlockSyntax block,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        if (block.Statements.Count != 1 ||
+            block.Statements[0] is not ReturnStatementSyntax { Expression: { } returnExpression })
+        {
+            return null;
+        }
+
+        return TryResolveObjectCreationType(returnExpression, semanticModel, cancellationToken);
+    }
+
+    private static INamedTypeSymbol? TryResolveObjectCreationType(
+        ExpressionSyntax expression,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        if (expression is not ObjectCreationExpressionSyntax and not ImplicitObjectCreationExpressionSyntax)
+        {
+            return null;
+        }
+
+        var typeInfo = semanticModel.GetTypeInfo(expression, cancellationToken);
+        return TryNormalizeRegistrationType(typeInfo.Type ?? typeInfo.ConvertedType);
+    }
+
+    private static INamedTypeSymbol? TryNormalizeRegistrationType(ITypeSymbol? typeSymbol)
+    {
+        if (typeSymbol is not INamedTypeSymbol namedType ||
+            namedType.TypeKind is TypeKind.Error or TypeKind.Dynamic ||
+            namedType.SpecialType == SpecialType.System_Object)
+        {
+            return null;
+        }
+
+        return namedType;
     }
 
     private static bool IsDependencyInjectionRegistrationMethod(IMethodSymbol methodSymbol)
