@@ -103,13 +103,14 @@ services.AddScoped<IOrderRepository, EfOrderRepository>();
 services.AddTransient<OrderService>();
 services.AddSingleton<IClock, SystemClock>();
 services.AddSingleton<IClock>(_ => new SystemClock());
-services.AddSingleton<ClockFactory>(_ =>
+services.AddSingleton<ClockFactory>(sp =>
 {
-    return new ClockFactory();
+    var createdAt = DateTimeOffset.UtcNow;
+    return new ClockFactory(createdAt);
 });
 ```
 
-Factory support is intentionally narrow: expression-bodied lambdas must directly create the implementation, and block-bodied lambdas must contain only one direct `return new Implementation(...);` statement.
+Factory support is intentionally narrow: expression-bodied lambdas must directly create the implementation, and block-bodied lambdas must end with one top-level direct `return new Implementation(...);` statement. Earlier top-level local declarations or expression statements are allowed; branching and nested control flow are skipped.
 
 Relations:
 

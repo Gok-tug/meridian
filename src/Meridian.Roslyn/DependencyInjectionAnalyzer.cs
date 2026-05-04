@@ -190,8 +190,14 @@ internal sealed class DependencyInjectionAnalyzer
         SemanticModel semanticModel,
         CancellationToken cancellationToken)
     {
-        if (block.Statements.Count != 1 ||
-            block.Statements[0] is not ReturnStatementSyntax { Expression: { } returnExpression })
+        if (block.Statements.Count == 0 ||
+            block.Statements[^1] is not ReturnStatementSyntax { Expression: { } returnExpression })
+        {
+            return null;
+        }
+
+        if (block.Statements.Take(block.Statements.Count - 1).Any(static statement =>
+            statement is not LocalDeclarationStatementSyntax and not ExpressionStatementSyntax and not EmptyStatementSyntax))
         {
             return null;
         }

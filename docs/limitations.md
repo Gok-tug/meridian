@@ -39,7 +39,8 @@ services.AddScoped<IOrderRepository, EfOrderRepository>();
 services.AddSingleton<IClock>(_ => new SystemClock());
 services.AddSingleton<ClockFactory>(_ =>
 {
-    return new ClockFactory();
+    var createdAt = DateTimeOffset.UtcNow;
+    return new ClockFactory(createdAt);
 });
 ```
 
@@ -49,8 +50,12 @@ Complex factory or convention-based registrations may be inferred, ambiguous, or
 services.AddScoped<IOrderRepository>(sp => CreateRepository(sp));
 services.AddScoped<IOrderRepository>(sp =>
 {
-    var options = sp.GetRequiredService<OrderOptions>();
-    return new EfOrderRepository(options);
+    if (UseSql())
+    {
+        return new SqlOrderRepository();
+    }
+
+    return new EfOrderRepository();
 });
 services.Scan(scan => scan.FromAssemblies(...));
 ```

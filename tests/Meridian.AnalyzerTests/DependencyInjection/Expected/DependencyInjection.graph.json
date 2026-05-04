@@ -28,7 +28,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.OrderService.Load()",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L44",
+      "source_location": "L50",
       "metadata": {}
     },
     {
@@ -37,7 +37,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L52",
+      "source_location": "L58",
       "metadata": {}
     },
     {
@@ -97,7 +97,7 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.OrderService",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L35",
+      "source_location": "L41",
       "metadata": {
         "type_kind": "class"
       }
@@ -108,7 +108,7 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.ServiceRegistration",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L50",
+      "source_location": "L56",
       "metadata": {
         "type_kind": "class"
       }
@@ -145,7 +145,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 46,
+        "line": 52,
         "symbol": "Sample.DependencyInjection.OrderService.Load()",
         "reason": "Roslyn resolved invocation '_repository.Load' to 'Sample.DependencyInjection.IOrderRepository.Load()'."
       },
@@ -159,7 +159,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 56,
+        "line": 62,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.ClockFactory' to 'Sample.DependencyInjection.ClockFactory'."
       },
@@ -203,7 +203,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 55,
+        "line": 61,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.IClock' to 'Sample.DependencyInjection.SystemClock'."
       },
@@ -247,7 +247,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 54,
+        "line": 60,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddScoped' from 'Sample.DependencyInjection.IOrderRepository' to 'Sample.DependencyInjection.SqlOrderRepository'."
       },
@@ -263,7 +263,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 44,
+        "line": 50,
         "symbol": "Sample.DependencyInjection.OrderService",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.OrderService.Load()' in type 'Sample.DependencyInjection.OrderService'."
       },
@@ -277,7 +277,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 39,
+        "line": 45,
         "symbol": "Sample.DependencyInjection.OrderService.OrderService(Sample.DependencyInjection.IOrderRepository repository)",
         "reason": "Constructor parameter 'repository' injects 'Sample.DependencyInjection.IOrderRepository'."
       },
@@ -291,7 +291,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 60,
+        "line": 67,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddTransient' from 'Sample.DependencyInjection.OrderService' to 'Sample.DependencyInjection.OrderService'."
       },
@@ -307,7 +307,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 52,
+        "line": 58,
         "symbol": "Sample.DependencyInjection.ServiceRegistration",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)' in type 'Sample.DependencyInjection.ServiceRegistration'."
       },

@@ -29,7 +29,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MediatR `sends` and `publishes` edges from enclosing source methods to resolved request or notification types.
 - MediatR sample project and golden-file analyzer test coverage for dispatcher call sites.
 - Ambiguity-aware CLI node resolution for `explain` and `path`, including candidate output for multiple top-scoring matches.
-- Narrow DI factory registration support for expression-bodied and single-return block-bodied lambdas that directly create source-resolved implementations.
+- Narrow DI factory registration support for expression-bodied and safe block-bodied lambdas that directly create source-resolved implementations.
 
 ### Changed
 

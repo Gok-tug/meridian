@@ -132,7 +132,7 @@ Scope:
 - candidate output when short labels or symbols match multiple top-scoring nodes
 - exact node ID matching remains an unambiguous resolution path
 - narrow DI factory `registered_as` edges when a generic factory lambda directly returns `new Implementation(...)`
-- expression-bodied factory lambdas and block-bodied lambdas with a single direct `return new Implementation(...);`
+- expression-bodied factory lambdas and block-bodied lambdas that end with one top-level direct `return new Implementation(...);`
 - dependency-injection sample and golden-file updates for factory registrations
 - validation notes from real-project scans without hard-coding project-specific behavior
 

@@ -30,6 +30,12 @@ public sealed class SystemClock : IClock
 
 public sealed class ClockFactory
 {
+    public ClockFactory(DateTimeOffset createdAt)
+    {
+        CreatedAt = createdAt;
+    }
+
+    public DateTimeOffset CreatedAt { get; }
 }
 
 public sealed class OrderService
@@ -55,7 +61,8 @@ public static class ServiceRegistration
         services.AddSingleton<IClock>(_ => new SystemClock());
         services.AddSingleton<ClockFactory>(_ =>
         {
-            return new ClockFactory();
+            var createdAt = DateTimeOffset.UtcNow;
+            return new ClockFactory(createdAt);
         });
         services.AddTransient<OrderService>();
     }
