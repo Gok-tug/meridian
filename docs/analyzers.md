@@ -124,9 +124,10 @@ Initial declaration support exists in `0.2.0-alpha.1`. `Send` and `Publish` call
 
 Current responsibilities:
 
-- discover source request and notification types,
+- discover source request, stream request, and notification types,
 - discover source handlers,
-- connect request and notification types to handlers.
+- connect request, stream request, and notification types to handlers,
+- keep `handled_by` edges when a source handler handles a message type from generated or referenced code without an analyzable source location.
 
 Planned responsibilities:
 
@@ -138,10 +139,18 @@ Supported types:
 ```csharp
 public sealed record GetOrderQuery(Guid Id) : IRequest<OrderDto>;
 
+public sealed record WatchOrders(Guid Id) : IStreamRequest<OrderDto>;
+
 public sealed class GetOrderQueryHandler
     : IRequestHandler<GetOrderQuery, OrderDto>
 {
     public Task<OrderDto> Handle(GetOrderQuery request, CancellationToken cancellationToken) { ... }
+}
+
+public sealed class WatchOrdersHandler
+    : IStreamRequestHandler<WatchOrders, OrderDto>
+{
+    public IAsyncEnumerable<OrderDto> Handle(WatchOrders request, CancellationToken cancellationToken) { ... }
 }
 ```
 

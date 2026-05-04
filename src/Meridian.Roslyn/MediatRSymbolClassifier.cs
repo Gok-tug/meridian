@@ -6,6 +6,14 @@ namespace Meridian.Roslyn;
 internal sealed class MediatRSymbolClassifier
 {
     private const string MediatRNamespace = "MediatR";
+    private const string RequestInterface = "IRequest";
+    private const string GenericRequestInterface = "IRequest`1";
+    private const string NotificationInterface = "INotification";
+    private const string StreamRequestInterface = "IStreamRequest`1";
+    private const string RequestHandlerInterface = "IRequestHandler`1";
+    private const string GenericRequestHandlerInterface = "IRequestHandler`2";
+    private const string NotificationHandlerInterface = "INotificationHandler`1";
+    private const string StreamRequestHandlerInterface = "IStreamRequestHandler`2";
 
     public string ClassifyType(INamedTypeSymbol typeSymbol)
     {
@@ -14,13 +22,14 @@ internal sealed class MediatRSymbolClassifier
             return GraphNodeKinds.MediatRHandler;
         }
 
-        if (ImplementsMediatRInterface(typeSymbol, "IRequest") ||
-            ImplementsMediatRInterface(typeSymbol, "IRequest`1"))
+        if (ImplementsMediatRInterface(typeSymbol, RequestInterface) ||
+            ImplementsMediatRInterface(typeSymbol, GenericRequestInterface) ||
+            ImplementsMediatRInterface(typeSymbol, StreamRequestInterface))
         {
             return GraphNodeKinds.MediatRRequest;
         }
 
-        if (ImplementsMediatRInterface(typeSymbol, "INotification"))
+        if (ImplementsMediatRInterface(typeSymbol, NotificationInterface))
         {
             return GraphNodeKinds.MediatRNotification;
         }
@@ -46,19 +55,24 @@ internal sealed class MediatRSymbolClassifier
 
             switch (originalDefinition.MetadataName)
             {
-                case "IRequestHandler`1" when interfaceSymbol.TypeArguments.Length == 1 &&
+                case RequestHandlerInterface when interfaceSymbol.TypeArguments.Length == 1 &&
                     interfaceSymbol.TypeArguments[0] is INamedTypeSymbol requestSymbol:
                     yield return new MediatRHandledMessage(requestSymbol, interfaceSymbol);
                     break;
 
-                case "IRequestHandler`2" when interfaceSymbol.TypeArguments.Length == 2 &&
+                case GenericRequestHandlerInterface when interfaceSymbol.TypeArguments.Length == 2 &&
                     interfaceSymbol.TypeArguments[0] is INamedTypeSymbol requestSymbol:
                     yield return new MediatRHandledMessage(requestSymbol, interfaceSymbol);
                     break;
 
-                case "INotificationHandler`1" when interfaceSymbol.TypeArguments.Length == 1 &&
+                case NotificationHandlerInterface when interfaceSymbol.TypeArguments.Length == 1 &&
                     interfaceSymbol.TypeArguments[0] is INamedTypeSymbol notificationSymbol:
                     yield return new MediatRHandledMessage(notificationSymbol, interfaceSymbol);
+                    break;
+
+                case StreamRequestHandlerInterface when interfaceSymbol.TypeArguments.Length == 2 &&
+                    interfaceSymbol.TypeArguments[0] is INamedTypeSymbol streamRequestSymbol:
+                    yield return new MediatRHandledMessage(streamRequestSymbol, interfaceSymbol);
                     break;
             }
         }

@@ -10,7 +10,16 @@
       "kind": "method",
       "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
       "source_file": "Handlers.cs",
-      "source_location": "L11",
+      "source_location": "L13",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.ExternalOrderQueryHandler.Handle(Sample.MediatR.Contracts.ExternalOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "label": "ExternalOrderQueryHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.ExternalOrderQueryHandler.Handle(Sample.MediatR.Contracts.ExternalOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L52",
       "metadata": {}
     },
     {
@@ -19,7 +28,7 @@
       "kind": "method",
       "symbol": "Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
       "source_file": "Handlers.cs",
-      "source_location": "L16",
+      "source_location": "L18",
       "metadata": {}
     },
     {
@@ -28,7 +37,7 @@
       "kind": "method",
       "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)",
       "source_file": "Handlers.cs",
-      "source_location": "L32",
+      "source_location": "L34",
       "metadata": {}
     },
     {
@@ -37,7 +46,16 @@
       "kind": "method",
       "symbol": "Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)",
       "source_file": "Handlers.cs",
-      "source_location": "L24",
+      "source_location": "L26",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)",
+      "label": "WatchOrderStreamHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "Handlers.cs",
+      "source_location": "L42",
       "metadata": {}
     },
     {
@@ -46,7 +64,27 @@
       "kind": "type",
       "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler",
       "source_file": "Handlers.cs",
-      "source_location": "L9",
+      "source_location": "L11",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.Contracts.ExternalOrderQuery",
+      "label": "ExternalOrderQuery",
+      "kind": "mediatr_request",
+      "symbol": "Sample.MediatR.Contracts.ExternalOrderQuery",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.ExternalOrderQueryHandler",
+      "label": "ExternalOrderQueryHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.MediatR.ExternalOrderQueryHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L50",
       "metadata": {
         "type_kind": "class"
       }
@@ -68,7 +106,7 @@
       "kind": "mediatr_handler",
       "symbol": "Sample.MediatR.GetOrderQueryHandler",
       "source_file": "Handlers.cs",
-      "source_location": "L14",
+      "source_location": "L16",
       "metadata": {
         "type_kind": "class"
       }
@@ -79,7 +117,7 @@
       "kind": "type",
       "symbol": "Sample.MediatR.IGetOrderQueryHandlerContract",
       "source_file": "Handlers.cs",
-      "source_location": "L5",
+      "source_location": "L7",
       "metadata": {
         "type_kind": "interface"
       }
@@ -90,7 +128,7 @@
       "kind": "type",
       "symbol": "Sample.MediatR.OrderDto",
       "source_file": "Messages.cs",
-      "source_location": "L11",
+      "source_location": "L13",
       "metadata": {
         "type_kind": "class"
       }
@@ -101,7 +139,7 @@
       "kind": "mediatr_notification",
       "symbol": "Sample.MediatR.OrderUpdatedNotification",
       "source_file": "Messages.cs",
-      "source_location": "L9",
+      "source_location": "L11",
       "metadata": {
         "type_kind": "class"
       }
@@ -112,7 +150,7 @@
       "kind": "mediatr_handler",
       "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
       "source_file": "Handlers.cs",
-      "source_location": "L30",
+      "source_location": "L32",
       "metadata": {
         "type_kind": "class"
       }
@@ -134,7 +172,29 @@
       "kind": "mediatr_handler",
       "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
       "source_file": "Handlers.cs",
-      "source_location": "L22",
+      "source_location": "L24",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.WatchOrderStream",
+      "label": "WatchOrderStream",
+      "kind": "mediatr_request",
+      "symbol": "Sample.MediatR.WatchOrderStream",
+      "source_file": "Messages.cs",
+      "source_location": "L9",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler",
+      "label": "WatchOrderStreamHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.MediatR.WatchOrderStreamHandler",
+      "source_file": "Handlers.cs",
+      "source_location": "L40",
       "metadata": {
         "type_kind": "class"
       }
@@ -149,9 +209,37 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 11,
+        "line": 13,
         "symbol": "Sample.MediatR.AbstractGetOrderQueryHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.AbstractGetOrderQueryHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.Contracts.ExternalOrderQuery",
+      "target": "type:Sample.MediatR:Sample.MediatR.ExternalOrderQueryHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 50,
+        "symbol": "Sample.MediatR.ExternalOrderQueryHandler",
+        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.Contracts.ExternalOrderQuery, Sample.MediatR.OrderDto>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.ExternalOrderQueryHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.ExternalOrderQueryHandler.Handle(Sample.MediatR.Contracts.ExternalOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 52,
+        "symbol": "Sample.MediatR.ExternalOrderQueryHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.ExternalOrderQueryHandler.Handle(Sample.MediatR.Contracts.ExternalOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.ExternalOrderQueryHandler'."
       },
       "metadata": {}
     },
@@ -163,7 +251,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 14,
+        "line": 16,
         "symbol": "Sample.MediatR.GetOrderQueryHandler",
         "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.GetOrderQuery, Sample.MediatR.OrderDto>'."
       },
@@ -177,7 +265,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 16,
+        "line": 18,
         "symbol": "Sample.MediatR.GetOrderQueryHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.GetOrderQueryHandler'."
       },
@@ -191,7 +279,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 30,
+        "line": 32,
         "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
         "reason": "Roslyn resolved MediatR handler interface 'MediatR.INotificationHandler<Sample.MediatR.OrderUpdatedNotification>'."
       },
@@ -205,7 +293,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 32,
+        "line": 34,
         "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.OrderUpdatedNotificationHandler.Handle(Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.OrderUpdatedNotificationHandler'."
       },
@@ -219,7 +307,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 22,
+        "line": 24,
         "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
         "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.RefreshCacheCommand>'."
       },
@@ -233,9 +321,37 @@
       "confidence_score": 1,
       "evidence": {
         "file": "Handlers.cs",
-        "line": 24,
+        "line": 26,
         "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.RefreshCacheCommandHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.WatchOrderStream",
+      "target": "type:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 40,
+        "symbol": "Sample.MediatR.WatchOrderStreamHandler",
+        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IStreamRequestHandler<Sample.MediatR.WatchOrderStream, Sample.MediatR.OrderDto>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler",
+      "target": "method:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 42,
+        "symbol": "Sample.MediatR.WatchOrderStreamHandler",
+        "reason": "Roslyn declared method 'Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.WatchOrderStreamHandler'."
       },
       "metadata": {}
     }

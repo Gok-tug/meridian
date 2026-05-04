@@ -76,14 +76,16 @@ Scope:
   - `IRequest<TResponse>`
   - `IRequest`
   - `INotification`
+  - `IStreamRequest<TResponse>`
   - `IRequestHandler<TRequest, TResponse>`
   - `IRequestHandler<TRequest>`
   - `INotificationHandler<TNotification>`
+  - `IStreamRequestHandler<TRequest, TResponse>`
 - specialized node kinds:
   - `mediatr_request`
   - `mediatr_notification`
   - `mediatr_handler`
-- `handled_by` edges from request/notification types to handler types
+- `handled_by` edges from request, stream request, and notification types to handler types
 - MediatR sample project and golden-file analyzer test
 - CLI `path` traversal over emitted MediatR declaration edges
 

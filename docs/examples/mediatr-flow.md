@@ -2,7 +2,7 @@
 
 MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`.
 
-The current prototype connects source request and notification types to source handler types through generic MediatR interfaces. It does not yet detect `Send`, `Publish`, or endpoint-to-request flow.
+The current prototype connects source request, stream request, and notification types to source handler types through generic MediatR interfaces. Handled message types can come from generated or referenced code, though their graph nodes may not have source metadata. It does not yet detect `Send`, `Publish`, or endpoint-to-request flow.
 
 ## Source pattern
 

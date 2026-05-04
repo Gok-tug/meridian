@@ -51,7 +51,7 @@ Meridian should not claim exact DI behavior when registration depends on runtime
 
 ## MediatR limits
 
-The current prototype emits declaration facts for source-resolved MediatR requests, notifications, and handlers. Generic request/handler relationships are reliable when both the handler and handled message type are available in analyzable source.
+The current prototype emits declaration facts for source-resolved MediatR requests, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
 
 MediatR call-site flow is not implemented yet. Runtime-created requests remain ambiguous:
 

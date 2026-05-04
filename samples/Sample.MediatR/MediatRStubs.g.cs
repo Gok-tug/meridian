@@ -15,6 +15,10 @@ public interface INotification
 {
 }
 
+public interface IStreamRequest<out TResponse>
+{
+}
+
 public interface IRequestHandler<in TRequest>
     where TRequest : IRequest
 {
@@ -31,4 +35,10 @@ public interface INotificationHandler<in TNotification>
     where TNotification : INotification
 {
     Task Handle(TNotification notification, CancellationToken cancellationToken);
+}
+
+public interface IStreamRequestHandler<in TRequest, TResponse>
+    where TRequest : IStreamRequest<TResponse>
+{
+    IAsyncEnumerable<TResponse> Handle(TRequest request, CancellationToken cancellationToken);
 }

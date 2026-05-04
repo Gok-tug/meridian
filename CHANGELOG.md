@@ -23,8 +23,8 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Direct generic DI `registered_as` edges for `AddScoped`, `AddSingleton`, and `AddTransient`.
 - Generated/bin/obj source filtering by default.
 - Dependency-injection sample project and golden-file analyzer test.
-- MediatR declaration preview nodes for source-resolved requests, notifications, and handlers.
-- MediatR `handled_by` edges from source request/notification types to source handler types.
+- MediatR declaration preview nodes for source-resolved requests, stream requests, notifications, and handlers.
+- MediatR `handled_by` edges from request, stream request, and notification types to source handler types, including handled message nodes without analyzable source metadata.
 - MediatR sample project and golden-file analyzer test.
 
 ### Changed

@@ -1,4 +1,6 @@
+using System.Runtime.CompilerServices;
 using MediatR;
+using Sample.MediatR.Contracts;
 
 namespace Sample.MediatR;
 
@@ -32,5 +34,23 @@ public sealed class OrderUpdatedNotificationHandler : INotificationHandler<Order
     public Task Handle(OrderUpdatedNotification notification, CancellationToken cancellationToken)
     {
         return Task.CompletedTask;
+    }
+}
+
+public sealed class WatchOrderStreamHandler : IStreamRequestHandler<WatchOrderStream, OrderDto>
+{
+    public async IAsyncEnumerable<OrderDto> Handle(WatchOrderStream request, [EnumeratorCancellation] CancellationToken cancellationToken)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+        await Task.Yield();
+        yield return new OrderDto(request.OrderId, "streaming");
+    }
+}
+
+public sealed class ExternalOrderQueryHandler : IRequestHandler<ExternalOrderQuery, OrderDto>
+{
+    public Task<OrderDto> Handle(ExternalOrderQuery request, CancellationToken cancellationToken)
+    {
+        return Task.FromResult(new OrderDto(request.OrderId, "external"));
     }
 }

@@ -23,7 +23,16 @@ internal sealed class RoslynGraphFactory
 
     public GraphNode CreateTypeNode(INamedTypeSymbol typeSymbol)
     {
-        var location = _sourceFilter.FirstAnalyzableSourceLocation(typeSymbol);
+        return CreateTypeNode(typeSymbol, _sourceFilter.FirstAnalyzableSourceLocation(typeSymbol));
+    }
+
+    public GraphNode CreateTypeNodeAllowingMissingSource(INamedTypeSymbol typeSymbol)
+    {
+        return CreateTypeNode(typeSymbol, _sourceFilter.TryFirstAnalyzableSourceLocation(typeSymbol));
+    }
+
+    private GraphNode CreateTypeNode(INamedTypeSymbol typeSymbol, Location? location)
+    {
         var symbol = typeSymbol.ToDisplayString(SymbolDisplay.TypeFormat);
         return new GraphNode
         {
@@ -31,8 +40,8 @@ internal sealed class RoslynGraphFactory
             Label = typeSymbol.Name,
             Kind = _typeNodeKindSelector?.Invoke(typeSymbol) ?? GraphNodeKinds.Type,
             Symbol = symbol,
-            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
-            SourceLocation = SourcePath.SourceLocation(location),
+            SourceFile = location is null ? null : SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = location is null ? null : SourcePath.SourceLocation(location),
             Metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
             {
                 ["type_kind"] = typeSymbol.TypeKind.ToString().ToLowerInvariant()

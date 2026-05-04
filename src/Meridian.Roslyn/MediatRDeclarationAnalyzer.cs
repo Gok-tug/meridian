@@ -34,18 +34,32 @@ internal sealed class MediatRDeclarationAnalyzer
         var handlerNode = typeResult.Node;
         foreach (var handledMessage in _classifier.GetHandledMessages(typeResult.Symbol))
         {
-            if (!_sourceFilter.HasAnalyzableSourceLocation(handledMessage.MessageSymbol))
+            if (IsUnresolvedType(handledMessage.MessageSymbol))
             {
+                var handlerInterfaceLocation = FindHandlerInterfaceLocation(typeResult.Symbol, handledMessage.HandlerInterfaceSymbol, semanticModel, cancellationToken);
+                var evidence = _graphFactory.CreateEvidence(
+                    handlerInterfaceLocation,
+                    handlerNode.Symbol,
+                    $"Roslyn could not resolve MediatR message type '{handledMessage.MessageSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.");
+                graph.AddDiagnostic(new GraphDiagnostic
+                {
+                    Id = "MERIDIAN_MEDIATR_UNRESOLVED_MESSAGE",
+                    Severity = "warning",
+                    Message = $"MediatR handler '{handlerNode.Symbol}' references an unresolved message type.",
+                    SourceFile = evidence.File,
+                    SourceLocation = evidence.Line is null ? null : $"L{evidence.Line}"
+                });
                 continue;
             }
 
-            var messageNode = _graphFactory.CreateTypeNode(handledMessage.MessageSymbol);
+            var messageNode = _graphFactory.CreateTypeNodeAllowingMissingSource(handledMessage.MessageSymbol);
             var edgeKey = string.Join('', messageNode.Id, handlerNode.Id, GraphRelations.HandledBy);
             if (!_handledByEdges.Add(edgeKey))
             {
                 continue;
             }
 
+            var edgeLocation = FindHandlerInterfaceLocation(typeResult.Symbol, handledMessage.HandlerInterfaceSymbol, semanticModel, cancellationToken);
             graph.AddNode(messageNode);
             graph.AddEdge(new GraphEdge
             {
@@ -55,11 +69,16 @@ internal sealed class MediatRDeclarationAnalyzer
                 Confidence = ConfidenceLevels.Extracted,
                 ConfidenceScore = 1.0,
                 Evidence = _graphFactory.CreateEvidence(
-                    FindHandlerInterfaceLocation(typeResult.Symbol, handledMessage.HandlerInterfaceSymbol, semanticModel, cancellationToken),
+                    edgeLocation,
                     handlerNode.Symbol,
                     $"Roslyn resolved MediatR handler interface '{handledMessage.HandlerInterfaceSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.")
             });
         }
+    }
+
+    private static bool IsUnresolvedType(INamedTypeSymbol typeSymbol)
+    {
+        return typeSymbol is IErrorTypeSymbol || typeSymbol.TypeKind == TypeKind.Error;
     }
 
     private Location FindHandlerInterfaceLocation(

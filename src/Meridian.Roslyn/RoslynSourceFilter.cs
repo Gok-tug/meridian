@@ -22,12 +22,18 @@ internal sealed class RoslynSourceFilter
         return symbol.Locations.Any(IsAnalyzableSourceLocation);
     }
 
-    public Location FirstAnalyzableSourceLocation(ISymbol symbol)
+    public Location? TryFirstAnalyzableSourceLocation(ISymbol symbol)
     {
         return symbol.Locations
             .Where(IsAnalyzableSourceLocation)
             .OrderBy(LocationSortKey, StringComparer.Ordinal)
-            .First();
+            .FirstOrDefault();
+    }
+
+    public Location FirstAnalyzableSourceLocation(ISymbol symbol)
+    {
+        return TryFirstAnalyzableSourceLocation(symbol) ??
+            throw new InvalidOperationException($"No analyzable source location found for symbol '{symbol.ToDisplayString()}'.");
     }
 
     public Location FirstAnalyzableSourceLocation(IParameterSymbol parameter, Location fallback)
