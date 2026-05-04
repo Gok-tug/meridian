@@ -28,11 +28,26 @@ Roslyn provides the semantic foundation. Analyzer packs understand framework con
 load solution
   -> create Roslyn workspace context
   -> index projects, compilations, symbols, syntax trees
-  -> run analyzer packs
+  -> run foundation analyzers
+  -> run framework fact analyzers
+  -> link cross-framework flow
   -> build graph
   -> normalize and validate graph
   -> export/query/report
 ```
+
+## Analyzer execution model
+
+Analyzer execution should be deterministic and ordered by the facts each pass produces. It should not become a parallel free-for-all where MediatR, ASP.NET Core, and DI analyzers race to infer the same flow.
+
+Recommended pass order:
+
+1. Foundation facts: Roslyn symbols, source locations, type/method nodes, direct calls, and interface implementations.
+2. Framework facts: DI registrations, constructor injection, endpoint declarations, MediatR requests, handlers, sends, and publishes.
+3. Flow linking: combine framework facts into user-facing paths, such as endpoint -> request -> handler -> injected service -> implementation.
+4. Normalization and diagnostics: merge duplicates, apply stable ordering, validate evidence, and report ambiguous or unsupported behavior.
+
+The current prototype can keep Roslyn and initial DI support in `Meridian.Roslyn`, but the internal passes should remain separable so future analyzer packs can consume earlier facts without re-parsing source or depending on graph insertion order.
 
 ## Proposed project layout
 
@@ -149,6 +164,8 @@ public interface IMeridianAnalyzer
 ```
 
 Analyzers should not write files directly. They should add graph facts with evidence and diagnostics.
+
+Once framework analyzers split into separate packages, the contract should also expose enough ordering metadata to keep execution deterministic, such as the pass it belongs to or the fact types it requires and produces. That metadata should stay small; analyzer order is a correctness boundary, not a plugin framework feature.
 
 ## Graph identity
 

@@ -38,43 +38,35 @@ public sealed class RoslynFlowAnalyzer
             });
         });
 
-        var projects = await LoadProjectsAsync(workspace, fullPath, cancellationToken);
-        var shouldFilterTests = IsSolutionPath(fullPath) && !options.IncludeTests;
-        foreach (var project in projects
-            .Where(project => !shouldFilterTests || !IsLikelyTestProject(project))
-            .OrderBy(project => project.FilePath, StringComparer.Ordinal))
+        var sourceFilter = new RoslynSourceFilter(rootDirectory);
+        var graphFactory = new RoslynGraphFactory(rootDirectory, sourceFilter);
+        var typeDeclarationAnalyzer = new TypeDeclarationAnalyzer(sourceFilter, graphFactory);
+        var directCallAnalyzer = new DirectCallAnalyzer(sourceFilter, graphFactory);
+        var dependencyInjectionAnalyzer = new DependencyInjectionAnalyzer(sourceFilter, graphFactory);
+
+        var projects = await RoslynProjectLoader.LoadProjectsAsync(workspace, fullPath, cancellationToken);
+        foreach (var project in RoslynProjectLoader.SelectProjects(projects, fullPath, options))
         {
-            await AnalyzeProjectAsync(project, graph, rootDirectory, cancellationToken);
+            await AnalyzeProjectAsync(
+                project,
+                graph,
+                sourceFilter,
+                typeDeclarationAnalyzer,
+                directCallAnalyzer,
+                dependencyInjectionAnalyzer,
+                cancellationToken);
         }
 
         return graph.Build(".");
     }
 
-    private static async Task<IReadOnlyList<Project>> LoadProjectsAsync(
-        MSBuildWorkspace workspace,
-        string fullPath,
-        CancellationToken cancellationToken)
-    {
-        var extension = Path.GetExtension(fullPath);
-        if (IsSolutionPath(fullPath))
-        {
-            var solution = await workspace.OpenSolutionAsync(fullPath, cancellationToken: cancellationToken);
-            return solution.Projects.ToArray();
-        }
-
-        if (extension.Equals(".csproj", StringComparison.OrdinalIgnoreCase))
-        {
-            var project = await workspace.OpenProjectAsync(fullPath, cancellationToken: cancellationToken);
-            return [project];
-        }
-
-        throw new NotSupportedException($"Unsupported input file '{fullPath}'. Expected .csproj, .sln, or .slnx.");
-    }
-
     private static async Task AnalyzeProjectAsync(
         Project project,
         GraphBuilder graph,
-        string rootDirectory,
+        RoslynSourceFilter sourceFilter,
+        TypeDeclarationAnalyzer typeDeclarationAnalyzer,
+        DirectCallAnalyzer directCallAnalyzer,
+        DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         CancellationToken cancellationToken)
     {
         var compilation = await project.GetCompilationAsync(cancellationToken);
@@ -89,16 +81,26 @@ public sealed class RoslynFlowAnalyzer
             return;
         }
 
-        foreach (var document in project.Documents.OrderBy(document => document.FilePath, StringComparer.Ordinal))
+        foreach (var document in project.Documents
+            .Where(sourceFilter.IsAnalyzableDocument)
+            .OrderBy(document => document.FilePath, StringComparer.Ordinal))
         {
-            await AnalyzeDocumentAsync(document, graph, rootDirectory, cancellationToken);
+            await AnalyzeDocumentAsync(
+                document,
+                graph,
+                typeDeclarationAnalyzer,
+                directCallAnalyzer,
+                dependencyInjectionAnalyzer,
+                cancellationToken);
         }
     }
 
     private static async Task AnalyzeDocumentAsync(
         Document document,
         GraphBuilder graph,
-        string rootDirectory,
+        TypeDeclarationAnalyzer typeDeclarationAnalyzer,
+        DirectCallAnalyzer directCallAnalyzer,
+        DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         CancellationToken cancellationToken)
     {
         var root = await document.GetSyntaxRootAsync(cancellationToken);
@@ -108,107 +110,21 @@ public sealed class RoslynFlowAnalyzer
             return;
         }
 
-        foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>())
+        foreach (var typeDeclaration in root.DescendantNodes().OfType<TypeDeclarationSyntax>().OrderBy(type => type.SpanStart))
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            var sourceSymbol = semanticModel.GetEnclosingSymbol(invocation.SpanStart, cancellationToken) as IMethodSymbol;
-            var targetSymbol = ResolveTargetMethod(semanticModel, invocation, cancellationToken);
-            if (sourceSymbol is null || targetSymbol is null)
+            var typeResult = typeDeclarationAnalyzer.Analyze(typeDeclaration, semanticModel, graph, cancellationToken);
+            if (typeResult is { } result)
             {
-                continue;
+                dependencyInjectionAnalyzer.AnalyzeConstructorInjection(result, graph);
             }
-
-            if (!HasSourceLocation(sourceSymbol) || !HasSourceLocation(targetSymbol))
-            {
-                continue;
-            }
-
-            var sourceNode = CreateMethodNode(sourceSymbol, rootDirectory);
-            var targetNode = CreateMethodNode(targetSymbol, rootDirectory);
-            graph.AddNode(sourceNode);
-            graph.AddNode(targetNode);
-
-            var invocationLocation = invocation.GetLocation();
-            graph.AddEdge(new GraphEdge
-            {
-                Source = sourceNode.Id,
-                Target = targetNode.Id,
-                Relation = GraphRelations.Calls,
-                Confidence = ConfidenceLevels.Extracted,
-                ConfidenceScore = 1.0,
-                Evidence = new GraphEvidence
-                {
-                    File = SourcePath.RelativeFile(invocationLocation, rootDirectory),
-                    Line = SourcePath.Line(invocationLocation),
-                    Symbol = sourceNode.Symbol,
-                    Reason = $"Roslyn resolved invocation '{invocation.Expression}' to '{targetNode.Symbol}'."
-                }
-            });
-        }
-    }
-
-    private static IMethodSymbol? ResolveTargetMethod(
-        SemanticModel semanticModel,
-        InvocationExpressionSyntax invocation,
-        CancellationToken cancellationToken)
-    {
-        var symbolInfo = semanticModel.GetSymbolInfo(invocation, cancellationToken);
-        if (symbolInfo.Symbol is IMethodSymbol methodSymbol)
-        {
-            return methodSymbol.ReducedFrom ?? methodSymbol;
         }
 
-        if (symbolInfo.CandidateSymbols.Length == 1 && symbolInfo.CandidateSymbols[0] is IMethodSymbol candidate)
+        foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>().OrderBy(invocation => invocation.SpanStart))
         {
-            return candidate.ReducedFrom ?? candidate;
+            cancellationToken.ThrowIfCancellationRequested();
+            directCallAnalyzer.Analyze(invocation, semanticModel, graph, cancellationToken);
+            dependencyInjectionAnalyzer.AnalyzeRegistration(invocation, semanticModel, graph, cancellationToken);
         }
-
-        return null;
-    }
-
-    private static GraphNode CreateMethodNode(IMethodSymbol methodSymbol, string rootDirectory)
-    {
-        var location = methodSymbol.Locations.First(static location => location.IsInSource);
-        var symbol = methodSymbol.ToDisplayString(SymbolDisplay.MethodFormat);
-        return new GraphNode
-        {
-            Id = $"method:{methodSymbol.ContainingAssembly.Identity.Name}:{symbol}",
-            Label = $"{methodSymbol.ContainingType.Name}.{methodSymbol.Name}",
-            Kind = GraphNodeKinds.Method,
-            Symbol = symbol,
-            SourceFile = SourcePath.RelativeFile(location, rootDirectory),
-            SourceLocation = SourcePath.SourceLocation(location)
-        };
-    }
-
-    private static bool IsSolutionPath(string fullPath)
-    {
-        var extension = Path.GetExtension(fullPath);
-        return extension.Equals(".sln", StringComparison.OrdinalIgnoreCase) ||
-            extension.Equals(".slnx", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool IsLikelyTestProject(Project project)
-    {
-        if (project.Name.EndsWith(".Tests", StringComparison.OrdinalIgnoreCase) ||
-            project.Name.EndsWith(".Test", StringComparison.OrdinalIgnoreCase))
-        {
-            return true;
-        }
-
-        if (project.FilePath is null || !File.Exists(project.FilePath))
-        {
-            return false;
-        }
-
-        var projectFile = File.ReadAllText(project.FilePath);
-        return projectFile.Contains("Microsoft.NET.Test.Sdk", StringComparison.OrdinalIgnoreCase) ||
-            projectFile.Contains("<IsTestProject>true</IsTestProject>", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private static bool HasSourceLocation(ISymbol symbol)
-    {
-        return symbol.Locations.Any(static location => location.IsInSource);
     }
 }

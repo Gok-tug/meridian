@@ -19,9 +19,9 @@ Before a stable release, Meridian should decide whether the distributed global t
 | Operating systems | Windows, Linux, macOS |
 | Package distribution | NuGet global tool |
 
-## Initial project types
+## Initial project loading targets
 
-Supported first:
+Expected to load first, even when framework-specific analyzers are still planned:
 
 - class libraries,
 - ASP.NET Core Web API projects,
@@ -37,16 +37,16 @@ Later:
 
 ## Framework support
 
-| Framework/pattern | Roadmap |
+| Framework/pattern | Current status |
 | --- | --- |
-| Direct C# calls | `0.1.0-alpha.1` |
-| ASP.NET Core MVC | `0.2.0-alpha.1` |
-| ASP.NET Core Minimal APIs | `0.2.0-alpha.1` |
-| Microsoft.Extensions.DependencyInjection | `0.2.0-alpha.1` |
-| MediatR | `0.2.0-alpha.1` |
-| MCP server | `0.3.0-alpha.1` |
-| EF Core | `0.4.0-alpha.1` |
-| Reflection/assembly scanning | `0.4.0-alpha.1` |
+| Direct C# calls | Current prototype |
+| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, constructor injection, and source interface implementations; broader coverage planned for `0.2.0-alpha.1` |
+| ASP.NET Core MVC | Planned for `0.2.0-alpha.1` |
+| ASP.NET Core Minimal APIs | Planned for `0.2.0-alpha.1` |
+| MediatR | Planned for `0.2.0-alpha.1` |
+| MCP server | Planned for `0.3.0-alpha.1` |
+| EF Core | Planned for `0.4.0-alpha.1` |
+| Reflection/assembly scanning | Planned for `0.4.0-alpha.1` |
 | Rust/native interop boundaries | Future |
 
 ## Unsupported until documented

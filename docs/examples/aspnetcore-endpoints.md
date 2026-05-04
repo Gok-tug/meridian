@@ -1,6 +1,6 @@
 # Example: ASP.NET Core Endpoints
 
-Meridian should discover both MVC controller actions and Minimal API routes.
+ASP.NET Core endpoint analysis is planned for `0.2.0-alpha.1`. The analyzer should discover both MVC controller actions and Minimal API routes.
 
 ## MVC controller
 

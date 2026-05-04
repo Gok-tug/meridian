@@ -48,7 +48,7 @@ dotnet pack --configuration Release
 Then publish manually after reviewing package contents:
 
 ```bash
-dotnet nuget push artifacts/package/meridian.0.1.0-alpha.1.nupkg --source nuget.org
+dotnet nuget push artifacts/package/meridian.<version>.nupkg --source nuget.org
 ```
 
 The actual API key should never be committed.
@@ -87,7 +87,7 @@ Before publishing:
 Before pushing to NuGet:
 
 ```bash
-dotnet tool install --global --add-source ./artifacts/package meridian --version 0.1.0-alpha.1
+dotnet tool install --global --add-source ./artifacts/package meridian --version <version>
 meridian --help
 dotnet tool uninstall --global meridian
 ```

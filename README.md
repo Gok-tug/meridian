@@ -81,16 +81,23 @@ See [docs/cli.md](docs/cli.md) for the command contract.
 
 The first useful version should focus on application flow, not every possible C# construct.
 
-Planned early analyzer packs:
+Current prototype support:
 
-- Roslyn symbol and direct call analysis
-- ASP.NET Core MVC controllers and Minimal APIs
-- Microsoft.Extensions.DependencyInjection registrations
-- Constructor injection
-- MediatR requests, handlers, `Send`, and `Publish`
+- Roslyn solution/project loading
+- Type and method nodes with `contains` edges
+- Direct method `calls` edges
+- Initial DI `injects`, `registered_as`, and `implemented_by` edges for source-resolved symbols
 - JSON graph export
-- `scan`, `explain`, and direct-call `path` CLI commands
+- `scan`, `explain`, and `path` CLI commands
 - Golden-file analyzer tests
+
+Planned next analyzer work:
+
+- ASP.NET Core MVC controllers and Minimal APIs
+- Expanded Microsoft.Extensions.DependencyInjection registration coverage beyond direct generic registrations
+- MediatR requests, handlers, `Send`, and `Publish`
+- Framework-aware `path` results that combine endpoint, DI, MediatR, and direct-call edges
+- Analyzer execution pipeline boundaries for ordered cross-framework facts
 
 Planned follow-up analyzer packs:
 
@@ -99,6 +106,8 @@ Planned follow-up analyzer packs:
 - MCP server preview
 - Incremental analysis and caching
 - Rust/native interop boundary detection
+
+Not currently implemented: ASP.NET Core endpoint flow, MediatR flow, EF Core flow, MCP server support, full reflection resolution, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -110,7 +119,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.1.0-alpha.1",
+  "generator_version": "0.1.0-alpha.2",
   "nodes": [],
   "edges": []
 }

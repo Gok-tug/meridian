@@ -1,0 +1,221 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.1.0-alpha.2",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository.Load()",
+      "label": "IOrderRepository.Load",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.IOrderRepository.Load()",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L7",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.OrderService.Load()",
+      "label": "OrderService.Load",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.OrderService.Load()",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L27",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+      "label": "ServiceRegistration.Configure",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L35",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository.Load()",
+      "label": "SqlOrderRepository.Load",
+      "kind": "method",
+      "symbol": "Sample.DependencyInjection.SqlOrderRepository.Load()",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L12",
+      "metadata": {}
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
+      "label": "IOrderRepository",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.IOrderRepository",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L5",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "label": "OrderService",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.OrderService",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L18",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.ServiceRegistration",
+      "label": "ServiceRegistration",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.ServiceRegistration",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L33",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository",
+      "label": "SqlOrderRepository",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.SqlOrderRepository",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L10",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "method:Sample.DependencyInjection:Sample.DependencyInjection.OrderService.Load()",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository.Load()",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 29,
+        "symbol": "Sample.DependencyInjection.OrderService.Load()",
+        "reason": "Roslyn resolved invocation '_repository.Load' to 'Sample.DependencyInjection.IOrderRepository.Load()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository.Load()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 7,
+        "symbol": "Sample.DependencyInjection.IOrderRepository",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.IOrderRepository.Load()' in type 'Sample.DependencyInjection.IOrderRepository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 10,
+        "symbol": "Sample.DependencyInjection.SqlOrderRepository",
+        "reason": "Roslyn resolved 'Sample.DependencyInjection.SqlOrderRepository' as an implementation of 'Sample.DependencyInjection.IOrderRepository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 37,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddScoped' from 'Sample.DependencyInjection.IOrderRepository' to 'Sample.DependencyInjection.SqlOrderRepository'."
+      },
+      "metadata": {
+        "lifetime": "scoped"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.OrderService.Load()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 27,
+        "symbol": "Sample.DependencyInjection.OrderService",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.OrderService.Load()' in type 'Sample.DependencyInjection.OrderService'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository",
+      "relation": "injects",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 22,
+        "symbol": "Sample.DependencyInjection.OrderService.OrderService(Sample.DependencyInjection.IOrderRepository repository)",
+        "reason": "Constructor parameter 'repository' injects 'Sample.DependencyInjection.IOrderRepository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 38,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddTransient' from 'Sample.DependencyInjection.OrderService' to 'Sample.DependencyInjection.OrderService'."
+      },
+      "metadata": {
+        "lifetime": "transient"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.ServiceRegistration",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 35,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)' in type 'Sample.DependencyInjection.ServiceRegistration'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository",
+      "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.SqlOrderRepository.Load()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 12,
+        "symbol": "Sample.DependencyInjection.SqlOrderRepository",
+        "reason": "Roslyn declared method 'Sample.DependencyInjection.SqlOrderRepository.Load()' in type 'Sample.DependencyInjection.SqlOrderRepository'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

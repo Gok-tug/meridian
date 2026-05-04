@@ -15,9 +15,20 @@ Analyzers should:
 - keep output deterministic,
 - emit diagnostics when behavior is unsupported or ambiguous.
 
+## Execution order
+
+Framework-aware analysis should run in deterministic passes:
+
+1. Roslyn foundation facts: symbols, locations, type/method nodes, `contains`, direct `calls`, and interface implementations.
+2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, sends, and publishes.
+3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
+4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
+
+DI facts are expected to be consumed by later ASP.NET Core and MediatR linking. Analyzer order should therefore be explicit instead of implied by source traversal or graph insertion order.
+
 ## Roslyn base analyzer
 
-Planned for `0.1.0-alpha.1`.
+Implemented in the current prototype for project loading, type/method nodes, `contains`, and direct `calls` edges.
 
 Responsibilities:
 
@@ -25,6 +36,7 @@ Responsibilities:
 - index symbols,
 - create type and method nodes,
 - extract direct method calls,
+- skip generated/bin/obj source noise by default,
 - map symbols to source locations,
 - provide shared semantic services to other analyzers.
 
@@ -74,7 +86,7 @@ endpoint --uses--> injected_service
 
 ## Dependency Injection analyzer
 
-Planned for `0.2.0-alpha.1`.
+Initial prototype support exists for direct generic registrations, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
 
 Responsibilities:
 

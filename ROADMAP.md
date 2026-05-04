@@ -35,22 +35,50 @@ Scope:
 
 Not in scope:
 
+- type graph enrichment
+- dependency injection flow
 - full ASP.NET Core flow
 - MediatR flow
 - EF Core flow
 - MCP server
 - full reflection resolution
 
-## 0.2.0-alpha.1 — ASP.NET Core, DI, and MediatR flow
+## 0.1.0-alpha.2 — Type graph and DI preview
+
+Goal: make the Roslyn foundation useful for object-oriented and DI-heavy .NET applications before adding larger framework analyzers.
+
+Scope:
+
+- type nodes for source-resolved classes and interfaces
+- `contains` edges from types to ordinary source methods
+- source interface `implemented_by` edges
+- constructor `injects` edges for source class/interface dependencies
+- direct generic DI `registered_as` edges for `AddScoped`, `AddSingleton`, and `AddTransient`
+- generated/bin/obj source filtering by default
+- dependency-injection sample project and golden-file analyzer test
+- CLI `path` traversal over emitted type, call, and DI edges
+
+Not in scope:
+
+- non-generic DI registrations
+- factory registrations
+- keyed services
+- Scrutor or assembly scanning
+- full runtime DI container behavior
+
+## 0.2.0-alpha.1 — ASP.NET Core, expanded DI, and MediatR flow
 
 Goal: make Meridian useful for common real-world .NET application flow.
 
 Scope:
 
+- deterministic analyzer execution pipeline for cross-framework facts
 - ASP.NET Core MVC endpoint analyzer
 - ASP.NET Core Minimal API analyzer
-- Microsoft.Extensions.DependencyInjection registration analyzer
-- constructor injection analyzer
+- expanded Microsoft.Extensions.DependencyInjection analyzer coverage:
+  - non-generic registration overloads where symbols can be resolved
+  - duplicate registrations and diagnostics
+  - service resolution facts reusable by other analyzers
 - MediatR analyzer:
   - `IRequest<TResponse>`
   - `IRequest`
@@ -65,7 +93,7 @@ Scope:
 - sample applications:
   - `SampleApi.MediatR`
   - `SampleApi.MinimalApi`
-- golden-file tests for ASP.NET Core, DI, and MediatR analyzers
+- golden-file tests for ASP.NET Core, expanded DI, and MediatR analyzers
 
 ## 0.3.0-alpha.1 — MCP server preview
 

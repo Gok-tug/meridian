@@ -63,7 +63,7 @@ Meridian should distinguish:
 
 ## Caching strategy
 
-Caching should be introduced before stable release.
+Caching should be introduced before stable release. Before caching exists, Meridian should still preserve cache-friendly boundaries: deterministic node IDs, stable graph ordering, analyzer pass boundaries, and conservative input hashing assumptions.
 
 Potential cache keys:
 

@@ -26,29 +26,32 @@ Analysis can be incomplete when:
 - the solution does not restore,
 - SDKs are missing,
 - custom MSBuild targets fail,
-- generated code is unavailable,
+- needed generated code is filtered or unavailable,
 - projects require environment-specific properties,
 - the loaded target framework differs from the production target.
 
 ## Dependency Injection limits
 
-Direct registrations are reliable:
+Source-resolved direct generic registrations are the currently reliable DI case:
 
 ```csharp
 services.AddScoped<IOrderRepository, EfOrderRepository>();
 ```
 
-Runtime or convention-based registrations may be inferred or ambiguous:
+Runtime, factory, or convention-based registrations may be inferred, ambiguous, or skipped:
 
 ```csharp
+services.AddScoped<IOrderRepository>(_ => new EfOrderRepository());
 services.Scan(scan => scan.FromAssemblies(...));
 ```
 
-Meridian should not claim exact DI behavior when registration depends on runtime assembly contents or external configuration.
+The current prototype only emits constructor injection edges for unambiguous source class constructors. Multiple unmarked constructors and record constructors are not treated as extracted DI facts yet.
+
+Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, factory delegates, ambiguous constructor selection, or external configuration.
 
 ## MediatR limits
 
-Generic request/handler relationships are reliable when source is available.
+MediatR analysis is planned, not part of the current prototype. When implemented, generic request/handler relationships should be reliable when source is available.
 
 Runtime-created requests may be ambiguous:
 
@@ -59,7 +62,7 @@ await mediator.Send(request);
 
 ## Reflection limits
 
-Reflection is often not fully statically resolvable.
+Reflection analysis is planned, not part of the current prototype. Reflection is often not fully statically resolvable.
 
 Reliable:
 
@@ -76,7 +79,7 @@ Activator.CreateInstance(type)
 
 ## EF Core limits
 
-Meridian can detect DbContext and DbSet usage from source symbols.
+EF Core analysis is planned, not part of the current prototype. The planned analyzer should detect DbContext and DbSet usage from source symbols.
 
 It may not know:
 
@@ -91,7 +94,9 @@ It may not know:
 
 Source-generator-heavy projects require special care.
 
-Meridian may initially analyze only source available through Roslyn after project load. Generator output support should be documented per release.
+The current prototype filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
+
+Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option.
 
 ## Native/Rust interop limits
 

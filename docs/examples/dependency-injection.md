@@ -21,9 +21,8 @@ public sealed class GetOrderQueryHandler
 ## Expected graph
 
 ```text
-GetOrderQueryHandler
-  --injects--> IOrderRepository
-  --implemented_by--> EfOrderRepository
+GetOrderQueryHandler --injects--> IOrderRepository
+IOrderRepository --implemented_by--> EfOrderRepository
 ```
 
 Registration edge:

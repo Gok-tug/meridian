@@ -1,6 +1,6 @@
 # Example: MediatR Flow
 
-This example shows the core Meridian use case: connecting an HTTP endpoint to a MediatR request and handler.
+MediatR analysis is planned for `0.2.0-alpha.1`. This example shows the intended core Meridian use case: connecting an HTTP endpoint to a MediatR request and handler.
 
 ## Source pattern
 

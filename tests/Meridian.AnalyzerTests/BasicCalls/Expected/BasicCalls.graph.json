@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.1.0-alpha.1",
+  "generator_version": "0.1.0-alpha.2",
   "root": ".",
   "nodes": [
     {
@@ -21,6 +21,28 @@
       "source_file": "OrderFlow.cs",
       "source_location": "L14",
       "metadata": {}
+    },
+    {
+      "id": "type:Sample.BasicCalls:Sample.BasicCalls.OrderController",
+      "label": "OrderController",
+      "kind": "type",
+      "symbol": "Sample.BasicCalls.OrderController",
+      "source_file": "OrderFlow.cs",
+      "source_location": "L3",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.BasicCalls:Sample.BasicCalls.OrderService",
+      "label": "OrderService",
+      "kind": "type",
+      "symbol": "Sample.BasicCalls.OrderService",
+      "source_file": "OrderFlow.cs",
+      "source_location": "L12",
+      "metadata": {
+        "type_kind": "class"
+      }
     }
   ],
   "edges": [
@@ -35,6 +57,34 @@
         "line": 8,
         "symbol": "Sample.BasicCalls.OrderController.Get()",
         "reason": "Roslyn resolved invocation 'service.Load' to 'Sample.BasicCalls.OrderService.Load()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.BasicCalls:Sample.BasicCalls.OrderController",
+      "target": "method:Sample.BasicCalls:Sample.BasicCalls.OrderController.Get()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "OrderFlow.cs",
+        "line": 5,
+        "symbol": "Sample.BasicCalls.OrderController",
+        "reason": "Roslyn declared method 'Sample.BasicCalls.OrderController.Get()' in type 'Sample.BasicCalls.OrderController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.BasicCalls:Sample.BasicCalls.OrderService",
+      "target": "method:Sample.BasicCalls:Sample.BasicCalls.OrderService.Load()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "OrderFlow.cs",
+        "line": 14,
+        "symbol": "Sample.BasicCalls.OrderService",
+        "reason": "Roslyn declared method 'Sample.BasicCalls.OrderService.Load()' in type 'Sample.BasicCalls.OrderService'."
       },
       "metadata": {}
     }
