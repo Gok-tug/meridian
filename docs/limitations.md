@@ -53,14 +53,16 @@ Meridian should not claim exact DI behavior when registration depends on runtime
 
 The current prototype emits declaration facts for source-resolved MediatR requests, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
 
-MediatR call-site flow is not implemented yet. Runtime-created requests remain ambiguous:
+The current prototype also emits method-level `sends` and `publishes` edges for supported `IMediator`, `ISender`, and `IPublisher` call sites. Supported message resolution is intentionally conservative: inline object creation, in-scope local object creation before the dispatch call, and concrete method parameter static type fallback.
+
+Runtime-created requests remain ambiguous:
 
 ```csharp
 object request = CreateRequestFromRuntimeData();
 await mediator.Send(request);
 ```
 
-Meridian should not claim `Send`, `Publish`, endpoint-to-request flow, or runtime handler discovery until those analyzers exist.
+Meridian should not claim ASP.NET Core endpoint-to-request flow, `CreateStream`, interprocedural request tracking, runtime-created message resolution, direct method-to-handler shortcut edges, or runtime handler discovery until those analyzers exist.
 
 ## Reflection limits
 

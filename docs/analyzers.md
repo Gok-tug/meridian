@@ -20,7 +20,7 @@ Analyzers should:
 Framework-aware analysis should run in deterministic passes:
 
 1. Roslyn foundation facts: symbols, locations, type/method nodes, `contains`, direct `calls`, and interface implementations.
-2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and later sends/publishes.
+2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and MediatR sends/publishes.
 3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
 
@@ -120,19 +120,23 @@ Confidence:
 
 ## MediatR analyzer
 
-Initial declaration support exists in `0.2.0-alpha.1`. `Send` and `Publish` call-site detection remains planned.
+Declaration support exists in `0.2.0-alpha.1`; method-level `Send` and `Publish` call-site support exists in `0.2.0-alpha.2`.
 
 Current responsibilities:
 
 - discover source request, stream request, and notification types,
 - discover source handlers,
 - connect request, stream request, and notification types to handlers,
-- keep `handled_by` edges when a source handler handles a message type from generated or referenced code without an analyzable source location.
+- keep `handled_by` edges when a source handler handles a message type from generated or referenced code without an analyzable source location,
+- detect supported `Send` and `Publish` calls on `IMediator`, `ISender`, and `IPublisher`,
+- connect enclosing source methods to resolved request or notification types.
 
 Planned responsibilities:
 
-- detect `Send` and `Publish` calls,
-- support `IMediator`, `ISender`, and `IPublisher` call sites.
+- endpoint-to-MediatR bridging,
+- `CreateStream` call-site detection,
+- interprocedural request tracking,
+- diagnostics for ambiguous runtime-created messages.
 
 Supported types:
 
@@ -154,26 +158,32 @@ public sealed class WatchOrdersHandler
 }
 ```
 
+Supported call-site patterns:
+
+```csharp
+await mediator.Send(new GetOrderQuery(id), cancellationToken);
+
+var command = new RefreshCacheCommand();
+await sender.Send(command, cancellationToken);
+
+await publisher.Publish(new OrderCreatedNotification(id), cancellationToken);
+```
+
 Current relations:
 
 ```text
+OrderController.Get --sends--> GetOrderQuery
 GetOrderQuery --handled_by--> GetOrderQueryHandler
+OrderService.Save --publishes--> OrderCreatedNotification
 OrderCreatedNotification --handled_by--> OrderCreatedNotificationHandler
-```
-
-Planned relations:
-
-```text
-endpoint --sends--> GetOrderQuery
-publisher --publishes--> OrderCreatedNotification
 ```
 
 Confidence:
 
 - `EXTRACTED` when generic interface arguments identify the handler relationship.
-- Planned: `EXTRACTED` when `Send(new Request(...))` resolves to a request type.
-- Planned: `INFERRED` when request type is inferred through a variable with strong symbol evidence.
-- Planned: `AMBIGUOUS` when runtime type construction prevents a single target.
+- `EXTRACTED` when inline object creation or in-scope local object creation resolves to a request or notification type.
+- `INFERRED` when a concrete method parameter type identifies the dispatched request or notification.
+- `AMBIGUOUS` is reserved for future diagnostics when runtime type construction prevents a single target.
 
 ## EF Core analyzer
 

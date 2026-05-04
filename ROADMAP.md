@@ -8,6 +8,7 @@ Valid alpha versions:
 0.1.0-alpha.1
 0.1.0-alpha.2
 0.2.0-alpha.1
+0.2.0-alpha.2
 0.3.0-alpha.1
 ```
 
@@ -97,12 +98,35 @@ Not in scope:
 - expanded Microsoft.Extensions.DependencyInjection registration coverage
 - framework-aware path results that stitch endpoint, DI, and MediatR call-site edges
 
+## 0.2.0-alpha.2 — MediatR call-site preview
+
+Goal: connect source methods that dispatch MediatR messages to the request or notification types they send.
+
+Scope:
+
+- `IMediator.Send` and `ISender.Send` call-site detection
+- `IMediator.Publish` and `IPublisher.Publish` call-site detection
+- `sends` edges from enclosing methods to request types
+- `publishes` edges from enclosing methods to notification types
+- supported message resolution for inline object creation, in-scope local object creation before dispatch, and concrete parameter static type fallback
+- MediatR dispatcher sample coverage and golden-file analyzer test updates
+- CLI `path` traversal from method/type callers through `sends` or `publishes` into existing `handled_by` edges
+
+Not in scope:
+
+- ASP.NET Core MVC or Minimal API endpoint bridging
+- MediatR `CreateStream`
+- interprocedural request tracking
+- runtime-created request or notification objects
+- direct method-to-handler shortcut edges
+- expanded Microsoft.Extensions.DependencyInjection registration coverage
+
 Follow-up 0.2 alpha work should add:
 
-- `IMediator.Send`, `ISender.Send`, and `IPublisher.Publish` call-site detection
 - ASP.NET Core MVC and Minimal API endpoint analyzers
+- endpoint-to-MediatR flow linking
 - expanded DI coverage for source-resolved non-generic registrations and diagnostics
-- framework-aware path linking across endpoint, DI, MediatR, and direct-call edges
+- framework-aware path ranking across endpoint, DI, MediatR, and direct-call edges
 
 ## 0.3.0-alpha.1 — MCP server preview
 

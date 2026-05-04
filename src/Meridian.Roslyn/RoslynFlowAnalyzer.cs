@@ -45,6 +45,7 @@ public sealed class RoslynFlowAnalyzer
         var directCallAnalyzer = new DirectCallAnalyzer(sourceFilter, graphFactory);
         var dependencyInjectionAnalyzer = new DependencyInjectionAnalyzer(sourceFilter, graphFactory);
         var mediatrDeclarationAnalyzer = new MediatRDeclarationAnalyzer(sourceFilter, graphFactory, mediatrClassifier);
+        var mediatrCallSiteAnalyzer = new MediatRCallSiteAnalyzer(sourceFilter, graphFactory, mediatrClassifier);
 
         var projects = await RoslynProjectLoader.LoadProjectsAsync(workspace, fullPath, cancellationToken);
         foreach (var project in RoslynProjectLoader.SelectProjects(projects, fullPath, options))
@@ -57,6 +58,7 @@ public sealed class RoslynFlowAnalyzer
                 directCallAnalyzer,
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
+                mediatrCallSiteAnalyzer,
                 cancellationToken);
         }
 
@@ -71,6 +73,7 @@ public sealed class RoslynFlowAnalyzer
         DirectCallAnalyzer directCallAnalyzer,
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
+        MediatRCallSiteAnalyzer mediatrCallSiteAnalyzer,
         CancellationToken cancellationToken)
     {
         var compilation = await project.GetCompilationAsync(cancellationToken);
@@ -96,6 +99,7 @@ public sealed class RoslynFlowAnalyzer
                 directCallAnalyzer,
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
+                mediatrCallSiteAnalyzer,
                 cancellationToken);
         }
     }
@@ -107,6 +111,7 @@ public sealed class RoslynFlowAnalyzer
         DirectCallAnalyzer directCallAnalyzer,
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
+        MediatRCallSiteAnalyzer mediatrCallSiteAnalyzer,
         CancellationToken cancellationToken)
     {
         var root = await document.GetSyntaxRootAsync(cancellationToken);
@@ -132,6 +137,7 @@ public sealed class RoslynFlowAnalyzer
             cancellationToken.ThrowIfCancellationRequested();
             directCallAnalyzer.Analyze(invocation, semanticModel, graph, cancellationToken);
             dependencyInjectionAnalyzer.AnalyzeRegistration(invocation, semanticModel, graph, cancellationToken);
+            mediatrCallSiteAnalyzer.Analyze(invocation, semanticModel, graph, cancellationToken);
         }
     }
 }

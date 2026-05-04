@@ -1,8 +1,8 @@
 # Example: MediatR Flow
 
-MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`.
+MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`. Method-level `Send` and `Publish` call-site analysis is available as a preview in `0.2.0-alpha.2`.
 
-The current prototype connects source request, stream request, and notification types to source handler types through generic MediatR interfaces. Handled message types can come from generated or referenced code, though their graph nodes may not have source metadata. It does not yet detect `Send`, `Publish`, or endpoint-to-request flow.
+The current prototype connects source request, stream request, and notification types to source handler types through generic MediatR interfaces. It also connects supported source methods that dispatch MediatR messages to the resolved request or notification type. Handled message nodes can come from generated or referenced code, though their graph nodes may not have source metadata.
 
 ## Source pattern
 
@@ -22,15 +22,30 @@ public sealed class OrderUpdatedNotificationHandler
 {
     public Task Handle(OrderUpdatedNotification notification, CancellationToken cancellationToken) { ... }
 }
+
+public sealed class OrderDispatchSamples
+{
+    public async Task<OrderDto> DispatchInlineRequest(IMediator mediator, CancellationToken cancellationToken)
+    {
+        return await mediator.Send(new GetOrderQuery(Guid.NewGuid()), cancellationToken);
+    }
+
+    public async Task PublishInlineNotification(IPublisher publisher, CancellationToken cancellationToken)
+    {
+        await publisher.Publish(new OrderUpdatedNotification(Guid.NewGuid()), cancellationToken);
+    }
+}
 ```
 
 ## Current graph
 
 ```text
-GetOrderQuery
+OrderDispatchSamples.DispatchInlineRequest
+  --sends--> GetOrderQuery
   --handled_by--> GetOrderQueryHandler
 
-OrderUpdatedNotification
+OrderDispatchSamples.PublishInlineNotification
+  --publishes--> OrderUpdatedNotification
   --handled_by--> OrderUpdatedNotificationHandler
 ```
 
@@ -41,15 +56,21 @@ Conceptual edge shape; real node IDs include the assembly name and fully qualifi
 ```json
 [
   {
+    "source": "method:MyApp.OrderDispatchSamples.DispatchInlineRequest",
+    "target": "type:MyApp.GetOrderQuery",
+    "relation": "sends",
+    "confidence": "EXTRACTED"
+  },
+  {
     "source": "type:MyApp.GetOrderQuery",
     "target": "type:MyApp.GetOrderQueryHandler",
     "relation": "handled_by",
     "confidence": "EXTRACTED"
   },
   {
-    "source": "type:MyApp.OrderUpdatedNotification",
-    "target": "type:MyApp.OrderUpdatedNotificationHandler",
-    "relation": "handled_by",
+    "source": "method:MyApp.OrderDispatchSamples.PublishInlineNotification",
+    "target": "type:MyApp.OrderUpdatedNotification",
+    "relation": "publishes",
     "confidence": "EXTRACTED"
   }
 ]
@@ -58,31 +79,29 @@ Conceptual edge shape; real node IDs include the assembly name and fully qualifi
 ## CLI
 
 ```bash
-meridian path "GetOrderQuery" "GetOrderQueryHandler"
+meridian path "DispatchInlineRequest" "GetOrderQueryHandler"
 ```
 
 Abridged expected output:
 
 ```text
-GetOrderQuery
-  --handled_by--> GetOrderQueryHandler
-```
-
-## Planned flow
-
-A later analyzer should connect endpoint or application call sites to MediatR messages:
-
-```csharp
-app.MapGet("/orders/{id}", async (Guid id, ISender sender) =>
-{
-    return await sender.Send(new GetOrderQuery(id));
-});
-```
-
-Planned graph:
-
-```text
-GET /orders/{id}
+OrderDispatchSamples.DispatchInlineRequest
   --sends--> GetOrderQuery
   --handled_by--> GetOrderQueryHandler
 ```
+
+## Current limits
+
+Supported call-site resolution is intentionally conservative:
+
+- inline object creation,
+- in-scope local object creation before the dispatch call,
+- concrete request or notification method parameter static type fallback.
+
+Not yet supported:
+
+- ASP.NET Core endpoint-to-request bridging,
+- MediatR `CreateStream`,
+- interprocedural request tracking,
+- runtime-created request or notification objects,
+- direct method-to-handler shortcut edges.

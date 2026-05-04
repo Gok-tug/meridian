@@ -21,6 +21,7 @@ Examples:
 - Roslyn resolves a method call target.
 - A class implements `IRequestHandler<GetOrderQuery, OrderDto>`.
 - A method calls `sender.Send(new GetOrderQuery(...))` and Roslyn resolves the request type.
+- An in-scope local `var query = new GetOrderQuery(...); await sender.Send(query);` resolves to one request type before reassignment.
 - `services.AddScoped<IOrderRepository, EfOrderRepository>()` directly maps an abstraction to an implementation.
 - A controller action has `[HttpGet("/orders/{id}")]`.
 - A property is declared as `DbSet<Order>`.
@@ -40,7 +41,7 @@ Examples:
 
 - Scrutor assembly scanning likely registers implementations by convention.
 - MediatR assembly registration implies handlers may be discovered at runtime.
-- A variable's static type strongly implies the request or service target.
+- A concrete MediatR message parameter type strongly implies the request or notification target.
 - Configuration binding implies an options type.
 - Reflection uses constrained type filters such as `IsAssignableFrom`.
 
@@ -110,7 +111,7 @@ Example:
 | Roslyn direct calls | resolved invocation symbol | constrained static type inference | dynamic target |
 | ASP.NET Core | route attributes and Map methods | route conventions | runtime route construction |
 | Dependency Injection | direct generic registration | convention/scanning registration | broad runtime scanning |
-| MediatR | generic request/handler match | variable-based request inference | runtime-created request |
+| MediatR | generic request/handler match; inline or in-scope local object creation dispatch | concrete parameter type dispatch fallback | runtime-created request |
 | EF Core | DbSet and DbContext symbols | repository/entity naming patterns | dynamic Set(Type) |
 | Reflection | typeof/nameof constant target | constrained scan | runtime string/type |
 | Native interop | DllImport/LibraryImport constant | generated binding hints | runtime library name |

@@ -19,6 +19,22 @@ public interface IStreamRequest<out TResponse>
 {
 }
 
+public interface IMediator : ISender, IPublisher
+{
+}
+
+public interface ISender
+{
+    Task Send(IRequest request, CancellationToken cancellationToken = default);
+
+    Task<TResponse> Send<TResponse>(IRequest<TResponse> request, CancellationToken cancellationToken = default);
+}
+
+public interface IPublisher
+{
+    Task Publish(INotification notification, CancellationToken cancellationToken = default);
+}
+
 public interface IRequestHandler<in TRequest>
     where TRequest : IRequest
 {

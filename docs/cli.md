@@ -77,13 +77,19 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, and MediatR declaration `handled_by` edges when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, and MediatR `sends`, `publishes`, and `handled_by` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"
 ```
 
-Framework-aware expected output once planned endpoint, MediatR, and EF Core analyzers exist:
+Current MediatR method-level paths can already traverse dispatch and handler edges:
+
+```bash
+meridian path "DispatchInlineRequest" "GetOrderQueryHandler"
+```
+
+Framework-aware expected output once planned endpoint and EF Core analyzers exist:
 
 ```text
 GET /orders/{id}

@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.2.0-alpha.1",
+  "generator_version": "0.2.0-alpha.2",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -51,7 +51,7 @@ Recommended fields:
 
 ```json
 {
-  "source": "endpoint:GET:/orders/{id}",
+  "source": "method:MyApp.Features.Orders.OrderController.GetById(System.Guid id)",
   "target": "type:MyApp.Features.Orders.GetOrderQuery",
   "relation": "sends",
   "confidence": "EXTRACTED",
@@ -59,8 +59,8 @@ Recommended fields:
   "evidence": {
     "file": "Controllers/OrdersController.cs",
     "line": 42,
-    "symbol": "MyApp.Controllers.OrdersController.GetById",
-    "reason": "IMediator.Send(new GetOrderQuery(...))"
+    "symbol": "MyApp.Features.Orders.OrderController.GetById(System.Guid id)",
+    "reason": "Roslyn resolved MediatR Send call to 'MyApp.Features.Orders.GetOrderQuery' from inline object creation."
   },
   "metadata": {}
 }
@@ -142,8 +142,8 @@ Relation meanings:
 | `calls` | Direct method invocation resolved by Roslyn |
 | `uses` | Symbol, type, service, or DbContext usage |
 | `creates` | Object creation expression |
-| `sends` | MediatR request send |
-| `publishes` | MediatR notification publish |
+| `sends` | Method or endpoint dispatches a MediatR request |
+| `publishes` | Method or endpoint publishes a MediatR notification |
 | `handled_by` | Message/request handled by handler type |
 | `registered_as` | DI registration maps abstraction to implementation |
 | `injects` | Constructor or parameter injection dependency |

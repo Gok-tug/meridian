@@ -22,19 +22,38 @@ internal sealed class MediatRSymbolClassifier
             return GraphNodeKinds.MediatRHandler;
         }
 
-        if (ImplementsMediatRInterface(typeSymbol, RequestInterface) ||
-            ImplementsMediatRInterface(typeSymbol, GenericRequestInterface) ||
-            ImplementsMediatRInterface(typeSymbol, StreamRequestInterface))
+        if (IsRequestLikeType(typeSymbol))
         {
             return GraphNodeKinds.MediatRRequest;
         }
 
-        if (ImplementsMediatRInterface(typeSymbol, NotificationInterface))
+        if (IsNotificationType(typeSymbol))
         {
             return GraphNodeKinds.MediatRNotification;
         }
 
         return GraphNodeKinds.Type;
+    }
+
+    public bool IsRequestType(INamedTypeSymbol typeSymbol)
+    {
+        return ImplementsMediatRInterface(typeSymbol, RequestInterface) ||
+            ImplementsMediatRInterface(typeSymbol, GenericRequestInterface);
+    }
+
+    public bool IsStreamRequestType(INamedTypeSymbol typeSymbol)
+    {
+        return ImplementsMediatRInterface(typeSymbol, StreamRequestInterface);
+    }
+
+    public bool IsRequestLikeType(INamedTypeSymbol typeSymbol)
+    {
+        return IsRequestType(typeSymbol) || IsStreamRequestType(typeSymbol);
+    }
+
+    public bool IsNotificationType(INamedTypeSymbol typeSymbol)
+    {
+        return ImplementsMediatRInterface(typeSymbol, NotificationInterface);
     }
 
     public IEnumerable<MediatRHandledMessage> GetHandledMessages(INamedTypeSymbol handlerSymbol)
