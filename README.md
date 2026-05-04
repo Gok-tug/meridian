@@ -18,6 +18,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.2.0-alpha.1
 0.2.0-alpha.2
 0.2.0-alpha.3
+0.3.0-alpha.1
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -49,13 +50,13 @@ GET /orders/{id}
 - Agent ready: produce graph data that humans, CLIs, and MCP-enabled AI agents can query.
 - Extensible: analyzer packs should plug into a shared graph model rather than being hard-coded into one monolith.
 
-## Planned CLI
+## CLI
 
 ```bash
 meridian scan MyApp.sln
 meridian explain "GetOrderQuery"
 meridian path "GET /orders/{id}" "OrderDbContext"
-meridian query "which endpoints can reach OrderDbContext?"
+meridian mcp --graph meridian-out/graph.json
 ```
 
 The `path` command is a core use case. It finds and explains an application-flow route between two symbols, routes, files, or graph nodes.
@@ -91,12 +92,9 @@ Current prototype support:
 - DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - JSON graph export
-- `scan`, `explain`, and `path` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- Golden-file analyzer tests
-
-Planned next product work:
-
-- MCP server preview for agent graph queries in `0.3.0-alpha.1`
+- `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, stale-graph notes, and endpoint/EF/reflection limitation reporting
+- Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up analyzer work:
 
@@ -108,7 +106,7 @@ Planned follow-up analyzer work:
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, MCP server support, full reflection resolution, broad DI factory/dataflow analysis, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, full reflection resolution, broad DI factory/dataflow analysis, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -120,7 +118,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.2.0-alpha.3",
+  "generator_version": "0.3.0-alpha.1",
   "nodes": [],
   "edges": []
 }

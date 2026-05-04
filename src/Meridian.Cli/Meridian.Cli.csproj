@@ -5,6 +5,7 @@
     <ProjectReference Include="..\Meridian.Core\Meridian.Core.csproj" />
     <ProjectReference Include="..\Meridian.Roslyn\Meridian.Roslyn.csproj" />
     <ProjectReference Include="..\Meridian.Exporters.Json\Meridian.Exporters.Json.csproj" />
+    <ProjectReference Include="..\Meridian.Mcp\Meridian.Mcp.csproj" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -13,7 +14,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>meridian</PackageId>
-    <Version>0.2.0-alpha.3</Version>
+    <Version>0.3.0-alpha.1</Version>
     <Authors>.FANKI</Authors>
     <Description>Meridian — semantic .NET application-flow graph generator for Roslyn, DI, MediatR, reflection, and AI agents.</Description>
     <PackageTags>dotnet;roslyn;code-analysis;flow-graph;mcp;mediatr;aspnetcore</PackageTags>

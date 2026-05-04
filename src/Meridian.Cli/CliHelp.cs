@@ -15,11 +15,13 @@ internal static class CliHelp
         Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests]");
         Console.WriteLine("  meridian explain <node-or-symbol> [--graph <graph.json>]");
         Console.WriteLine("  meridian path <source> <target> [--graph <graph.json>]");
+        Console.WriteLine("  meridian mcp --graph <graph.json>");
         Console.WriteLine();
         Console.WriteLine("Commands:");
         Console.WriteLine("  scan      Build meridian-out/graph.json from a .csproj, .sln, or .slnx file.");
         Console.WriteLine("  explain   Explain a graph node from graph.json.");
         Console.WriteLine("  path      Find a direct-call path between two graph nodes.");
+        Console.WriteLine("  mcp       Start a local MCP server over a generated graph.json file.");
     }
 
     public static void PrintScan()
@@ -48,5 +50,14 @@ internal static class CliHelp
         Console.WriteLine();
         Console.WriteLine("Examples:");
         Console.WriteLine("  meridian path \"OrderController.Get\" \"OrderService.Load\" --graph meridian-out/graph.json");
+    }
+
+    public static void PrintMcp()
+    {
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  meridian mcp --graph <graph.json>");
+        Console.WriteLine();
+        Console.WriteLine("Examples:");
+        Console.WriteLine("  meridian mcp --graph meridian-out/graph.json");
     }
 }

@@ -10,7 +10,7 @@ Commands should be deterministic, scriptable, and able to return either human-re
 meridian scan <solution-or-project>
 meridian explain <node-or-symbol>
 meridian path <source> <target>
-meridian query <question>
+meridian mcp --graph <graph.json>
 ```
 
 ## `meridian scan`
@@ -170,23 +170,19 @@ If either endpoint query is ambiguous, Meridian reports the source or target amb
 No path found from "GET /orders/{id}" to "OrderDbContext".
 ```
 
-## `meridian query`
+## `meridian mcp`
 
-Runs a graph query. Early versions may use structured graph search only. Later versions may support natural-language query through MCP or agent integration.
+Starts a local MCP server over an existing generated graph file.
 
 ```bash
-meridian query "which endpoints can reach OrderDbContext?"
+meridian mcp --graph meridian-out/graph.json
 ```
 
-Expected answer shape:
+The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
 
-```text
-3 entrypoints can reach OrderDbContext:
+The graph is not updated live. If source code changes, rerun `meridian scan` before relying on MCP tool results for the changed code.
 
-- GET /orders/{id}
-- POST /orders
-- DELETE /orders/{id}
-```
+See [mcp.md](mcp.md) for tool contracts, truncation behavior, schema discovery, and limitations.
 
 ## Exit codes
 

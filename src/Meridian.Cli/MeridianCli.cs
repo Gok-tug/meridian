@@ -16,6 +16,7 @@ internal static class MeridianCli
             "scan" => await ScanCommand.RunAsync(args[1..]),
             "explain" => await ExplainCommand.RunAsync(args[1..]),
             "path" => await PathCommand.RunAsync(args[1..]),
+            "mcp" => await McpCommand.RunAsync(args[1..]),
             _ => UnknownCommand(command)
         };
     }

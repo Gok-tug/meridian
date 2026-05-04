@@ -162,6 +162,7 @@ Scope:
 - `Meridian.Mcp` package/project
 - local MCP server over generated graph files
 - initial MCP tools:
+  - `get_schema`
   - `query_graph`
   - `get_node`
   - `get_neighbors`

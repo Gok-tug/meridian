@@ -146,7 +146,7 @@ Exporters convert the graph into external formats:
 
 ### Meridian.Mcp
 
-Provides MCP tools over a generated Meridian graph. This should be introduced early as `0.3.0-alpha.1` because AI-agent integration is a primary use case.
+Provides MCP tools over a generated Meridian graph. The `0.3.0-alpha.1` preview reads precomputed `graph.json` files and exposes agent-safe graph queries without running Roslyn live during tool calls.
 
 ## Analyzer contract
 

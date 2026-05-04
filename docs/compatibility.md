@@ -44,7 +44,7 @@ Later:
 | ASP.NET Core MVC | Planned for a later alpha milestone |
 | ASP.NET Core Minimal APIs | Planned for a later alpha milestone |
 | MediatR | Current preview for source request/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
-| MCP server | Planned for `0.3.0-alpha.1` |
+| MCP server | Current preview in `0.3.0-alpha.1` over generated `graph.json` files; no live Roslyn scan during MCP calls |
 | EF Core | Planned for `0.4.0-alpha.1` |
 | Reflection/assembly scanning | Planned for `0.4.0-alpha.1` |
 | Rust/native interop boundaries | Future |
