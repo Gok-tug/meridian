@@ -37,12 +37,18 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP `reload_graph` support so a running MCP server can reread the configured graph file after `meridian scan` regenerates it.
 - Agent playbook guidance for MCP freshness, node ID resolution, truncation, and unsupported analyzer limitations.
 - MCP tool tests over in-memory fixture graphs.
+- MCP graph load limits for graph JSON size, node count, edge count, and diagnostic count.
+- Process-level CLI tests for help, usage errors, scan smoke output, and scan trust-boundary behavior.
+- GitHub Actions CI for restore, build, test, format, vulnerability, and pack checks.
 
 ### Changed
 
 - Split the Roslyn analyzer internals into focused loading, source filtering, graph factory, direct-call, type-declaration, and DI analyzer components.
 - Updated the prototype generator/package version to `0.3.0-alpha.2` for MCP freshness and agent-hardening output.
 - Revised the roadmap with `0.3.0-alpha.2` as MCP freshness and agent-hardening work before EF Core/reflection analyzer expansion.
+- `query_graph` now returns empty edge results when a requested node filter matches no nodes instead of broad relation results.
+- MCP required blank inputs now return structured `invalid_input` responses instead of unstructured argument exceptions.
+- `meridian scan` now makes the MSBuild project-evaluation trust boundary explicit and supports `--trust-project` to suppress the warning for trusted repositories.
 
 ## 0.1.0-alpha.1 — Planned
 

@@ -24,6 +24,15 @@ public sealed class RoslynFlowAnalyzer
 
         var rootDirectory = Path.GetDirectoryName(fullPath) ?? Environment.CurrentDirectory;
         var graph = new GraphBuilder();
+        if (options.EmitMsBuildTrustBoundaryDiagnostic)
+        {
+            graph.AddDiagnostic(new GraphDiagnostic
+            {
+                Id = "MERIDIAN_MSBUILD_TRUST_BOUNDARY",
+                Severity = "warning",
+                Message = "Meridian scan uses MSBuildWorkspace to evaluate project and solution files. Scan only repositories you trust or run Meridian inside a sandbox."
+            });
+        }
 
         MSBuildRegistration.EnsureRegistered();
 

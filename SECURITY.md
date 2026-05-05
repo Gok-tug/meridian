@@ -28,6 +28,8 @@ Meridian should:
 - avoid writing outside the configured output directory,
 - redact or skip sensitive files when future file scanning features are added.
 
+Current `scan` uses Roslyn `MSBuildWorkspace` to load project and solution files, which crosses an MSBuild project-evaluation boundary. Scan repositories you trust, or run Meridian inside an external sandbox when analyzing untrusted code. The CLI prints this warning unless `--trust-project` is passed.
+
 ## Out of scope
 
 The following are usually not security vulnerabilities by themselves:

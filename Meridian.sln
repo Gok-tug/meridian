@@ -33,6 +33,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meridian.Mcp", "src\Meridia
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meridian.Mcp.Tests", "tests\Meridian.Mcp.Tests\Meridian.Mcp.Tests.csproj", "{FB784308-68B4-4F70-88BA-60AEAE2AAE1B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meridian.Cli.Tests", "tests\Meridian.Cli.Tests\Meridian.Cli.Tests.csproj", "{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -187,6 +189,18 @@ Global
 		{FB784308-68B4-4F70-88BA-60AEAE2AAE1B}.Release|x64.Build.0 = Release|Any CPU
 		{FB784308-68B4-4F70-88BA-60AEAE2AAE1B}.Release|x86.ActiveCfg = Release|Any CPU
 		{FB784308-68B4-4F70-88BA-60AEAE2AAE1B}.Release|x86.Build.0 = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|x64.Build.0 = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Debug|x86.Build.0 = Debug|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|x64.ActiveCfg = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|x64.Build.0 = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|x86.ActiveCfg = Release|Any CPU
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,5 +218,6 @@ Global
 		{DBA594C5-30FE-46EB-A82C-7B2FC51687AA} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{799C0055-4C51-436B-B52F-F43327BB1AE6} = {827E0CD3-B72D-47B6-A68D-7590B98EB39B}
 		{FB784308-68B4-4F70-88BA-60AEAE2AAE1B} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
+		{C1CEDE63-8F0A-41B9-A537-DAE319060BEF} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

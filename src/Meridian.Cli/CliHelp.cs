@@ -12,7 +12,7 @@ internal static class CliHelp
         Console.WriteLine("Meridian — semantic .NET application-flow graph generator");
         Console.WriteLine();
         Console.WriteLine("Usage:");
-        Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests]");
+        Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests] [--trust-project]");
         Console.WriteLine("  meridian explain <node-or-symbol> [--graph <graph.json>]");
         Console.WriteLine("  meridian path <source> <target> [--graph <graph.json>]");
         Console.WriteLine("  meridian mcp --graph <graph.json>");
@@ -27,11 +27,16 @@ internal static class CliHelp
     public static void PrintScan()
     {
         Console.WriteLine("Usage:");
-        Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests]");
+        Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests] [--trust-project]");
+        Console.WriteLine();
+        Console.WriteLine("Options:");
+        Console.WriteLine("  --output, -o       Output directory for graph.json.");
+        Console.WriteLine("  --include-tests    Include likely test projects when scanning a solution.");
+        Console.WriteLine("  --trust-project    Suppress the MSBuild trust-boundary warning for repositories you trust.");
         Console.WriteLine();
         Console.WriteLine("Examples:");
-        Console.WriteLine("  meridian scan samples/Sample.BasicCalls/Sample.BasicCalls.csproj");
-        Console.WriteLine("  meridian scan MyApp.sln --output meridian-out");
+        Console.WriteLine("  meridian scan samples/Sample.BasicCalls/Sample.BasicCalls.csproj --trust-project");
+        Console.WriteLine("  meridian scan MyApp.sln --output meridian-out --trust-project");
     }
 
     public static void PrintExplain()

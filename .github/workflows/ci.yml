@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore
+        run: dotnet restore Meridian.sln
+
+      - name: Build
+        run: dotnet build Meridian.sln --configuration Release --no-restore -warnaserror
+
+      - name: Test
+        run: dotnet test Meridian.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Format check
+        run: dotnet format Meridian.sln --verify-no-changes --no-restore
+
+      - name: Vulnerability check
+        shell: pwsh
+        run: |
+          $json = dotnet list Meridian.sln package --vulnerable --include-transitive --format json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $report = $json | ConvertFrom-Json
+          $vulnerablePackages = @()
+          foreach ($project in @($report.projects)) {
+            foreach ($framework in @($project.frameworks)) {
+              foreach ($package in @($framework.topLevelPackages) + @($framework.transitivePackages)) {
+                if ($null -ne $package -and $null -ne $package.vulnerabilities -and @($package.vulnerabilities).Count -gt 0) {
+                  $vulnerablePackages += "$($project.path): $($package.id) $($package.resolvedVersion)"
+                }
+              }
+            }
+          }
+          if ($vulnerablePackages.Count -gt 0) {
+            $vulnerablePackages | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
+          Write-Host "No vulnerable packages found."
+
+      - name: Pack CLI tool
+        run: dotnet pack src/Meridian.Cli/Meridian.Cli.csproj --configuration Release --no-build --output artifacts/package

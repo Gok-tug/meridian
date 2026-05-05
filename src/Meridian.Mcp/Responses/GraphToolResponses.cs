@@ -31,7 +31,8 @@ public sealed record GraphSearchResponse(
     bool Truncated,
     string? TruncationNote,
     string? Limitation = null,
-    IReadOnlyList<CandidateDto>? Candidates = null);
+    IReadOnlyList<CandidateDto>? Candidates = null,
+    string? Message = null);
 
 public sealed record PathResponse(
     string Status,

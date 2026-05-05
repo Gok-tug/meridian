@@ -21,12 +21,20 @@ Builds a Meridian graph from a solution or project.
 meridian scan MyApp.sln
 ```
 
-Planned options:
+Current options:
 
 ```bash
 meridian scan MyApp.sln --output meridian-out
-meridian scan MyApp.sln --format json
 meridian scan MyApp.sln --include-tests
+meridian scan MyApp.sln --trust-project
+```
+
+`scan` uses Roslyn `MSBuildWorkspace`, which evaluates project and solution files. By default Meridian prints an MSBuild trust-boundary warning and records a warning diagnostic in `graph.json`. Pass `--trust-project` only for repositories you trust, or run scans inside an external sandbox.
+
+Planned options:
+
+```bash
+meridian scan MyApp.sln --format json
 meridian scan MyApp.sln --analyzers aspnetcore,di,mediatr  # planned
 meridian scan MyApp.sln --no-restore                       # planned
 ```

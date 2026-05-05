@@ -5,6 +5,8 @@ namespace Meridian.Cli;
 
 internal static class ScanCommand
 {
+    private const string TrustProjectWarning = "WARNING: meridian scan uses MSBuild project evaluation. Scan only repositories you trust or run inside a sandbox. Pass --trust-project to suppress this warning.";
+
     public static async Task<int> RunAsync(string[] args)
     {
         if (args.Length == 0 || CliHelp.IsHelp(args[0]))
@@ -16,6 +18,7 @@ internal static class ScanCommand
         var inputPath = args[0];
         var outputDirectory = "meridian-out";
         var includeTests = false;
+        var trustProject = false;
 
         for (var i = 1; i < args.Length; i++)
         {
@@ -32,14 +35,29 @@ internal static class ScanCommand
                 continue;
             }
 
+            if (arg == "--trust-project")
+            {
+                trustProject = true;
+                continue;
+            }
+
             Console.Error.WriteLine($"Unknown or incomplete option: {arg}");
             return CliExitCodes.Usage;
         }
 
         try
         {
+            if (!trustProject)
+            {
+                Console.Error.WriteLine(TrustProjectWarning);
+            }
+
             var analyzer = new RoslynFlowAnalyzer();
-            var graph = await analyzer.AnalyzeAsync(inputPath, new RoslynFlowAnalysisOptions { IncludeTests = includeTests });
+            var graph = await analyzer.AnalyzeAsync(inputPath, new RoslynFlowAnalysisOptions
+            {
+                IncludeTests = includeTests,
+                EmitMsBuildTrustBoundaryDiagnostic = !trustProject
+            });
             var outputPath = Path.Combine(outputDirectory, "graph.json");
             await JsonGraphExporter.WriteAsync(graph, outputPath);
 

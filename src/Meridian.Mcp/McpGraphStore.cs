@@ -52,11 +52,21 @@ public sealed class McpGraphStore
         ArgumentNullException.ThrowIfNull(options);
         ArgumentException.ThrowIfNullOrWhiteSpace(options.GraphPath);
 
+        var file = new FileInfo(options.GraphPath);
+        if (!file.Exists)
+        {
+            throw new FileNotFoundException("Graph file was not found.", options.GraphPath);
+        }
+
+        if (options.MaxGraphJsonBytes > 0 && file.Length > options.MaxGraphJsonBytes)
+        {
+            throw new InvalidOperationException($"Graph JSON file is {file.Length} bytes, exceeding configured limit of {options.MaxGraphJsonBytes} bytes.");
+        }
+
         var json = await File.ReadAllTextAsync(options.GraphPath, cancellationToken);
-        McpGraphValidator.ValidateJsonShape(json);
+        McpGraphValidator.ValidateJsonShape(json, options);
         var graph = JsonGraphExporter.Deserialize(json);
-        var fileLastWriteTime = File.GetLastWriteTimeUtc(options.GraphPath);
-        return new McpGraphContext(graph, options, DateTimeOffset.UtcNow, new DateTimeOffset(fileLastWriteTime, TimeSpan.Zero), options.GraphPath);
+        return new McpGraphContext(graph, options, DateTimeOffset.UtcNow, new DateTimeOffset(file.LastWriteTimeUtc, TimeSpan.Zero), options.GraphPath);
     }
 }
 

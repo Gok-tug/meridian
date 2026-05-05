@@ -15,8 +15,10 @@ internal static class McpGraphValidator
         "diagnostics"
     ];
 
-    public static void ValidateJsonShape(string json)
+    public static void ValidateJsonShape(string json, MeridianMcpServerOptions options)
     {
+        ArgumentNullException.ThrowIfNull(options);
+
         using var document = JsonDocument.Parse(json);
         if (document.RootElement.ValueKind != JsonValueKind.Object)
         {
@@ -34,14 +36,18 @@ internal static class McpGraphValidator
         RequireString(document.RootElement, "schema_version");
         RequireString(document.RootElement, "generator");
         RequireString(document.RootElement, "generator_version");
-        RequireArray(document.RootElement, "nodes");
-        RequireArray(document.RootElement, "edges");
-        RequireArray(document.RootElement, "diagnostics");
+        var nodes = RequireArray(document.RootElement, "nodes");
+        var edges = RequireArray(document.RootElement, "edges");
+        var diagnostics = RequireArray(document.RootElement, "diagnostics");
+        EnsureCountWithinLimit("nodes", nodes.GetArrayLength(), options.MaxGraphNodes);
+        EnsureCountWithinLimit("edges", edges.GetArrayLength(), options.MaxGraphEdges);
+        EnsureCountWithinLimit("diagnostics", diagnostics.GetArrayLength(), options.MaxGraphDiagnostics);
     }
 
-    public static void Validate(GraphDocument graph)
+    public static void Validate(GraphDocument graph, MeridianMcpServerOptions options)
     {
         ArgumentNullException.ThrowIfNull(graph);
+        ArgumentNullException.ThrowIfNull(options);
 
         if (string.IsNullOrWhiteSpace(graph.SchemaVersion))
         {
@@ -77,6 +83,10 @@ internal static class McpGraphValidator
         {
             throw new InvalidOperationException("Graph diagnostics collection is missing.");
         }
+
+        EnsureCountWithinLimit("nodes", graph.Nodes.Count, options.MaxGraphNodes);
+        EnsureCountWithinLimit("edges", graph.Edges.Count, options.MaxGraphEdges);
+        EnsureCountWithinLimit("diagnostics", graph.Diagnostics.Count, options.MaxGraphDiagnostics);
 
         var nodeIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var node in graph.Nodes)
@@ -165,11 +175,22 @@ internal static class McpGraphValidator
         }
     }
 
-    private static void RequireArray(JsonElement root, string propertyName)
+    private static JsonElement RequireArray(JsonElement root, string propertyName)
     {
-        if (root.GetProperty(propertyName).ValueKind != JsonValueKind.Array)
+        var value = root.GetProperty(propertyName);
+        if (value.ValueKind != JsonValueKind.Array)
         {
             throw new InvalidOperationException($"Graph JSON property '{propertyName}' must be an array.");
+        }
+
+        return value;
+    }
+
+    private static void EnsureCountWithinLimit(string collectionName, int count, int limit)
+    {
+        if (limit > 0 && count > limit)
+        {
+            throw new InvalidOperationException($"Graph {collectionName} count is {count}, exceeding configured limit of {limit}.");
         }
     }
 }
