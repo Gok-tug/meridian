@@ -98,7 +98,7 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, MediatR `sends`, `publishes`, and `handled_by`, EF Core `queries`, and reflection `reflects` edges when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, MediatR `sends`, `publishes`, and `handled_by`, EF Core `queries` and `writes`, and reflection `reflects` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"
@@ -120,6 +120,7 @@ GET /orders/{id}
   --implemented_by--> EfOrderRepository
   --uses--> OrderDbContext
   --queries--> Order
+  --writes--> Order
 ```
 
 The command should include confidence and evidence when verbose output is requested:

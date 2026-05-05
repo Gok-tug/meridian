@@ -12,5 +12,6 @@ public static class GraphRelations
     public const string Sends = "sends";
     public const string Publishes = "publishes";
     public const string Queries = "queries";
+    public const string Writes = "writes";
     public const string Reflects = "reflects";
 }

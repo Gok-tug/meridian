@@ -103,11 +103,15 @@ Input parameters:
   "direction": "Outgoing",
   "source": "GetOrderQuery",
   "target": "GetOrderQueryHandler",
-  "maxResults": 50
+  "maxResults": 50,
+  "includeEvidence": false,
+  "excludeRelations": ["contains"]
 }
 ```
 
 All fields are optional. Agents should combine filters instead of asking broad natural-language questions.
+
+Bulk edge responses omit evidence by default to protect the agent context window. Set `includeEvidence` to `true` when the file, line, symbol, and reason are needed. Use `excludeRelations` to keep structural edges such as `contains` from consuming broad result caps.
 
 Unsupported natural-language text returns a limitation with suggested typed parameters rather than trying to guess intent.
 
@@ -139,7 +143,9 @@ Input:
   "direction": "Both",
   "depth": 1,
   "relation": "injects",
-  "maxResults": 50
+  "maxResults": 50,
+  "includeEvidence": false,
+  "excludeRelations": ["contains"]
 }
 ```
 
@@ -149,7 +155,7 @@ Input:
 - `Outgoing`
 - `Both`
 
-The server caps both traversal depth and horizontal result count.
+The server caps both traversal depth and horizontal result count. Excluded relations are filtered before traversal and capping, so `excludeRelations: ["contains"]` keeps declaration-containment noise from hiding behavioral edges.
 
 When a cap is reached, responses include:
 
@@ -210,7 +216,9 @@ Input:
 {
   "target": "OrderDbContext",
   "maxDepth": 8,
-  "maxResults": 50
+  "maxResults": 50,
+  "includeEvidence": false,
+  "excludeRelations": ["contains"]
 }
 ```
 
@@ -221,6 +229,10 @@ If endpoint nodes exist, agents can use them as application entrypoints. If not,
 Tools that return node or edge arrays are capped by default. The preview uses conservative limits to avoid poisoning the agent context window with huge JSON payloads.
 
 Agents should respond to truncation by narrowing filters, lowering depth, or querying exact node IDs.
+
+## Interpreting absence
+
+A missing node, edge, or path means the fact is not recorded in the currently loaded precomputed Meridian graph. It is not proof that the relationship is absent from source code. If source files changed, regenerate the graph with `meridian scan` and call `reload_graph` before drawing conclusions.
 
 ## Data source
 
@@ -251,5 +263,5 @@ The MCP server should:
 - not execute analyzed application code,
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
-- include confidence and evidence so agents do not overstate uncertain links,
-- surface endpoint limitations when endpoint facts have not been emitted, and avoid inventing EF Core, reflection, or native interop facts until those analyzers exist.
+- include confidence by default and make detailed evidence available on request so agents do not overstate uncertain links,
+- surface endpoint and graph-absence limitations when facts have not been emitted, and avoid inventing EF Core, reflection, or native interop facts until those analyzers exist.

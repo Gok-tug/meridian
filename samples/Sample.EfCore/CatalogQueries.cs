@@ -29,6 +29,21 @@ public sealed class CatalogQueries
         _context.Customers.Add(customer);
     }
 
+    public void UpdateCustomer(Customer customer)
+    {
+        _context.Update(customer);
+    }
+
+    public void RemoveCustomer(Customer customer)
+    {
+        _context.Customers.Remove(customer);
+    }
+
+    public void SaveChanges()
+    {
+        _context.SaveChanges();
+    }
+
     public string CustomersMemberName()
     {
         return nameof(CatalogDbContext.Customers);

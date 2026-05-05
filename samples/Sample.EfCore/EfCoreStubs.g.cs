@@ -6,6 +6,15 @@ public abstract class DbContext
     {
         return new DbSet<TEntity>();
     }
+
+    public void Update<TEntity>(TEntity entity) where TEntity : class
+    {
+    }
+
+    public int SaveChanges()
+    {
+        return 0;
+    }
 }
 
 public sealed class DbSet<TEntity> where TEntity : class
@@ -21,6 +30,10 @@ public sealed class DbSet<TEntity> where TEntity : class
     }
 
     public void Add(TEntity entity)
+    {
+    }
+
+    public void Remove(TEntity entity)
     {
     }
 }

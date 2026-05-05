@@ -44,6 +44,7 @@ public sealed class MeridianGraphToolService
         GraphRelations.Sends,
         GraphRelations.Publishes,
         GraphRelations.Queries,
+        GraphRelations.Writes,
         GraphRelations.Reflects
     ];
 
@@ -65,6 +66,12 @@ public sealed class MeridianGraphToolService
     {
         var context = _store.Current;
         var graph = context.Graph;
+        var nodeKindCounts = graph.Nodes
+            .GroupBy(node => node.Kind, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
+        var relationCounts = graph.Edges
+            .GroupBy(edge => edge.Relation, StringComparer.OrdinalIgnoreCase)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
         return new SchemaResponse(
             "ok",
             MeridianMcpMessages.StaleGraphNote,
@@ -80,7 +87,9 @@ public sealed class MeridianGraphToolService
             context.NodeKindsPresent,
             context.RelationsPresent,
             KnownNodeKinds,
-            KnownRelations);
+            KnownRelations,
+            nodeKindCounts,
+            relationCounts);
     }
 
     public async Task<ReloadGraphResponse> ReloadGraphAsync(CancellationToken cancellationToken = default)
@@ -111,8 +120,23 @@ public sealed class MeridianGraphToolService
         string? target = null,
         int? maxResults = null)
     {
+        return QueryGraphWithOptions(text, nodeKind, relation, direction, source, target, maxResults, null, null);
+    }
+
+    public GraphSearchResponse QueryGraphWithOptions(
+        string? text = null,
+        string? nodeKind = null,
+        string? relation = null,
+        GraphDirection direction = GraphDirection.Both,
+        string? source = null,
+        string? target = null,
+        int? maxResults = null,
+        bool? includeEvidence = null,
+        string[]? excludeRelations = null)
+    {
         var context = _store.Current;
         var limit = context.ClampMaxResults(maxResults);
+        var excludedRelations = CreateRelationSet(excludeRelations);
         if (LooksLikeNaturalLanguageQuestion(text) && IsBlank(nodeKind) && IsBlank(relation) && IsBlank(source) && IsBlank(target))
         {
             return EmptySearch(
@@ -139,15 +163,16 @@ public sealed class MeridianGraphToolService
             .ThenBy(node => node.Id, StringComparer.Ordinal)
             .ToArray();
 
-        var hasEdgeFilters = !IsBlank(relation) || sourceResolution is not null || targetResolution is not null;
+        var hasPositiveEdgeFilters = !IsBlank(relation) || sourceResolution is not null || targetResolution is not null;
+        var hasEdgeFilters = hasPositiveEdgeFilters || excludedRelations.Count > 0;
         if (!hasEdgeFilters)
         {
-            return BuildSearchResponse(context, filteredNodes, [], limit);
+            return BuildSearchResponse(context, filteredNodes, [], limit, includeEvidence: includeEvidence.GetValueOrDefault(false));
         }
 
         var nodeIds = filteredNodes.Select(node => node.Id).ToHashSet(StringComparer.Ordinal);
         var edges = context.Graph.Edges
-            .Where(edge => IsBlank(relation) || edge.Relation.Equals(relation, StringComparison.OrdinalIgnoreCase))
+            .Where(edge => MatchesRelationFilters(edge, relation, excludedRelations))
             .Where(edge => sourceResolution?.Node is null || edge.Source == sourceResolution.Node.Id)
             .Where(edge => targetResolution?.Node is null || edge.Target == targetResolution.Node.Id)
             .Where(edge => direction switch
@@ -164,14 +189,16 @@ public sealed class MeridianGraphToolService
         var endpointNodeIds = edges
             .SelectMany(edge => new[] { edge.Source, edge.Target })
             .Distinct(StringComparer.Ordinal);
-        var nodes = endpointNodeIds
+        var edgeEndpointNodes = endpointNodeIds
             .Select(id => context.NodesById.GetValueOrDefault(id))
-            .OfType<GraphNode>()
+            .OfType<GraphNode>();
+        var nodes = (hasPositiveEdgeFilters ? edgeEndpointNodes : filteredNodes.Concat(edgeEndpointNodes))
+            .DistinctBy(node => node.Id)
             .OrderBy(node => node.Label, StringComparer.Ordinal)
             .ThenBy(node => node.Id, StringComparer.Ordinal)
             .ToArray();
 
-        return BuildSearchResponse(context, nodes, edges, limit);
+        return BuildSearchResponse(context, nodes, edges, limit, includeEvidence: includeEvidence.GetValueOrDefault(false));
     }
 
     public NodeResponse GetNode(string? idOrLabel)
@@ -187,7 +214,7 @@ public sealed class MeridianGraphToolService
         {
             GraphNodeResolutionStatus.Found => new NodeResponse("ok", MeridianMcpMessages.StaleGraphNote, NodeDto.From(resolution.Node!)),
             GraphNodeResolutionStatus.Ambiguous => CreateAmbiguousNodeResponse(context, idOrLabel!, resolution),
-            _ => new NodeResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No node matched '{idOrLabel}'.")
+            _ => new NodeResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No node in the loaded Meridian graph matched '{idOrLabel}'. This does not prove the symbol is absent from source; regenerate and reload the graph if source changed.")
         };
     }
 
@@ -197,6 +224,18 @@ public sealed class MeridianGraphToolService
         int? depth = null,
         string? relation = null,
         int? maxResults = null)
+    {
+        return GetNeighborsWithOptions(idOrLabel, direction, depth, relation, maxResults, null, null);
+    }
+
+    public GraphSearchResponse GetNeighborsWithOptions(
+        string? idOrLabel,
+        GraphDirection direction = GraphDirection.Both,
+        int? depth = null,
+        string? relation = null,
+        int? maxResults = null,
+        bool? includeEvidence = null,
+        string[]? excludeRelations = null)
     {
         if (IsBlank(idOrLabel))
         {
@@ -212,6 +251,7 @@ public sealed class MeridianGraphToolService
 
         var limit = context.ClampMaxResults(maxResults);
         var maxDepth = context.ClampDepth(depth);
+        var excludedRelations = CreateRelationSet(excludeRelations);
         var start = resolution.Node!;
         var visited = new HashSet<string>(StringComparer.Ordinal) { start.Id };
         var queued = new Queue<(string NodeId, int Depth)>();
@@ -229,7 +269,7 @@ public sealed class MeridianGraphToolService
                 continue;
             }
 
-            foreach (var edge in context.GetEdges(current.NodeId, direction).Where(edge => IsBlank(relation) || edge.Relation.Equals(relation, StringComparison.OrdinalIgnoreCase)))
+            foreach (var edge in context.GetEdges(current.NodeId, direction).Where(edge => MatchesRelationFilters(edge, relation, excludedRelations)))
             {
                 if (!seenEdges.Add(EdgeKey(edge)))
                 {
@@ -264,7 +304,7 @@ public sealed class MeridianGraphToolService
             "ok",
             MeridianMcpMessages.StaleGraphNote,
             nodes.Select(NodeDto.From).ToArray(),
-            edges.Select(edge => EdgeDto.From(edge, context.NodesById)).ToArray(),
+            edges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray(),
             truncated,
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
     }
@@ -296,6 +336,16 @@ public sealed class MeridianGraphToolService
 
     public GraphSearchResponse FindFlowsToSymbol(string? target, int? maxDepth = null, int? maxResults = null)
     {
+        return FindFlowsToSymbolWithOptions(target, maxDepth, maxResults, null, null);
+    }
+
+    public GraphSearchResponse FindFlowsToSymbolWithOptions(
+        string? target,
+        int? maxDepth = null,
+        int? maxResults = null,
+        bool? includeEvidence = null,
+        string[]? excludeRelations = null)
+    {
         if (IsBlank(target))
         {
             return InvalidSearchInput("target");
@@ -310,6 +360,7 @@ public sealed class MeridianGraphToolService
 
         var limit = context.ClampMaxResults(maxResults);
         var depthLimit = context.ClampDepth(maxDepth);
+        var excludedRelations = CreateRelationSet(excludeRelations);
         var targetNode = resolution.Node!;
         var visited = new HashSet<string>(StringComparer.Ordinal) { targetNode.Id };
         var queued = new Queue<(string NodeId, int Depth)>();
@@ -326,7 +377,7 @@ public sealed class MeridianGraphToolService
                 continue;
             }
 
-            foreach (var edge in context.GetEdges(current.NodeId, GraphDirection.Incoming))
+            foreach (var edge in context.GetEdges(current.NodeId, GraphDirection.Incoming).Where(edge => MatchesRelationFilters(edge, null, excludedRelations)))
             {
                 if (traversalEdges.Count >= limit)
                 {
@@ -358,7 +409,7 @@ public sealed class MeridianGraphToolService
             upstreamEntrypoints.Length == 0 ? "no_entrypoint_flows" : "ok",
             MeridianMcpMessages.StaleGraphNote,
             upstreamNodes.Select(NodeDto.From).ToArray(),
-            traversalEdges.Select(edge => EdgeDto.From(edge, context.NodesById)).ToArray(),
+            traversalEdges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray(),
             truncated,
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
             limitation);
@@ -391,7 +442,7 @@ public sealed class MeridianGraphToolService
         var path = context.Query.FindPath(sourceResolution.Node!, targetResolution.Node!);
         if (path is null)
         {
-            return new PathResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No path found from '{source}' to '{target}'.");
+            return new PathResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No path is recorded in the loaded Meridian graph from '{source}' to '{target}'. This does not prove no source-code relationship exists; regenerate and reload the graph if source changed.");
         }
 
         return new PathResponse("ok", MeridianMcpMessages.StaleGraphNote, ToPathDto(context, path, includeEvidence));
@@ -408,10 +459,10 @@ public sealed class MeridianGraphToolService
         return new PathDto(NodeDto.From(path.Source), NodeDto.From(path.Target), segments, segments.Length);
     }
 
-    private static GraphSearchResponse BuildSearchResponse(McpGraphContext context, IEnumerable<GraphNode> nodes, IEnumerable<GraphEdge> edges, int limit, string? limitation = null)
+    private static GraphSearchResponse BuildSearchResponse(McpGraphContext context, IEnumerable<GraphNode> nodes, IEnumerable<GraphEdge> edges, int limit, string? limitation = null, bool includeEvidence = true)
     {
         var cappedNodes = Cap(nodes.Select(NodeDto.From), limit);
-        var cappedEdges = Cap(edges.Select(edge => EdgeDto.From(edge, context.NodesById)), limit);
+        var cappedEdges = Cap(edges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence)), limit);
         var truncated = cappedNodes.Truncated || cappedEdges.Truncated;
         return new GraphSearchResponse(
             "ok",
@@ -444,6 +495,19 @@ public sealed class MeridianGraphToolService
         return items.Length > limit
             ? (items.Take(limit).ToArray(), true)
             : (items, false);
+    }
+
+    private static HashSet<string> CreateRelationSet(IEnumerable<string>? relations)
+    {
+        return relations?
+            .Where(relation => !IsBlank(relation))
+            .ToHashSet(StringComparer.OrdinalIgnoreCase) ?? [];
+    }
+
+    private static bool MatchesRelationFilters(GraphEdge edge, string? relation, HashSet<string> excludedRelations)
+    {
+        return (IsBlank(relation) || edge.Relation.Equals(relation, StringComparison.OrdinalIgnoreCase)) &&
+            !excludedRelations.Contains(edge.Relation);
     }
 
     private static string EdgeKey(GraphEdge edge)
@@ -553,7 +617,7 @@ public sealed class MeridianGraphToolService
             [],
             false,
             null,
-            Message: $"No {role} node matched '{resolution.Query}'.");
+            Message: $"No {role} node in the loaded Meridian graph matched '{resolution.Query}'. This does not prove the symbol is absent from source; regenerate and reload the graph if source changed.");
     }
 
     private static PathResponse ResolutionPathFailure(McpGraphContext context, string role, GraphNodeResolution resolution)
@@ -570,6 +634,6 @@ public sealed class MeridianGraphToolService
                 Message: $"{role} node query '{resolution.Query}' is ambiguous. Use a more precise label, symbol, or node ID.");
         }
 
-        return new PathResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No {role} node matched '{resolution.Query}'.");
+        return new PathResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No {role} node in the loaded Meridian graph matched '{resolution.Query}'. This does not prove the symbol is absent from source; regenerate and reload the graph if source changed.");
     }
 }

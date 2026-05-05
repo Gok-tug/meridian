@@ -1,6 +1,6 @@
 # Example: EF Core Flow
 
-EF Core support is planned after the ASP.NET Core, DI, MediatR, and MCP milestones.
+EF Core support is available as a static preview for source `DbContext` types, `DbSet<TEntity>` containment, method-level `queries` edges, and direct method-level `writes` edges.
 
 ## Source pattern
 
@@ -23,6 +23,11 @@ public sealed class EfOrderRepository : IOrderRepository
     {
         return _context.Orders.FirstOrDefaultAsync(order => order.Id == id);
     }
+
+    public void Add(Order order)
+    {
+        _context.Orders.Add(order);
+    }
 }
 ```
 
@@ -32,9 +37,10 @@ public sealed class EfOrderRepository : IOrderRepository
 EfOrderRepository
   --injects--> OrdersDbContext
   --queries--> Order
+  --writes--> Order
 
 OrdersDbContext
-  --contains--> Orders
+  --contains--> Order
 ```
 
 ## Path query

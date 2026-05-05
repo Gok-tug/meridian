@@ -61,6 +61,26 @@ internal sealed class EfCoreAnalyzer
         "Where"
     };
 
+    private static readonly HashSet<string> WriteMethods = new(StringComparer.Ordinal)
+    {
+        "Add",
+        "AddAsync",
+        "AddRange",
+        "AddRangeAsync",
+        "Attach",
+        "AttachRange",
+        "Remove",
+        "RemoveRange",
+        "Update",
+        "UpdateRange"
+    };
+
+    private static readonly HashSet<string> PersistenceMethods = new(StringComparer.Ordinal)
+    {
+        "SaveChanges",
+        "SaveChangesAsync"
+    };
+
     private readonly RoslynSourceFilter _sourceFilter;
     private readonly RoslynGraphFactory _graphFactory;
     private readonly EfCoreSymbolClassifier _classifier;
@@ -223,6 +243,27 @@ internal sealed class EfCoreAnalyzer
             return;
         }
 
+        if (TryResolveDbContextOperationReceiverType(invocation, methodName, methodSymbol, sourceMethod, semanticModel, cancellationToken) is { } dbContextOperationType)
+        {
+            EmitDbContextUse(sourceMethod, dbContextOperationType, invocation.GetLocation(), invocation.Expression.ToString(), graph);
+            if (!WriteMethods.Contains(methodName))
+            {
+                return;
+            }
+        }
+
+        if (WriteMethods.Contains(methodName))
+        {
+            var writeEntityType = TryResolveDbSetReceiverEntityType(invocation, semanticModel, cancellationToken) ??
+                TryResolveDbContextWriteEntityType(invocation, methodSymbol, semanticModel, cancellationToken);
+            if (writeEntityType is not null)
+            {
+                EmitEntityWrite(sourceMethod, writeEntityType, invocation.GetLocation(), invocation.ToString(), graph);
+            }
+
+            return;
+        }
+
         if (!QueryMethods.Contains(methodName))
         {
             return;
@@ -270,6 +311,94 @@ internal sealed class EfCoreAnalyzer
         var typeInfo = semanticModel.GetTypeInfo(memberAccess.Expression, cancellationToken);
         var entityType = _classifier.TryGetDbSetEntityType(typeInfo.Type ?? typeInfo.ConvertedType);
         return entityType is not null && _sourceFilter.HasAnalyzableSourceLocation(entityType) ? entityType : null;
+    }
+
+    private INamedTypeSymbol? TryResolveDbContextOperationReceiverType(
+        InvocationExpressionSyntax invocation,
+        string methodName,
+        IMethodSymbol? methodSymbol,
+        IMethodSymbol sourceMethod,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        if (methodSymbol?.ContainingType is not { } containingType ||
+            !_classifier.IsDbContextType(containingType) ||
+            (!WriteMethods.Contains(methodName) && !PersistenceMethods.Contains(methodName)))
+        {
+            return null;
+        }
+
+        return TryResolveReceiverDbContextType(invocation, semanticModel, cancellationToken) ??
+            TryResolveImplicitReceiverDbContextType(sourceMethod) ??
+            containingType;
+    }
+
+    private INamedTypeSymbol? TryResolveDbContextWriteEntityType(
+        InvocationExpressionSyntax invocation,
+        IMethodSymbol? methodSymbol,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        if (methodSymbol?.ContainingType is null || !_classifier.IsDbContextType(methodSymbol.ContainingType))
+        {
+            return null;
+        }
+
+        var typeArguments = InvocationSymbolResolver.ResolveGenericTypeArguments(methodSymbol, semanticModel, invocation, cancellationToken);
+        if (typeArguments.Count == 1 && _sourceFilter.HasAnalyzableSourceLocation(typeArguments[0]))
+        {
+            return typeArguments[0];
+        }
+
+        foreach (var argument in invocation.ArgumentList.Arguments)
+        {
+            var typeInfo = semanticModel.GetTypeInfo(argument.Expression, cancellationToken);
+            var entityType = TryResolveWriteArgumentEntityType(typeInfo.Type ?? typeInfo.ConvertedType);
+            if (entityType is not null)
+            {
+                return entityType;
+            }
+        }
+
+        return null;
+    }
+
+    private INamedTypeSymbol? TryResolveWriteArgumentEntityType(ITypeSymbol? typeSymbol)
+    {
+        if (typeSymbol is IArrayTypeSymbol arrayType)
+        {
+            return TryGetSourceNamedType(arrayType.ElementType);
+        }
+
+        if (typeSymbol is not INamedTypeSymbol namedType || namedType.TypeKind is TypeKind.Error or TypeKind.Dynamic)
+        {
+            return null;
+        }
+
+        if (TryGetSourceNamedType(namedType) is { } directEntityType)
+        {
+            return directEntityType;
+        }
+
+        foreach (var typeArgument in namedType.TypeArguments)
+        {
+            if (TryGetSourceNamedType(typeArgument) is { } entityType)
+            {
+                return entityType;
+            }
+        }
+
+        return null;
+    }
+
+    private INamedTypeSymbol? TryGetSourceNamedType(ITypeSymbol? typeSymbol)
+    {
+        return typeSymbol is INamedTypeSymbol namedType &&
+            namedType.TypeKind is not (TypeKind.Error or TypeKind.Dynamic) &&
+            namedType.SpecialType != SpecialType.System_Object &&
+            _sourceFilter.HasAnalyzableSourceLocation(namedType)
+            ? namedType
+            : null;
     }
 
     private INamedTypeSymbol? TryResolveReceiverDbContextType(
@@ -341,6 +470,42 @@ internal sealed class EfCoreAnalyzer
         string expression,
         GraphBuilder graph)
     {
+        EmitEntityRelation(
+            sourceMethod,
+            entityType,
+            location,
+            expression,
+            GraphRelations.Queries,
+            "query",
+            graph);
+    }
+
+    private void EmitEntityWrite(
+        IMethodSymbol sourceMethod,
+        INamedTypeSymbol entityType,
+        Location location,
+        string expression,
+        GraphBuilder graph)
+    {
+        EmitEntityRelation(
+            sourceMethod,
+            entityType,
+            location,
+            expression,
+            GraphRelations.Writes,
+            "write",
+            graph);
+    }
+
+    private void EmitEntityRelation(
+        IMethodSymbol sourceMethod,
+        INamedTypeSymbol entityType,
+        Location location,
+        string expression,
+        string relation,
+        string action,
+        GraphBuilder graph)
+    {
         if (!_sourceFilter.HasAnalyzableSourceLocation(entityType))
         {
             return;
@@ -354,13 +519,13 @@ internal sealed class EfCoreAnalyzer
         {
             Source = sourceNode.Id,
             Target = entityNode.Id,
-            Relation = GraphRelations.Queries,
+            Relation = relation,
             Confidence = ConfidenceLevels.Extracted,
             ConfidenceScore = 1.0,
             Evidence = _graphFactory.CreateEvidence(
                 location,
                 sourceNode.Symbol,
-                $"Roslyn resolved EF Core query '{expression}' to entity '{entityNode.Symbol}'.")
+                $"Roslyn resolved EF Core {action} '{expression}' to entity '{entityNode.Symbol}'.")
         });
     }
 

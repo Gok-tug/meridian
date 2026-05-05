@@ -40,7 +40,8 @@ GET /orders/{id}
   --injects--> IOrderRepository
   --implemented_by--> EfOrderRepository
   --uses--> OrderDbContext
-  --queries--> Orders
+  --queries--> Order
+  --writes--> Order
 ```
 
 ## Design principles
@@ -93,7 +94,7 @@ Current prototype support:
 - Direct method `calls` edges
 - DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
-- EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, and method-level `queries` edges
+- EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges
 - Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
 - `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes

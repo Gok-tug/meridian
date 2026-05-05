@@ -195,48 +195,48 @@ Confidence:
 
 ## EF Core analyzer
 
-Planned for `0.4.0-alpha.1`.
+Current static preview.
 
 Responsibilities:
 
-- discover `DbContext` types,
+- discover source `DbContext` types,
 - discover `DbSet<TEntity>` properties,
 - connect service/handler methods to DbContext usage,
-- connect DbContext access to entity types,
+- connect read operations to entity types with `queries`,
+- connect direct mutation operations to entity types with `writes`,
 - detect `_context.Set<TEntity>()`.
 
 Relations:
 
 ```text
 GetOrderQueryHandler --uses--> OrderDbContext
-OrderDbContext --contains--> Orders
+OrderDbContext --contains--> Order
 GetOrderQueryHandler --queries--> Order
+CreateOrderHandler --writes--> Order
 ```
 
 ## Reflection analyzer
 
-Planned for `0.4.0-alpha.1`.
+Current static preview.
 
 Responsibilities:
 
-- detect reflection sites,
-- detect assembly loading,
-- detect type references through `typeof` and `nameof`,
-- detect `Activator.CreateInstance`,
-- classify dynamic behavior with confidence.
+- detect statically resolved type references through `typeof`,
+- detect statically resolved `Activator.CreateInstance` targets,
+- emit diagnostics for runtime-only reflection targets instead of guessed edges.
 
 Supported patterns:
 
 ```csharp
 typeof(OrderService)
-Assembly.GetExecutingAssembly().GetTypes()
-Activator.CreateInstance(type)
+Activator.CreateInstance<OrderService>()
+Activator.CreateInstance(typeof(OrderService))
 ```
 
 Confidence:
 
-- `EXTRACTED` for `typeof(SomeType)`.
-- `INFERRED` for constrained assembly scanning.
+- `EXTRACTED` for statically resolved reflection targets.
+- Diagnostics for runtime-only targets such as `Activator.CreateInstance(type)`.
 - `AMBIGUOUS` for runtime strings or multiple possible target types.
 
 ## Rust/native interop analyzer

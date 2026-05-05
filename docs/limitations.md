@@ -81,12 +81,14 @@ Meridian should not claim ASP.NET Core endpoint-to-request flow, `CreateStream`,
 
 ## Reflection limits
 
-Reflection analysis is planned, not part of the current prototype. Reflection is often not fully statically resolvable.
+Reflection analysis is a static preview. Meridian emits `reflects` edges for statically resolved `typeof(T)`, `Activator.CreateInstance<T>()`, and `Activator.CreateInstance(typeof(T))` targets, and emits diagnostics instead of guessed edges for runtime-only targets.
 
 Reliable:
 
 ```csharp
 typeof(OrderService)
+Activator.CreateInstance<OrderService>()
+Activator.CreateInstance(typeof(OrderService))
 ```
 
 Ambiguous:
@@ -98,7 +100,7 @@ Activator.CreateInstance(type)
 
 ## EF Core limits
 
-EF Core analysis is planned, not part of the current prototype. The planned analyzer should detect DbContext and DbSet usage from source symbols.
+EF Core analysis is a static preview. Meridian detects source `DbContext` types, `DbSet<TEntity>` containment, DbContext usage, method-level `queries` edges for read operations, and method-level `writes` edges for direct DbSet/DbContext mutation calls when the entity type is statically known.
 
 It may not know:
 
@@ -107,7 +109,8 @@ It may not know:
 - runtime query filters,
 - database schema drift,
 - migrations not present in source,
-- dynamic entity access through runtime types.
+- dynamic entity access through runtime types,
+- entity-specific effects of `SaveChanges` when the mutated entities are not visible from direct source mutation calls.
 
 ## Source generator limits
 

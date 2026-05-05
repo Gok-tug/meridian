@@ -28,7 +28,7 @@
       "kind": "method",
       "symbol": "Sample.EfCore.CatalogQueries.CustomersMemberName()",
       "source_file": "CatalogQueries.cs",
-      "source_location": "L32",
+      "source_location": "L47",
       "metadata": {}
     },
     {
@@ -56,6 +56,33 @@
       "symbol": "Sample.EfCore.CatalogQueries.ListOrders()",
       "source_file": "CatalogQueries.cs",
       "source_location": "L17",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "label": "CatalogQueries.RemoveCustomer",
+      "kind": "method",
+      "symbol": "Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "source_file": "CatalogQueries.cs",
+      "source_location": "L37",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.SaveChanges()",
+      "label": "CatalogQueries.SaveChanges",
+      "kind": "method",
+      "symbol": "Sample.EfCore.CatalogQueries.SaveChanges()",
+      "source_file": "CatalogQueries.cs",
+      "source_location": "L42",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "label": "CatalogQueries.UpdateCustomer",
+      "kind": "method",
+      "symbol": "Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "source_file": "CatalogQueries.cs",
+      "source_location": "L32",
       "metadata": {}
     },
     {
@@ -147,6 +174,20 @@
       "metadata": {}
     },
     {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+      "target": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 29,
+        "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved EF Core write '_context.Customers.Add(customer)' to entity 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
       "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
       "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "relation": "uses",
@@ -231,6 +272,76 @@
       "metadata": {}
     },
     {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 39,
+        "symbol": "Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved EF Core DbContext use '_context.Customers' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "target": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 39,
+        "symbol": "Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved EF Core write '_context.Customers.Remove(customer)' to entity 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.SaveChanges()",
+      "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 44,
+        "symbol": "Sample.EfCore.CatalogQueries.SaveChanges()",
+        "reason": "Roslyn resolved EF Core DbContext use '_context.SaveChanges' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 34,
+        "symbol": "Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved EF Core DbContext use '_context.Update' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "target": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 34,
+        "symbol": "Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved EF Core write '_context.Update(customer)' to entity 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
       "source": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "target": "method:Sample.EfCore:Sample.EfCore.CatalogDbContext.ListOrdersInsideContext()",
       "relation": "contains",
@@ -294,7 +405,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "CatalogQueries.cs",
-        "line": 32,
+        "line": 47,
         "symbol": "Sample.EfCore.CatalogQueries",
         "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.CustomersMemberName()' in type 'Sample.EfCore.CatalogQueries'."
       },
@@ -339,6 +450,48 @@
         "line": 17,
         "symbol": "Sample.EfCore.CatalogQueries",
         "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.ListOrders()' in type 'Sample.EfCore.CatalogQueries'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogQueries",
+      "target": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 37,
+        "symbol": "Sample.EfCore.CatalogQueries",
+        "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)' in type 'Sample.EfCore.CatalogQueries'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogQueries",
+      "target": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.SaveChanges()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 42,
+        "symbol": "Sample.EfCore.CatalogQueries",
+        "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.SaveChanges()' in type 'Sample.EfCore.CatalogQueries'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogQueries",
+      "target": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 32,
+        "symbol": "Sample.EfCore.CatalogQueries",
+        "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)' in type 'Sample.EfCore.CatalogQueries'."
       },
       "metadata": {}
     },

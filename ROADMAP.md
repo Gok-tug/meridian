@@ -220,6 +220,7 @@ Scope:
   - `_context.Entities` access
   - `_context.Set<TEntity>()` access
   - method-level `queries` edges to entity types
+  - direct method-level `writes` edges to statically resolved entity types
 - static reflection analyzer preview:
   - `typeof(T)`
   - `Activator.CreateInstance<T>()`

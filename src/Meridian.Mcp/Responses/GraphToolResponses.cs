@@ -12,7 +12,9 @@ public sealed record SchemaResponse(
     IReadOnlyList<string> NodeKindsPresent,
     IReadOnlyList<string> RelationsPresent,
     IReadOnlyList<string> KnownNodeKinds,
-    IReadOnlyList<string> KnownRelations);
+    IReadOnlyList<string> KnownRelations,
+    IReadOnlyDictionary<string, int>? NodeKindCounts = null,
+    IReadOnlyDictionary<string, int>? RelationCounts = null);
 
 public sealed record NodeResponse(
     string Status,
@@ -100,7 +102,7 @@ public sealed record EdgeDto(
     string? SourceLabel = null,
     string? TargetLabel = null)
 {
-    public static EdgeDto From(GraphEdge edge, IReadOnlyDictionary<string, GraphNode> nodesById)
+    public static EdgeDto From(GraphEdge edge, IReadOnlyDictionary<string, GraphNode> nodesById, bool includeEvidence = true)
     {
         nodesById.TryGetValue(edge.Source, out var sourceNode);
         nodesById.TryGetValue(edge.Target, out var targetNode);
@@ -110,7 +112,7 @@ public sealed record EdgeDto(
             edge.Relation,
             edge.Confidence,
             edge.ConfidenceScore,
-            edge.Evidence is null ? null : EvidenceDto.From(edge.Evidence),
+            includeEvidence && edge.Evidence is not null ? EvidenceDto.From(edge.Evidence) : null,
             new ReadOnlyDictionary<string, string>(edge.Metadata),
             sourceNode?.Label,
             targetNode?.Label);

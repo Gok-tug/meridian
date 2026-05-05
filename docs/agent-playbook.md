@@ -116,8 +116,21 @@ Use after `meridian scan` when the MCP server is already running. It rereads the
 
 If reload fails, keep using the previous graph only if the response says the previous graph was preserved, and tell the user the graph is stale.
 
-## Unsupported or limited facts
+## Supported and limited facts
 
-Current alpha builds do not yet emit full ASP.NET Core endpoint flow, EF Core flow, reflection resolution, broad DI dataflow, or native/Rust interop facts.
+Current alpha builds emit:
+
+- direct method calls, type containment, and interface implementation edges
+- constructor injection and generic DI registration edges (including narrow factory lambdas)
+- MediatR declaration, `sends`, `publishes`, and `handled_by` edges
+- EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types
+- static reflection edges for `typeof(T)`, `Activator.CreateInstance<T>()`, and `Activator.CreateInstance(typeof(T))`
+
+Current alpha builds do not yet emit:
+
+- ASP.NET Core MVC or Minimal API endpoint nodes and endpoint-to-handler flow
+- broad DI dataflow beyond direct generic and narrow factory registrations
+- native/Rust interop boundary detection
+- XAML/View-ViewModel binding analysis
 
 When a Meridian tool reports a limitation, do not fill the gap by guessing. Use normal code inspection separately and label those findings as outside Meridian's graph facts.

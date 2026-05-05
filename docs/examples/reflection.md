@@ -1,6 +1,6 @@
 # Example: Reflection and Assembly Scanning
 
-Reflection support should be confidence-aware because many reflection patterns are not fully statically resolvable.
+Reflection support is a static preview because many reflection patterns are not fully statically resolvable.
 
 ## Direct type reference
 
@@ -11,10 +11,12 @@ var type = typeof(OrderService);
 Expected relation:
 
 ```text
-reflection_site --reflects--> OrderService [EXTRACTED]
+SomeMethod --reflects--> OrderService [EXTRACTED]
 ```
 
 ## Assembly scanning
+
+Assembly scanning is still planned and is not part of the current static reflection preview.
 
 ```csharp
 services.Scan(scan => scan

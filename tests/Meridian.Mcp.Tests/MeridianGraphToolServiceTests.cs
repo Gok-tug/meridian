@@ -1,3 +1,5 @@
+using System.ComponentModel;
+using System.Reflection;
 using Meridian.Abstractions;
 using Meridian.Core;
 using Meridian.Exporters.Json;
@@ -34,6 +36,26 @@ public sealed class MeridianGraphToolServiceTests
         cancellation.Cancel();
 
         await Assert.ThrowsAnyAsync<OperationCanceledException>(() => tools.ReloadGraph(cancellation.Token));
+    }
+
+    [Fact]
+    public void Tool_descriptions_keep_full_schema_note_on_get_schema_only()
+    {
+        var methods = typeof(MeridianMcpTools).GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly);
+
+        foreach (var method in methods)
+        {
+            var description = method.GetCustomAttribute<DescriptionAttribute>()?.Description;
+            Assert.NotNull(description);
+            if (method.Name == nameof(MeridianMcpTools.GetSchema))
+            {
+                Assert.Contains("Available node kinds include", description);
+                continue;
+            }
+
+            Assert.DoesNotContain("Available node kinds include", description);
+            Assert.Contains("See get_schema", description);
+        }
     }
 
     [Fact]
@@ -328,7 +350,7 @@ public sealed class MeridianGraphToolServiceTests
     {
         var service = CreateService(CreateGraph());
 
-        var result = service.QueryGraph(
+        var result = service.QueryGraphWithOptions(
             nodeKind: GraphNodeKinds.Method,
             relation: GraphRelations.Calls,
             direction: GraphDirection.Outgoing,
@@ -345,7 +367,7 @@ public sealed class MeridianGraphToolServiceTests
     {
         var service = CreateService(CreateGraph());
 
-        var result = service.QueryGraph(text: "which endpoints can reach OrderDbContext?");
+        var result = service.QueryGraphWithOptions(text: "which endpoints can reach OrderDbContext?");
 
         Assert.Equal("unsupported_query", result.Status);
         Assert.NotNull(result.Limitation);
@@ -353,11 +375,46 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void QueryGraph_omits_edge_evidence_by_default_and_includes_it_when_requested()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.QueryGraphWithOptions(relation: GraphRelations.Calls, source: "Start.Run");
+        var explained = service.QueryGraphWithOptions(relation: GraphRelations.Calls, source: "Start.Run", includeEvidence: true);
+
+        Assert.Null(Assert.Single(compact.Edges).Evidence);
+        Assert.Equal("Start calls Middle.", Assert.Single(explained.Edges).Evidence?.Reason);
+    }
+
+    [Fact]
+    public void QueryGraph_excludes_relations_before_capping()
+    {
+        var service = CreateService(CreateContainsNoiseGraph());
+
+        var result = service.QueryGraphWithOptions(source: "Service", direction: GraphDirection.Outgoing, maxResults: 2, excludeRelations: [GraphRelations.Contains]);
+
+        var edge = Assert.Single(result.Edges);
+        Assert.Equal(GraphRelations.Injects, edge.Relation);
+        Assert.Equal("ZDependency", edge.TargetLabel);
+    }
+
+    [Fact]
+    public void QueryGraph_preserves_node_matches_when_only_excluding_relations()
+    {
+        var service = CreateService(CreateGraph());
+
+        var result = service.QueryGraphWithOptions(nodeKind: GraphNodeKinds.Method, excludeRelations: [GraphRelations.Contains]);
+
+        Assert.Contains(result.Nodes, node => node.Symbol == "Sample.First.Run()");
+        Assert.DoesNotContain(result.Edges, edge => edge.Relation == GraphRelations.Contains);
+    }
+
+    [Fact]
     public void QueryGraph_returns_empty_edges_when_requested_node_filter_matches_no_nodes()
     {
         var service = CreateService(CreateGraph());
 
-        var result = service.QueryGraph(text: "NoSuchNode", relation: GraphRelations.Calls);
+        var result = service.QueryGraphWithOptions(text: "NoSuchNode", relation: GraphRelations.Calls);
 
         Assert.Equal("ok", result.Status);
         Assert.Empty(result.Nodes);
@@ -420,6 +477,7 @@ public sealed class MeridianGraphToolServiceTests
 
         Assert.Equal("not_found", result.Status);
         Assert.Null(result.Node);
+        Assert.Contains("loaded Meridian graph", result.Message);
     }
 
     [Fact]
@@ -452,6 +510,41 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetNeighbors_omits_edge_evidence_by_default_and_includes_it_when_requested()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.GetNeighbors("Start.Run", GraphDirection.Outgoing, depth: 1);
+        var explained = service.GetNeighborsWithOptions("Start.Run", GraphDirection.Outgoing, depth: 1, includeEvidence: true);
+
+        Assert.Null(Assert.Single(compact.Edges).Evidence);
+        Assert.Equal("Start calls Middle.", Assert.Single(explained.Edges).Evidence?.Reason);
+    }
+
+    [Fact]
+    public void GetNeighbors_excludes_relations_before_capping()
+    {
+        var service = CreateService(CreateContainsNoiseGraph());
+
+        var result = service.GetNeighborsWithOptions("Service", GraphDirection.Outgoing, depth: 1, maxResults: 2, excludeRelations: [GraphRelations.Contains]);
+
+        var edge = Assert.Single(result.Edges);
+        Assert.Equal(GraphRelations.Injects, edge.Relation);
+        Assert.Equal("ZDependency", edge.TargetLabel);
+    }
+
+    [Fact]
+    public void GetNeighbors_does_not_traverse_through_excluded_edges()
+    {
+        var service = CreateService(CreateExcludedTraversalGraph());
+
+        var result = service.GetNeighborsWithOptions("Root", GraphDirection.Outgoing, depth: 2, maxResults: 10, excludeRelations: [GraphRelations.Contains]);
+
+        Assert.Empty(result.Edges);
+        Assert.DoesNotContain(result.Nodes, node => node.Label == "Leaf");
+    }
+
+    [Fact]
     public void ShortestPath_returns_directed_path()
     {
         var service = CreateService(CreateGraph());
@@ -462,6 +555,18 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Equal(2, result.Path?.EdgeCount);
         Assert.Equal("Start.Run", result.Path?.Segments[0].Source.Label);
         Assert.Equal("End.Run", result.Path?.Target.Label);
+    }
+
+    [Fact]
+    public void ShortestPath_not_found_message_is_limited_to_loaded_graph()
+    {
+        var service = CreateService(CreateGraph());
+
+        var result = service.ShortestPath("End.Run", "Start.Run");
+
+        Assert.Equal("not_found", result.Status);
+        Assert.Contains("loaded Meridian graph", result.Message);
+        Assert.Contains("does not prove", result.Message);
     }
 
     [Fact]
@@ -496,6 +601,30 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Equal("no_entrypoint_flows", result.Status);
         Assert.Contains(result.Nodes, node => node.Label == "Middle.Run");
         Assert.Equal(MeridianMcpMessages.EndpointAnalyzerLimit, result.Limitation);
+    }
+
+    [Fact]
+    public void FindFlowsToSymbol_omits_edge_evidence_by_default_and_includes_it_when_requested()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.FindFlowsToSymbol("End.Run", maxDepth: 4);
+        var explained = service.FindFlowsToSymbolWithOptions("End.Run", maxDepth: 4, includeEvidence: true);
+
+        Assert.All(compact.Edges, edge => Assert.Null(edge.Evidence));
+        Assert.Contains(explained.Edges, edge => edge.Evidence?.Reason == "Middle calls End.");
+    }
+
+    [Fact]
+    public void FindFlowsToSymbol_excludes_relations_before_capping()
+    {
+        var service = CreateService(CreateContainsNoiseGraph());
+
+        var result = service.FindFlowsToSymbolWithOptions("ZDependency", maxDepth: 2, maxResults: 2, excludeRelations: [GraphRelations.Contains]);
+
+        var edge = Assert.Single(result.Edges);
+        Assert.Equal(GraphRelations.Injects, edge.Relation);
+        Assert.Equal("Service", edge.SourceLabel);
     }
 
     [Fact]
@@ -633,6 +762,33 @@ public sealed class MeridianGraphToolServiceTests
             AddNode(builder, $"method:Sample:Ambiguous{i}.Run()", "Run", $"Sample.Ambiguous{i}.Run()");
         }
 
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateContainsNoiseGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:Service", "Service", "Sample.Service", GraphNodeKinds.Type);
+        AddNode(builder, "type:Sample:ZDependency", "ZDependency", "Sample.ZDependency", GraphNodeKinds.Type);
+        for (var i = 0; i < 6; i++)
+        {
+            var methodId = $"method:Sample:Service.Method{i}()";
+            AddNode(builder, methodId, $"Service.Method{i}", $"Sample.Service.Method{i}()");
+            AddEdge(builder, "type:Sample:Service", methodId, GraphRelations.Contains, i + 1, $"Service contains method {i}.");
+        }
+
+        AddEdge(builder, "type:Sample:Service", "type:Sample:ZDependency", GraphRelations.Injects, 10, "Service injects dependency.");
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateExcludedTraversalGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:Root", "Root", "Sample.Root", GraphNodeKinds.Type);
+        AddNode(builder, "method:Sample:Root.Child()", "Root.Child", "Sample.Root.Child()");
+        AddNode(builder, "type:Sample:Leaf", "Leaf", "Sample.Leaf", GraphNodeKinds.Type);
+        AddEdge(builder, "type:Sample:Root", "method:Sample:Root.Child()", GraphRelations.Contains, 1, "Root contains child.");
+        AddEdge(builder, "method:Sample:Root.Child()", "type:Sample:Leaf", GraphRelations.Calls, 2, "Child reaches leaf.");
         return builder.Build(".");
     }
 

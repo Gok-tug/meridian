@@ -126,6 +126,7 @@ registered_as
 injects
 implemented_by
 queries
+writes
 maps_to
 configured_by
 reflects
@@ -148,7 +149,8 @@ Relation meanings:
 | `registered_as` | DI registration maps abstraction to implementation |
 | `injects` | Constructor or parameter injection dependency |
 | `implemented_by` | Interface/base abstraction implemented by concrete type |
-| `queries` | EF Core query access to DbSet/entity |
+| `queries` | EF Core read/query access to DbSet/entity |
+| `writes` | EF Core direct mutation access to DbSet/entity |
 | `configured_by` | Registration or options configured by code site |
 | `reflects` | Reflection references a type/member |
 | `scans` | Assembly scanning may register or discover types |
