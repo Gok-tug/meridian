@@ -177,6 +177,7 @@ public sealed class MeridianGraphToolService
         var queued = new Queue<(string NodeId, int Depth)>();
         var nodes = new List<GraphNode> { start };
         var edges = new List<GraphEdge>();
+        var seenEdges = new HashSet<string>(StringComparer.Ordinal);
         var truncated = false;
 
         queued.Enqueue((start.Id, 0));
@@ -190,6 +191,11 @@ public sealed class MeridianGraphToolService
 
             foreach (var edge in _context.GetEdges(current.NodeId, direction).Where(edge => IsBlank(relation) || edge.Relation.Equals(relation, StringComparison.OrdinalIgnoreCase)))
             {
+                if (!seenEdges.Add(EdgeKey(edge)))
+                {
+                    continue;
+                }
+
                 if (edges.Count >= limit)
                 {
                     truncated = true;
@@ -369,6 +375,21 @@ public sealed class MeridianGraphToolService
         return items.Length > limit
             ? (items.Take(limit).ToArray(), true)
             : (items, false);
+    }
+
+    private static string EdgeKey(GraphEdge edge)
+    {
+        return string.Join(
+            '',
+            edge.Source,
+            edge.Target,
+            edge.Relation,
+            edge.Confidence,
+            edge.ConfidenceScore?.ToString("R", System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty,
+            edge.Evidence?.File ?? string.Empty,
+            edge.Evidence?.Line?.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? string.Empty,
+            edge.Evidence?.Symbol ?? string.Empty,
+            edge.Evidence?.Reason ?? string.Empty);
     }
 
     private GraphNodeResolution ResolveNodeForMcp(string query)

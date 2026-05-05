@@ -103,6 +103,18 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetNeighbors_both_direction_does_not_return_duplicate_edges()
+    {
+        var service = CreateService(CreateGraph());
+
+        var result = service.GetNeighbors("Start.Run", GraphDirection.Both, depth: 2, maxResults: 10);
+
+        Assert.False(result.Truncated);
+        Assert.Equal(2, result.Edges.Count);
+        Assert.Equal(2, result.Edges.Select(edge => $"{edge.Source}|{edge.Target}|{edge.Relation}").Distinct(StringComparer.Ordinal).Count());
+    }
+
+    [Fact]
     public void ShortestPath_returns_directed_path()
     {
         var service = CreateService(CreateGraph());
