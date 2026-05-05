@@ -48,6 +48,10 @@ meridian-out/
 
 Planned human-readable outputs such as `report.md`, `summary`, and `tree` are derived views over `graph.json`; they are not emitted by the current scan command.
 
+Current EF Core support is static graph extraction for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, and `_context.Set<TEntity>()` patterns. Meridian emits entity access edges but does not reconstruct SQL, model provider behavior, migrations, or full LINQ expression semantics.
+
+Current reflection support covers static `typeof(T)` and `Activator.CreateInstance` targets. Runtime strings, runtime `Type` variables, Scrutor-style scanning, and assembly-load/type-scan inference are reported as limitations or diagnostics rather than guessed edges.
+
 ## `meridian explain`
 
 Explains one graph node, route, type, method, or symbol.
@@ -94,7 +98,7 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, and MediatR `sends`, `publishes`, and `handled_by` edges when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, MediatR `sends`, `publishes`, and `handled_by`, EF Core `queries`, and reflection `reflects` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"
@@ -106,7 +110,7 @@ Current MediatR method-level paths can already traverse dispatch and handler edg
 meridian path "DispatchInlineRequest" "GetOrderQueryHandler"
 ```
 
-Framework-aware expected output once planned endpoint and EF Core analyzers exist:
+Framework-aware expected output once planned endpoint analyzers exist:
 
 ```text
 GET /orders/{id}
@@ -115,6 +119,7 @@ GET /orders/{id}
   --injects--> IOrderRepository
   --implemented_by--> EfOrderRepository
   --uses--> OrderDbContext
+  --queries--> Order
 ```
 
 The command should include confidence and evidence when verbose output is requested:

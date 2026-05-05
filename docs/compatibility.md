@@ -45,8 +45,8 @@ Later:
 | ASP.NET Core Minimal APIs | Planned for a later alpha milestone |
 | MediatR | Current preview for source request/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
 | MCP server | Current preview over generated `graph.json` files; no live Roslyn scan during MCP calls; `0.3.0-alpha.2` adds `reload_graph` for refreshing the configured graph file in a running server |
-| EF Core | Planned for `0.4.0-alpha.1` |
-| Reflection/assembly scanning | Planned for `0.4.0-alpha.1` |
+| EF Core | Current static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, and method-level `queries` edges |
+| Reflection/assembly scanning | Current static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |
 | Rust/native interop boundaries | Future |
 
 ## Unsupported until documented

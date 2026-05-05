@@ -74,4 +74,16 @@ internal sealed class RoslynGraphFactory
             Reason = reason
         };
     }
+
+    public GraphDiagnostic CreateDiagnostic(Location location, string id, string severity, string message)
+    {
+        return new GraphDiagnostic
+        {
+            Id = id,
+            Severity = severity,
+            Message = message,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location)
+        };
+    }
 }

@@ -20,6 +20,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.2.0-alpha.3
 0.3.0-alpha.1
 0.3.0-alpha.2
+0.4.0-alpha.1
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -92,6 +93,8 @@ Current prototype support:
 - Direct method `calls` edges
 - DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
+- EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, and method-level `queries` edges
+- Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
 - `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
 - MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
@@ -102,13 +105,13 @@ Planned follow-up work:
 - ASP.NET Core MVC controllers and Minimal APIs
 - Endpoint-to-MediatR bridging and framework-aware `path` ranking across endpoint, DI, MediatR, and direct-call edges
 - Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
-- Entity Framework Core DbContext and DbSet usage in `0.4.0-alpha.1`
-- Reflection and assembly scanning in `0.4.0-alpha.1`
-- Agent workflow hardening, CLI graph-validity smoke-test requirements, and planned human-readable graph views in `0.3.0-alpha.2`
+- Broader EF Core query semantics beyond static DbContext/DbSet entity access
+- Reflection assembly scanning patterns such as Scrutor, `Assembly.Load`, `GetTypes`, and `IsAssignableFrom`
+- Planned human-readable graph views such as `summary`, `tree`, and `report`
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, full reflection resolution, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `summary`/`tree`/`report` views, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `summary`/`tree`/`report` views, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -120,7 +123,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.3.0-alpha.2",
+  "generator_version": "0.4.0-alpha.1",
   "nodes": [],
   "edges": []
 }

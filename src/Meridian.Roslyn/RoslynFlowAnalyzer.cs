@@ -49,12 +49,19 @@ public sealed class RoslynFlowAnalyzer
 
         var sourceFilter = new RoslynSourceFilter(rootDirectory);
         var mediatrClassifier = new MediatRSymbolClassifier();
-        var graphFactory = new RoslynGraphFactory(rootDirectory, sourceFilter, mediatrClassifier.ClassifyType);
+        var efCoreClassifier = new EfCoreSymbolClassifier();
+        var graphFactory = new RoslynGraphFactory(rootDirectory, sourceFilter, typeSymbol =>
+        {
+            var efCoreKind = efCoreClassifier.ClassifyType(typeSymbol);
+            return efCoreKind == GraphNodeKinds.Type ? mediatrClassifier.ClassifyType(typeSymbol) : efCoreKind;
+        });
         var typeDeclarationAnalyzer = new TypeDeclarationAnalyzer(sourceFilter, graphFactory);
         var directCallAnalyzer = new DirectCallAnalyzer(sourceFilter, graphFactory);
         var dependencyInjectionAnalyzer = new DependencyInjectionAnalyzer(sourceFilter, graphFactory);
         var mediatrDeclarationAnalyzer = new MediatRDeclarationAnalyzer(sourceFilter, graphFactory, mediatrClassifier);
         var mediatrCallSiteAnalyzer = new MediatRCallSiteAnalyzer(sourceFilter, graphFactory, mediatrClassifier);
+        var efCoreAnalyzer = new EfCoreAnalyzer(sourceFilter, graphFactory, efCoreClassifier);
+        var reflectionAnalyzer = new ReflectionAnalyzer(sourceFilter, graphFactory);
 
         var projects = await RoslynProjectLoader.LoadProjectsAsync(workspace, fullPath, cancellationToken);
         foreach (var project in RoslynProjectLoader.SelectProjects(projects, fullPath, options))
@@ -68,6 +75,8 @@ public sealed class RoslynFlowAnalyzer
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
                 mediatrCallSiteAnalyzer,
+                efCoreAnalyzer,
+                reflectionAnalyzer,
                 cancellationToken);
         }
 
@@ -83,6 +92,8 @@ public sealed class RoslynFlowAnalyzer
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
         MediatRCallSiteAnalyzer mediatrCallSiteAnalyzer,
+        EfCoreAnalyzer efCoreAnalyzer,
+        ReflectionAnalyzer reflectionAnalyzer,
         CancellationToken cancellationToken)
     {
         var compilation = await project.GetCompilationAsync(cancellationToken);
@@ -109,6 +120,8 @@ public sealed class RoslynFlowAnalyzer
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
                 mediatrCallSiteAnalyzer,
+                efCoreAnalyzer,
+                reflectionAnalyzer,
                 cancellationToken);
         }
     }
@@ -121,6 +134,8 @@ public sealed class RoslynFlowAnalyzer
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
         MediatRCallSiteAnalyzer mediatrCallSiteAnalyzer,
+        EfCoreAnalyzer efCoreAnalyzer,
+        ReflectionAnalyzer reflectionAnalyzer,
         CancellationToken cancellationToken)
     {
         var root = await document.GetSyntaxRootAsync(cancellationToken);
@@ -138,6 +153,7 @@ public sealed class RoslynFlowAnalyzer
             {
                 dependencyInjectionAnalyzer.AnalyzeConstructorInjection(result, graph);
                 mediatrDeclarationAnalyzer.Analyze(result, semanticModel, graph, cancellationToken);
+                efCoreAnalyzer.AnalyzeType(result, graph);
             }
         }
 
@@ -147,6 +163,26 @@ public sealed class RoslynFlowAnalyzer
             directCallAnalyzer.Analyze(invocation, semanticModel, graph, cancellationToken);
             dependencyInjectionAnalyzer.AnalyzeRegistration(invocation, semanticModel, graph, cancellationToken);
             mediatrCallSiteAnalyzer.Analyze(invocation, semanticModel, graph, cancellationToken);
+            efCoreAnalyzer.AnalyzeInvocation(invocation, semanticModel, graph, cancellationToken);
+            reflectionAnalyzer.AnalyzeInvocation(invocation, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var memberAccess in root.DescendantNodes().OfType<MemberAccessExpressionSyntax>().OrderBy(memberAccess => memberAccess.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            efCoreAnalyzer.AnalyzeMemberAccess(memberAccess, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var conditionalAccess in root.DescendantNodes().OfType<ConditionalAccessExpressionSyntax>().OrderBy(conditionalAccess => conditionalAccess.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            efCoreAnalyzer.AnalyzeConditionalAccess(conditionalAccess, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var typeOfExpression in root.DescendantNodes().OfType<TypeOfExpressionSyntax>().OrderBy(typeOfExpression => typeOfExpression.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            reflectionAnalyzer.AnalyzeTypeOf(typeOfExpression, semanticModel, graph, cancellationToken);
         }
     }
 }

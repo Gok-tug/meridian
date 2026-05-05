@@ -213,24 +213,27 @@ Goal: expand beyond request/handler flow into persistence and dynamic registrati
 
 Scope:
 
-- EF Core analyzer:
-  - `DbContext`
-  - `DbSet<TEntity>`
-  - `_context.Entities`
-  - `_context.Set<TEntity>()`
-  - query/entity access edges
-- reflection analyzer:
-  - `typeof`
-  - `nameof`
-  - `Activator.CreateInstance`
-  - `Assembly.Load`
-  - `GetTypes`
-  - `IsAssignableFrom`
-- assembly scanning detection:
-  - Scrutor-style scanning
-  - MediatR assembly registration
-- stronger evidence and confidence reporting
-- ambiguous edge reporting
+- EF Core analyzer preview:
+  - source `DbContext` nodes
+  - `DbSet<TEntity>` containment edges
+  - `_context.Entities` access
+  - `_context.Set<TEntity>()` access
+  - method-level `queries` edges to entity types
+- static reflection analyzer preview:
+  - `typeof(T)`
+  - `Activator.CreateInstance<T>()`
+  - `Activator.CreateInstance(typeof(T))`
+  - diagnostics for runtime-only reflection targets instead of guessed edges
+- MCP schema discovery for EF Core and reflection graph relations
+- golden-file tests and sample projects for EF Core and static dynamic-wiring patterns
+
+Deferred to later milestones:
+
+- `nameof` reflection heuristics
+- `Assembly.Load`, `GetTypes`, and `IsAssignableFrom` inference
+- Scrutor-style scanning and MediatR assembly registration scanning
+- SQL reconstruction, provider behavior, migrations, and full LINQ expression semantics
+- stronger ambiguous edge reporting beyond the current candidate output
 
 ## 0.5.0-alpha.1 — Performance and hardening
 

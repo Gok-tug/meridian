@@ -26,6 +26,7 @@ public sealed class MeridianGraphToolService
         GraphNodeKinds.Method,
         GraphNodeKinds.Endpoint,
         GraphNodeKinds.Diagnostic,
+        GraphNodeKinds.DbContext,
         GraphNodeKinds.MediatRRequest,
         GraphNodeKinds.MediatRNotification,
         GraphNodeKinds.MediatRHandler
@@ -41,7 +42,9 @@ public sealed class MeridianGraphToolService
         GraphRelations.ImplementedBy,
         GraphRelations.HandledBy,
         GraphRelations.Sends,
-        GraphRelations.Publishes
+        GraphRelations.Publishes,
+        GraphRelations.Queries,
+        GraphRelations.Reflects
     ];
 
     private const char EdgeKeySeparator = '\u001f';

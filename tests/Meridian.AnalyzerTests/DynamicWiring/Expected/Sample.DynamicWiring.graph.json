@@ -1,0 +1,253 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.4.0-alpha.1",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()",
+      "label": "RuntimePluginFactory.CreateFromTypeOf",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L23",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()",
+      "label": "RuntimePluginFactory.CreateGeneric",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L18",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateGenericRuntime<T>()",
+      "label": "RuntimePluginFactory.CreateGenericRuntime",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateGenericRuntime<T>()",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L38",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()",
+      "label": "RuntimePluginFactory.CreateNamedTypeArgument",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L28",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateRuntime(System.Type pluginType)",
+      "label": "RuntimePluginFactory.CreateRuntime",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateRuntime(System.Type pluginType)",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L33",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()",
+      "label": "RuntimePluginFactory.StaticTypeReference",
+      "kind": "method",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L13",
+      "metadata": {}
+    },
+    {
+      "id": "type:Sample.DynamicWiring:Sample.DynamicWiring.EmailPlugin",
+      "label": "EmailPlugin",
+      "kind": "type",
+      "symbol": "Sample.DynamicWiring.EmailPlugin",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L3",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DynamicWiring:Sample.DynamicWiring.ReportPlugin",
+      "label": "ReportPlugin",
+      "kind": "type",
+      "symbol": "Sample.DynamicWiring.ReportPlugin",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L7",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "label": "RuntimePluginFactory",
+      "kind": "type",
+      "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L11",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()",
+      "target": "type:Sample.DynamicWiring:Sample.DynamicWiring.ReportPlugin",
+      "relation": "reflects",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 25,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()",
+        "reason": "Roslyn resolved reflection target 'Activator.CreateInstance(typeof(ReportPlugin))' to 'Sample.DynamicWiring.ReportPlugin'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()",
+      "target": "type:Sample.DynamicWiring:Sample.DynamicWiring.EmailPlugin",
+      "relation": "reflects",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 20,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()",
+        "reason": "Roslyn resolved reflection target 'Activator.CreateInstance<EmailPlugin>()' to 'Sample.DynamicWiring.EmailPlugin'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()",
+      "target": "type:Sample.DynamicWiring:Sample.DynamicWiring.ReportPlugin",
+      "relation": "reflects",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 30,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()",
+        "reason": "Roslyn resolved reflection target 'Activator.CreateInstance(args: null, type: typeof(ReportPlugin))' to 'Sample.DynamicWiring.ReportPlugin'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()",
+      "target": "type:Sample.DynamicWiring:Sample.DynamicWiring.EmailPlugin",
+      "relation": "reflects",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 15,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()",
+        "reason": "Roslyn resolved reflection target 'typeof(EmailPlugin)' to 'Sample.DynamicWiring.EmailPlugin'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 23,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.CreateFromTypeOf()' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 18,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.CreateGeneric()' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateGenericRuntime<T>()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 38,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.CreateGenericRuntime<T>()' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 28,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.CreateNamedTypeArgument()' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.CreateRuntime(System.Type pluginType)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 33,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.CreateRuntime(System.Type pluginType)' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory",
+      "target": "method:Sample.DynamicWiring:Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "PluginFactory.cs",
+        "line": 13,
+        "symbol": "Sample.DynamicWiring.RuntimePluginFactory",
+        "reason": "Roslyn declared method 'Sample.DynamicWiring.RuntimePluginFactory.StaticTypeReference()' in type 'Sample.DynamicWiring.RuntimePluginFactory'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "MERIDIAN_REFLECTION_DYNAMIC_TARGET",
+      "severity": "warning",
+      "message": "Activator.CreateInstance target in 'Activator.CreateInstance(pluginType)' is not statically resolvable; no reflected type edge was emitted.",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L35"
+    },
+    {
+      "id": "MERIDIAN_REFLECTION_DYNAMIC_TARGET",
+      "severity": "warning",
+      "message": "Activator.CreateInstance target in 'Activator.CreateInstance<T>()' is not statically resolvable; no reflected type edge was emitted.",
+      "source_file": "PluginFactory.cs",
+      "source_location": "L40"
+    }
+  ]
+}

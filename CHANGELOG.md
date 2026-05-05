@@ -40,12 +40,16 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP graph load limits for graph JSON size, node count, edge count, and diagnostic count.
 - Process-level CLI tests for help, usage errors, scan smoke output, and scan trust-boundary behavior.
 - GitHub Actions CI for restore, build, test, format, vulnerability, and pack checks.
+- EF Core preview analyzer for source `DbContext` nodes, `DbSet<TEntity>` containment, DbContext usage, and method-level `queries` edges.
+- Static reflection preview analyzer for `typeof(T)` and `Activator.CreateInstance` targets, including diagnostics for runtime-only reflection targets.
+- EF Core and dynamic-wiring sample projects with golden-file analyzer coverage.
+- MCP schema discovery values for `dbcontext`, `queries`, and `reflects`.
 
 ### Changed
 
 - Split the Roslyn analyzer internals into focused loading, source filtering, graph factory, direct-call, type-declaration, and DI analyzer components.
-- Updated the prototype generator/package version to `0.3.0-alpha.2` for MCP freshness and agent-hardening output.
-- Revised the roadmap with `0.3.0-alpha.2` as MCP freshness and agent-hardening work before EF Core/reflection analyzer expansion.
+- Updated the prototype generator/package version to `0.4.0-alpha.1` for EF Core and static dynamic-wiring preview output.
+- Revised the roadmap with `0.4.0-alpha.1` as a focused EF Core/static reflection preview before broader assembly scanning and dynamic inference.
 - `query_graph` now returns empty edge results when a requested node filter matches no nodes instead of broad relation results.
 - MCP required blank inputs now return structured `invalid_input` responses instead of unstructured argument exceptions.
 - `meridian scan` now makes the MSBuild project-evaluation trust boundary explicit and supports `--trust-project` to suppress the warning for trusted repositories.
