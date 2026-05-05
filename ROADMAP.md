@@ -193,7 +193,7 @@ Scope:
 - freshness protocol:
   - after source edits, run `meridian scan`
   - then call `reload_graph` or restart the MCP server before trusting changed-code graph results
-- CLI smoke-test coverage that validates generated graph contents, not only exit codes
+- CLI smoke-test requirements that validate generated graph contents, not only exit codes
 - preview contract for planned human-readable `summary`, `tree`, and `report` outputs derived from `graph.json`
 - honest hook/watch limitation wording: automatic watch is not implemented; future automation must trigger both scan and MCP reload
 

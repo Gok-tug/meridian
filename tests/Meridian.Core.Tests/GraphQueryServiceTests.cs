@@ -48,6 +48,23 @@ public sealed class GraphQueryServiceTests
     }
 
     [Fact]
+    public void ResolveNode_case_only_id_matches_are_ambiguous_unless_query_is_exact_id()
+    {
+        var graph = CreateCaseOnlyIdCollisionGraph();
+        var query = new GraphQueryService(graph);
+
+        var lowerResolution = query.ResolveNode("method:sample:case.run()");
+        var upperResolution = query.ResolveNode("method:Sample:Case.Run()");
+        var caseInsensitiveResolution = query.ResolveNode("METHOD:SAMPLE:CASE.RUN()");
+
+        Assert.Equal(GraphNodeResolutionStatus.Found, lowerResolution.Status);
+        Assert.Equal("method:sample:case.run()", lowerResolution.Node?.Id);
+        Assert.Equal(GraphNodeResolutionStatus.Found, upperResolution.Status);
+        Assert.Equal("method:Sample:Case.Run()", upperResolution.Node?.Id);
+        Assert.Equal(GraphNodeResolutionStatus.Ambiguous, caseInsensitiveResolution.Status);
+    }
+
+    [Fact]
     public void ResolveNode_unique_exact_label_returns_single_match()
     {
         var graph = CreateGraph();
@@ -105,6 +122,14 @@ public sealed class GraphQueryServiceTests
             Confidence = ConfidenceLevels.Extracted,
             Evidence = new GraphEvidence { File = "Sample.cs", Line = 20 }
         });
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateCaseOnlyIdCollisionGraph()
+    {
+        var builder = new GraphBuilder();
+        builder.AddNode(new GraphNode { Id = "method:sample:case.run()", Label = "Case.Run", Kind = GraphNodeKinds.Method, Symbol = "Sample.LowerCase.Run()" });
+        builder.AddNode(new GraphNode { Id = "method:Sample:Case.Run()", Label = "Case.Run", Kind = GraphNodeKinds.Method, Symbol = "Sample.UpperCase.Run()" });
         return builder.Build(".");
     }
 

@@ -44,7 +44,7 @@ public sealed class MeridianGraphToolService
         GraphRelations.Publishes
     ];
 
-    private const char EdgeKeySeparator = '';
+    private const char EdgeKeySeparator = '\u001f';
 
     private readonly McpGraphStore _store;
 
@@ -95,7 +95,8 @@ public sealed class MeridianGraphToolService
             current.Graph.GeneratorVersion,
             current.LoadedAt,
             current.FileLastWriteTime,
-            result.Message ?? "Graph reloaded.");
+            result.PreviousGraphPreserved,
+            result.Message is null ? "Graph reloaded." : $"Reload failed; previous graph preserved. {result.Message}");
     }
 
     public GraphSearchResponse QueryGraph(

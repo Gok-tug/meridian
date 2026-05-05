@@ -24,6 +24,19 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public async Task ReloadGraph_tool_forwards_cancellation()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        var tools = new MeridianMcpTools(service);
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => tools.ReloadGraph(cancellation.Token));
+    }
+
+    [Fact]
     public async Task ReloadGraph_updates_visible_graph_from_configured_file()
     {
         var graphPath = CreateGraphPath();
@@ -53,7 +66,74 @@ public sealed class MeridianGraphToolServiceTests
 
         Assert.Equal("reload_failed", reload.Status);
         Assert.Equal(7, reload.NodeCount);
-        Assert.NotNull(reload.Message);
+        Assert.True(reload.PreviousGraphPreserved);
+        Assert.Contains("previous graph preserved", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_empty_json_object_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, "{}");
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.True(reload.PreviousGraphPreserved);
+        Assert.Contains("previous graph preserved", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("schema_version", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_missing_nodes_collection_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, """
+            {
+              "schema_version": "0.1",
+              "generator": "Meridian",
+              "generator_version": "0.3.0-alpha.2",
+              "edges": [],
+              "diagnostics": []
+            }
+            """);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.True(reload.PreviousGraphPreserved);
+        Assert.Contains("nodes", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_unsupported_schema_version_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, """
+            {
+              "schema_version": "9.9",
+              "generator": "Meridian",
+              "generator_version": "0.3.0-alpha.2",
+              "nodes": [],
+              "edges": [],
+              "diagnostics": []
+            }
+            """);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.True(reload.PreviousGraphPreserved);
+        Assert.Contains("Unsupported graph schema version", reload.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal("ok", service.GetNode("Start.Run").Status);
     }
 
@@ -77,7 +157,7 @@ public sealed class MeridianGraphToolServiceTests
         var reload = await service.ReloadGraphAsync();
 
         Assert.Equal("reload_failed", reload.Status);
-        Assert.Contains("generator version", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("generator_version", reload.Message, StringComparison.OrdinalIgnoreCase);
         Assert.Equal("ok", service.GetNode("Start.Run").Status);
     }
 

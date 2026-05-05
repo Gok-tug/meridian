@@ -54,6 +54,7 @@ public sealed record ReloadGraphResponse(
     string GeneratorVersion,
     DateTimeOffset LoadedAt,
     DateTimeOffset? FileLastWriteTime = null,
+    bool PreviousGraphPreserved = false,
     string? Message = null);
 
 public sealed record GraphMetadataDto(

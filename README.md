@@ -94,7 +94,7 @@ Current prototype support:
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - JSON graph export
 - `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint/EF/reflection limitation reporting
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
 - Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up work:
@@ -104,7 +104,7 @@ Planned follow-up work:
 - Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
 - Entity Framework Core DbContext and DbSet usage in `0.4.0-alpha.1`
 - Reflection and assembly scanning in `0.4.0-alpha.1`
-- Agent workflow hardening, CLI graph-validity smoke tests, and planned human-readable graph views in `0.3.0-alpha.2`
+- Agent workflow hardening, CLI graph-validity smoke-test requirements, and planned human-readable graph views in `0.3.0-alpha.2`
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 

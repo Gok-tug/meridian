@@ -82,6 +82,7 @@ Output includes:
 - generator version,
 - load timestamp,
 - graph file timestamp,
+- `previousGraphPreserved` flag,
 - failure message when reload fails.
 
 If reload fails, the previous graph remains active.
@@ -251,4 +252,4 @@ The MCP server should:
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
 - include confidence and evidence so agents do not overstate uncertain links,
-- surface limitations when analyzers have not emitted endpoint, EF Core, reflection, or native interop facts.
+- surface endpoint limitations when endpoint facts have not been emitted, and avoid inventing EF Core, reflection, or native interop facts until those analyzers exist.

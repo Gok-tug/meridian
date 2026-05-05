@@ -25,9 +25,9 @@ public sealed class MeridianMcpTools
 
     [McpServerTool(Name = "reload_graph", ReadOnly = false, Destructive = false, Idempotent = false, OpenWorld = true, UseStructuredContent = true)]
     [Description("Reload the configured graph.json file into this running MCP server. This does not run Roslyn/MSBuild or execute source code; run meridian scan first when source files change. " + SharedNote)]
-    public Task<ReloadGraphResponse> ReloadGraph()
+    public Task<ReloadGraphResponse> ReloadGraph(CancellationToken cancellationToken = default)
     {
-        return _service.ReloadGraphAsync();
+        return _service.ReloadGraphAsync(cancellationToken);
     }
 
     [McpServerTool(Name = "query_graph", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]

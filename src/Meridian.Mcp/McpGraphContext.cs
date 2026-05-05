@@ -17,6 +17,7 @@ public sealed class McpGraphContext
     {
         ArgumentNullException.ThrowIfNull(graph);
         ArgumentNullException.ThrowIfNull(options);
+        McpGraphValidator.Validate(graph);
 
         Graph = graph;
         Options = options;

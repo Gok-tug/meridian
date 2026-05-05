@@ -43,11 +43,7 @@ public sealed class GraphQueryService
             throw new ArgumentOutOfRangeException(nameof(maxCandidates), maxCandidates, "The maximum candidate count must be positive.");
         }
 
-        var exactIdMatch = _graph.Nodes
-            .Where(node => node.Id.Equals(query, StringComparison.OrdinalIgnoreCase))
-            .OrderBy(node => node.Id, StringComparer.Ordinal)
-            .FirstOrDefault();
-        if (exactIdMatch is not null)
+        if (_nodesById.TryGetValue(query, out var exactIdMatch))
         {
             return GraphNodeResolution.Found(query, new GraphNodeMatch(exactIdMatch, 100));
         }
