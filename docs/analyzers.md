@@ -36,8 +36,8 @@ Responsibilities:
 - index symbols,
 - create type, method, enum, enum member, property, and field nodes,
 - extract direct method calls,
-- extract method-level static references to source properties, fields, enum types, and enum members,
-- classify direct property/field access as `reads`, `writes`, or both for assignments, compound assignments, increments, `ref`, and `out`,
+- extract ordinary-method static references to source properties, fields, enum types, and enum members,
+- classify direct property/field access in ordinary methods as `reads`, `writes`, or both for assignments, compound assignments, increments, `ref`, and `out`,
 - emit `uses` for enum references and `nameof(...)` references,
 - skip generated/bin/obj source noise by default,
 - map symbols to source locations,
@@ -57,7 +57,7 @@ Confidence:
 - `EXTRACTED` when Roslyn resolves the target symbol.
 - `AMBIGUOUS` when overload or dynamic dispatch cannot be resolved precisely.
 
-Member references are intentionally method-level and conservative. Meridian does not perform path-sensitive control-flow analysis, interprocedural dataflow, runtime dispatch resolution, or XAML binding analysis in this slice.
+Member references are intentionally limited to ordinary methods and conservative. Meridian does not extract constructor, accessor, or operator member references, and does not perform path-sensitive control-flow analysis, interprocedural dataflow, runtime dispatch resolution, or XAML binding analysis in this slice.
 
 ## ASP.NET Core analyzer
 

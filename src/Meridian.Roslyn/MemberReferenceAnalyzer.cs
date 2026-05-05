@@ -35,7 +35,7 @@ internal sealed class MemberReferenceAnalyzer
         GraphBuilder graph,
         CancellationToken cancellationToken)
     {
-        if (IsDuplicateChildReference(node))
+        if (IsDuplicateChildReference(node) || IsImplicitVarType(node))
         {
             return;
         }
@@ -301,6 +301,18 @@ internal sealed class MemberReferenceAnalyzer
             MemberBindingExpressionSyntax memberBinding when memberBinding.Name == node => true,
             QualifiedNameSyntax qualifiedName when qualifiedName.Left == node || qualifiedName.Right == node => true,
             AliasQualifiedNameSyntax aliasQualifiedName when aliasQualifiedName.Name == node => true,
+            _ => false
+        };
+    }
+
+    private static bool IsImplicitVarType(SyntaxNode node)
+    {
+        return node is IdentifierNameSyntax { IsVar: true } identifier && identifier.Parent switch
+        {
+            VariableDeclarationSyntax declaration when declaration.Type == identifier => true,
+            ForEachStatementSyntax forEachStatement when forEachStatement.Type == identifier => true,
+            DeclarationExpressionSyntax declarationExpression when declarationExpression.Type == identifier => true,
+            DeclarationPatternSyntax declarationPattern when declarationPattern.Type == identifier => true,
             _ => false
         };
     }

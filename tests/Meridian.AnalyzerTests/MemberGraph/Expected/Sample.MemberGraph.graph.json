@@ -28,8 +28,6 @@
         "accessibility": "public",
         "constant_value": "0",
         "containing_enum": "Sample.MemberGraph.ExecutionMode",
-        "is_const": "true",
-        "is_static": "true",
         "member_type": "Sample.MemberGraph.ExecutionMode"
       }
     },
@@ -44,8 +42,6 @@
         "accessibility": "public",
         "constant_value": "1",
         "containing_enum": "Sample.MemberGraph.ExecutionMode",
-        "is_const": "true",
-        "is_static": "true",
         "member_type": "Sample.MemberGraph.ExecutionMode"
       }
     },
@@ -60,8 +56,6 @@
         "accessibility": "public",
         "constant_value": "2",
         "containing_enum": "Sample.MemberGraph.ExecutionMode",
-        "is_const": "true",
-        "is_static": "true",
         "member_type": "Sample.MemberGraph.ExecutionMode"
       }
     },
@@ -575,20 +569,6 @@
         "line": 80,
         "symbol": "Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
         "reason": "Roslyn resolved member reference 'task.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
-      },
-      "metadata": {}
-    },
-    {
-      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
-      "target": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
-      "relation": "uses",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1,
-      "evidence": {
-        "file": "ExecutionFlow.cs",
-        "line": 72,
-        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
-        "reason": "Roslyn resolved member reference 'var' to 'Sample.MemberGraph.ExecutionMode'."
       },
       "metadata": {}
     },

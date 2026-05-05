@@ -260,7 +260,7 @@ Scope:
   - `field` nodes for source fields that participate in routing or dependency state
 - member containment and reference edges:
   - type-to-member declaration edges
-  - method-level static references to source-resolved properties, fields, enum types, and enum members
+  - ordinary-method static references to source-resolved properties, fields, enum types, and enum members
   - conservative `reads` and `writes` edges for directly resolved member access
 - compact symbol summaries for MCP:
   - source file and location

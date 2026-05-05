@@ -136,7 +136,7 @@ Relation meanings:
 | `injects` | Constructor or parameter injection dependency |
 | `implemented_by` | Interface/base abstraction implemented by concrete type |
 | `queries` | EF Core read/query access to DbSet/entity |
-| `writes` | EF Core direct mutation access to DbSet/entity, or method writes a directly resolved source property or field |
+| `writes` | EF Core direct mutation access to DbSet/entity, or ordinary method writes a directly resolved source property or field |
 | `reflects` | Static reflection references a type/member |
 
 ## Confidence

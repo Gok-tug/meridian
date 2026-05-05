@@ -93,7 +93,7 @@ Current prototype support:
 - Roslyn solution/project loading
 - Type, method, enum, enum member, property, and field nodes with `contains` edges
 - Direct method `calls` edges
-- Method-level `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
+- Ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges

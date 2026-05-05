@@ -87,8 +87,6 @@ internal sealed class RoslynGraphFactory
         {
             ["accessibility"] = enumMemberSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
             ["containing_enum"] = enumSymbol,
-            ["is_const"] = BoolString(enumMemberSymbol.IsConst),
-            ["is_static"] = BoolString(enumMemberSymbol.IsStatic),
             ["member_type"] = enumMemberSymbol.Type.ToDisplayString(SymbolDisplay.TypeFormat)
         };
 

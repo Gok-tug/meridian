@@ -32,17 +32,18 @@ Analysis can be incomplete when:
 
 ## Member graph limits
 
-Member graph analysis is conservative. Meridian emits source enum, enum member, property, and field declaration nodes, plus method-level references when Roslyn directly resolves the symbol.
+Member graph analysis is conservative. Meridian emits source enum, enum member, property, and field declaration nodes, plus ordinary-method references when Roslyn directly resolves the symbol.
 
 It does not perform:
 
+- member-reference extraction from constructors, property/event accessors, operators, or conversion operators,
 - full interprocedural dataflow,
 - runtime dynamic dispatch resolution,
 - path-sensitive control-flow or branch reachability analysis,
 - XAML/View-ViewModel binding analysis,
 - arbitrary reflection or string-based member resolution.
 
-`reads` and `writes` edges describe direct source member access in a method body. They do not prove a runtime path always reads or writes that member.
+`reads` and member-level `writes` edges describe direct source member access in an ordinary method body. Entity-level EF Core `writes` edges describe direct static DbSet/DbContext mutation calls when the entity type is known. Neither form proves a runtime path always reads or writes that target.
 
 ## Dependency Injection limits
 

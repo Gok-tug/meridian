@@ -47,7 +47,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP `get_schema` usage hints plus node-kind and relation counts so agents can choose compact queries, evidence opt-in, and relation exclusions more reliably.
 - MCP relation exclusion filters for broad graph searches and traversals, including `contains` filtering for noisy neighbor queries.
 - Member graph preview nodes for source enums, enum members, properties, and fields.
-- Method-level member-reference edges with conservative `reads`, `writes`, and `uses` relations for directly resolved source members, enum references, and `nameof(...)` references.
+- Ordinary-method member-reference edges with conservative `reads`, `writes`, and `uses` relations for directly resolved source members, enum references, and `nameof(...)` references.
 - `Sample.MemberGraph` with golden-file analyzer coverage for member declarations, member access, enum usage, and feature-planning naming patterns.
 - MCP `get_symbol_summary` for compact symbol context with relation counts, contained members, interface/DI links, and follow-up queries.
 - MCP `plan_feature` for deterministic graph-guided feature-planning navigation when a requested new concept may be absent from the graph.

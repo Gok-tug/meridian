@@ -133,7 +133,7 @@ If reload fails, keep using the previous graph only if the response says the pre
 Current alpha builds emit:
 
 - direct method calls, type/member containment, enum/property/field nodes, and interface implementation edges
-- method-level `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
+- ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - constructor injection and generic DI registration edges (including narrow factory lambdas)
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types
