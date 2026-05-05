@@ -63,6 +63,8 @@ Output includes:
 - relations present in the loaded graph,
 - known Meridian node-kind constants,
 - known Meridian relation constants,
+- node-kind and relation counts,
+- usage hints for compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
 - stale graph note.
 
 ### `reload_graph`

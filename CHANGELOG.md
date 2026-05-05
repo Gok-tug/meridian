@@ -44,6 +44,8 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Static reflection preview analyzer for `typeof(T)` and `Activator.CreateInstance` targets, including diagnostics for runtime-only reflection targets.
 - EF Core and dynamic-wiring sample projects with golden-file analyzer coverage.
 - MCP schema discovery values for `dbcontext`, `queries`, `writes`, and `reflects`.
+- MCP `get_schema` usage hints plus node-kind and relation counts so agents can choose compact queries, evidence opt-in, and relation exclusions more reliably.
+- MCP relation exclusion filters for broad graph searches and traversals, including `contains` filtering for noisy neighbor queries.
 
 ### Changed
 
@@ -53,6 +55,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `query_graph` now returns empty edge results when a requested node filter matches no nodes instead of broad relation results.
 - MCP required blank inputs now return structured `invalid_input` responses instead of unstructured argument exceptions.
 - `meridian scan` now makes the MSBuild project-evaluation trust boundary explicit and supports `--trust-project` to suppress the warning for trusted repositories.
+- MCP bulk graph tools now omit edge evidence by default to reduce agent context usage while keeping evidence available through `includeEvidence: true`.
 
 ## 0.1.0-alpha.1 — Planned
 

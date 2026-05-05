@@ -14,7 +14,10 @@ public sealed record SchemaResponse(
     IReadOnlyList<string> KnownNodeKinds,
     IReadOnlyList<string> KnownRelations,
     IReadOnlyDictionary<string, int>? NodeKindCounts = null,
-    IReadOnlyDictionary<string, int>? RelationCounts = null);
+    IReadOnlyDictionary<string, int>? RelationCounts = null)
+{
+    public IReadOnlyList<string> UsageHints { get; init; } = [];
+}
 
 public sealed record NodeResponse(
     string Status,

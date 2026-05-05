@@ -48,6 +48,15 @@ public sealed class MeridianGraphToolService
         GraphRelations.Reflects
     ];
 
+    private static readonly string[] SchemaUsageHints =
+    [
+        "Start with compact bulk calls; includeEvidence defaults to false for query_graph, get_neighbors, and find_flows_to_symbol.",
+        "Use includeEvidence:true only when you need evidence file, line, symbol, and reason details.",
+        "For get_neighbors on service or type nodes, use excludeRelations:[\"contains\"] to reduce declaration-containment noise.",
+        "No node, edge, or path result means the fact is absent from the loaded Meridian graph, not proof of absence in source code.",
+        "If source changed, run meridian scan and reload_graph before concluding."
+    ];
+
     private const char EdgeKeySeparator = '\u001f';
 
     private readonly McpGraphStore _store;
@@ -89,7 +98,10 @@ public sealed class MeridianGraphToolService
             KnownNodeKinds,
             KnownRelations,
             nodeKindCounts,
-            relationCounts);
+            relationCounts)
+        {
+            UsageHints = SchemaUsageHints
+        };
     }
 
     public async Task<ReloadGraphResponse> ReloadGraphAsync(CancellationToken cancellationToken = default)

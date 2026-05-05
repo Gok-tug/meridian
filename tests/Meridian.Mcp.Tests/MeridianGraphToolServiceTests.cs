@@ -22,6 +22,9 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(GraphRelations.Calls, result.RelationsPresent);
         Assert.Contains("get_schema", result.Tools);
         Assert.Contains("reload_graph", result.Tools);
+        Assert.Contains(result.UsageHints, hint => hint.Contains("includeEvidence defaults to false", StringComparison.Ordinal));
+        Assert.Contains(result.UsageHints, hint => hint.Contains("excludeRelations", StringComparison.Ordinal));
+        Assert.Contains(result.UsageHints, hint => hint.Contains("not proof of absence in source code", StringComparison.Ordinal));
         Assert.Equal(7, result.Graph.NodeCount);
     }
 
