@@ -306,6 +306,7 @@ Scope:
   - how agents should use Meridian before grep/read
   - how to combine Meridian with targeted grep when a concept is not yet in source
   - how to avoid overclaiming from graph absence
+  - feature-planning ranking guardrails: keep rankings conservative, expose reasons and limitations, and avoid hard-coded domain-specific edit orders
 - real-project benchmark report comparing:
   - broad grep/read
   - broad MCP text search
