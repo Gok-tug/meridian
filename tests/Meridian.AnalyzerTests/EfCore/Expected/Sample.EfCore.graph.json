@@ -1,9 +1,25 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.1",
+  "generator_version": "0.4.0-alpha.2",
   "root": ".",
   "nodes": [
+    {
+      "id": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "label": "CatalogQueries._context",
+      "kind": "field",
+      "symbol": "Sample.EfCore.CatalogQueries._context",
+      "source_file": "CatalogQueries.cs",
+      "source_location": "L5",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.EfCore.CatalogQueries",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Sample.EfCore.CatalogDbContext"
+      }
+    },
     {
       "id": "method:Sample.EfCore:Sample.EfCore.CatalogDbContext.ListOrdersInsideContext()",
       "label": "CatalogDbContext.ListOrdersInsideContext",
@@ -86,6 +102,102 @@
       "metadata": {}
     },
     {
+      "id": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "label": "CatalogDbContext.Customers",
+      "kind": "property",
+      "symbol": "Sample.EfCore.CatalogDbContext.Customers",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L7",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.CatalogDbContext",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "Microsoft.EntityFrameworkCore.DbSet<Sample.EfCore.Customer>"
+      }
+    },
+    {
+      "id": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Orders",
+      "label": "CatalogDbContext.Orders",
+      "kind": "property",
+      "symbol": "Sample.EfCore.CatalogDbContext.Orders",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.CatalogDbContext",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "Microsoft.EntityFrameworkCore.DbSet<Sample.EfCore.Order>"
+      }
+    },
+    {
+      "id": "property:Sample.EfCore:Sample.EfCore.Customer.Id",
+      "label": "Customer.Id",
+      "kind": "property",
+      "symbol": "Sample.EfCore.Customer.Id",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L19",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.Customer",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.EfCore:Sample.EfCore.Customer.Name",
+      "label": "Customer.Name",
+      "kind": "property",
+      "symbol": "Sample.EfCore.Customer.Name",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L21",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.Customer",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.EfCore:Sample.EfCore.Order.Customer",
+      "label": "Order.Customer",
+      "kind": "property",
+      "symbol": "Sample.EfCore.Order.Customer",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L28",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.Order",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "Sample.EfCore.Customer"
+      }
+    },
+    {
+      "id": "property:Sample.EfCore:Sample.EfCore.Order.Id",
+      "label": "Order.Id",
+      "kind": "property",
+      "symbol": "Sample.EfCore.Order.Id",
+      "source_file": "CatalogDbContext.cs",
+      "source_location": "L26",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.EfCore.Order",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
       "id": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "label": "CatalogDbContext",
       "kind": "dbcontext",
@@ -161,6 +273,34 @@
     },
     {
       "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 29,
+        "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 29,
+        "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved member reference '_context.Customers' to 'Sample.EfCore.CatalogDbContext.Customers'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
       "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "relation": "uses",
       "confidence": "EXTRACTED",
@@ -184,6 +324,48 @@
         "line": 29,
         "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
         "reason": "Roslyn resolved EF Core write '_context.Customers.Add(customer)' to entity 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.CustomersMemberName()",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 49,
+        "symbol": "Sample.EfCore.CatalogQueries.CustomersMemberName()",
+        "reason": "Roslyn resolved member reference 'CatalogDbContext.Customers' to 'Sample.EfCore.CatalogDbContext.Customers'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 24,
+        "symbol": "Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 24,
+        "symbol": "Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+        "reason": "Roslyn resolved member reference '_context.Customers' to 'Sample.EfCore.CatalogDbContext.Customers'."
       },
       "metadata": {}
     },
@@ -217,6 +399,34 @@
     },
     {
       "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.ListCustomers()",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 14,
+        "symbol": "Sample.EfCore.CatalogQueries.ListCustomers()",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.ListCustomers()",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 14,
+        "symbol": "Sample.EfCore.CatalogQueries.ListCustomers()",
+        "reason": "Roslyn resolved member reference '_context.Customers' to 'Sample.EfCore.CatalogDbContext.Customers'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.ListCustomers()",
       "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "relation": "uses",
       "confidence": "EXTRACTED",
@@ -240,6 +450,20 @@
         "line": 14,
         "symbol": "Sample.EfCore.CatalogQueries.ListCustomers()",
         "reason": "Roslyn resolved EF Core query '_context.Customers.ToList()' to entity 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.ListOrders()",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 19,
+        "symbol": "Sample.EfCore.CatalogQueries.ListOrders()",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
       },
       "metadata": {}
     },
@@ -273,6 +497,34 @@
     },
     {
       "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 39,
+        "symbol": "Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 39,
+        "symbol": "Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved member reference '_context.Customers' to 'Sample.EfCore.CatalogDbContext.Customers'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.RemoveCustomer(Sample.EfCore.Customer customer)",
       "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "relation": "uses",
       "confidence": "EXTRACTED",
@@ -301,6 +553,20 @@
     },
     {
       "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.SaveChanges()",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 44,
+        "symbol": "Sample.EfCore.CatalogQueries.SaveChanges()",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.SaveChanges()",
       "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "relation": "uses",
       "confidence": "EXTRACTED",
@@ -310,6 +576,20 @@
         "line": 44,
         "symbol": "Sample.EfCore.CatalogQueries.SaveChanges()",
         "reason": "Roslyn resolved EF Core DbContext use '_context.SaveChanges' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 34,
+        "symbol": "Sample.EfCore.CatalogQueries.UpdateCustomer(Sample.EfCore.Customer customer)",
+        "reason": "Roslyn resolved member reference '_context' to 'Sample.EfCore.CatalogQueries._context'."
       },
       "metadata": {}
     },
@@ -357,6 +637,34 @@
     },
     {
       "source": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Customers",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 7,
+        "symbol": "Sample.EfCore.CatalogDbContext",
+        "reason": "Roslyn declared property 'Sample.EfCore.CatalogDbContext.Customers' in 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "target": "property:Sample.EfCore:Sample.EfCore.CatalogDbContext.Orders",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 9,
+        "symbol": "Sample.EfCore.CatalogDbContext",
+        "reason": "Roslyn declared property 'Sample.EfCore.CatalogDbContext.Orders' in 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
       "target": "type:Sample.EfCore:Sample.EfCore.Customer",
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -380,6 +688,20 @@
         "line": 9,
         "symbol": "Sample.EfCore.CatalogDbContext",
         "reason": "EF Core DbSet property 'Orders' exposes entity 'Sample.EfCore.Order'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogQueries",
+      "target": "field:Sample.EfCore:Sample.EfCore.CatalogQueries._context",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 5,
+        "symbol": "Sample.EfCore.CatalogQueries",
+        "reason": "Roslyn declared field 'Sample.EfCore.CatalogQueries._context' in 'Sample.EfCore.CatalogQueries'."
       },
       "metadata": {}
     },
@@ -506,6 +828,62 @@
         "line": 7,
         "symbol": "Sample.EfCore.CatalogQueries.CatalogQueries(Sample.EfCore.CatalogDbContext context)",
         "reason": "Constructor parameter 'context' injects 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "target": "property:Sample.EfCore:Sample.EfCore.Customer.Id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 19,
+        "symbol": "Sample.EfCore.Customer",
+        "reason": "Roslyn declared property 'Sample.EfCore.Customer.Id' in 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "target": "property:Sample.EfCore:Sample.EfCore.Customer.Name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 21,
+        "symbol": "Sample.EfCore.Customer",
+        "reason": "Roslyn declared property 'Sample.EfCore.Customer.Name' in 'Sample.EfCore.Customer'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.Order",
+      "target": "property:Sample.EfCore:Sample.EfCore.Order.Customer",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 28,
+        "symbol": "Sample.EfCore.Order",
+        "reason": "Roslyn declared property 'Sample.EfCore.Order.Customer' in 'Sample.EfCore.Order'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.Order",
+      "target": "property:Sample.EfCore:Sample.EfCore.Order.Id",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogDbContext.cs",
+        "line": 26,
+        "symbol": "Sample.EfCore.Order",
+        "reason": "Roslyn declared property 'Sample.EfCore.Order.Id' in 'Sample.EfCore.Order'."
       },
       "metadata": {}
     }

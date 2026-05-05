@@ -13,6 +13,10 @@ Valid alpha versions:
 0.3.0-alpha.1
 0.3.0-alpha.2
 0.4.0-alpha.1
+0.4.0-alpha.2
+0.4.0-alpha.3
+0.5.0-alpha.1
+0.6.0-alpha.1
 ```
 
 Stable versions such as `0.1.0` should not be published until the package has a tested analyzer pipeline and documented graph contract.
@@ -227,7 +231,13 @@ Scope:
   - `Activator.CreateInstance(typeof(T))`
   - diagnostics for runtime-only reflection targets instead of guessed edges
 - MCP schema discovery for EF Core and reflection graph relations
-- golden-file tests and sample projects for EF Core and static dynamic-wiring patterns
+- MCP agent-efficiency hardening from real-project graph audits:
+  - bulk edge evidence omitted by default for `query_graph`, `get_neighbors`, and `find_flows_to_symbol`
+  - `includeEvidence` opt-in for detailed file, line, symbol, and reason evidence
+  - `excludeRelations` filters applied before traversal and capping so noisy structural edges such as `contains` can be removed
+  - `get_schema` usage hints, node-kind counts, and relation counts for more reliable agent query planning
+  - safer no-result and no-path wording that treats graph absence as absence from the loaded precomputed graph, not proof of absence in source
+- golden-file tests and sample projects for EF Core, static dynamic-wiring, and MCP efficiency patterns
 
 Deferred to later milestones:
 
@@ -237,6 +247,78 @@ Deferred to later milestones:
 - SQL reconstruction, provider behavior, migrations, and full LINQ expression semantics
 - stronger ambiguous edge reporting beyond the current candidate output
 
+## 0.4.0-alpha.2 — Member graph and feature-planning MCP
+
+Goal: make Meridian useful for feature-planning questions where the new concept does not exist yet, such as "where should I add a new execution mode?"
+
+Scope:
+
+- member-level source graph preview:
+  - `enum` nodes for source-resolved enum declarations
+  - `enum_member` nodes for enum values
+  - `property` nodes for source properties, especially persisted/domain and ViewModel state
+  - `field` nodes for source fields that participate in routing or dependency state
+- member containment and reference edges:
+  - type-to-member declaration edges
+  - method-level static references to source-resolved properties, fields, enum types, and enum members
+  - conservative `reads` and `writes` edges for directly resolved member access
+- compact symbol summaries for MCP:
+  - source file and location
+  - implemented interfaces and implementations
+  - DI registrations and injection sites
+  - important contained methods and members
+  - relation counts without full edge payloads
+- feature-planning MCP preview tool that returns ranked edit points instead of raw graph arrays:
+  - accepts a goal, seed symbols, and optional terms
+  - returns likely files/symbols to inspect, why each matters, and follow-up graph queries
+  - explicitly handles absent new concepts by looking for existing abstractions, strategies, modes, factories, registries, orchestrators, and executors
+- agent playbook guidance for feature planning:
+  - do not search only for the new term when the feature is not implemented yet
+  - start from existing abstractions and extension points
+  - use grep only for missing domain vocabulary or constants not yet represented in the graph
+- golden-file coverage over member nodes and feature-planning fixture graphs
+
+Not in scope:
+
+- full interprocedural dataflow
+- runtime reflection, dynamic dispatch, or container execution
+- XAML/View-ViewModel binding analysis
+- full conditional/control-flow semantics
+- LLM-generated plans inside Meridian
+
+## 0.4.0-alpha.3 — Agent summaries and graph-guided workflow
+
+Goal: reduce agent context use by producing deterministic summaries and ranked navigation surfaces over `graph.json`, inspired by Graphify-style reports without giving up Roslyn semantic precision.
+
+Scope:
+
+- deterministic `agent-summary` output derived from `graph.json`:
+  - central abstractions and highly connected services
+  - subsystem/community-style clusters where graph structure is strong enough
+  - likely extension points based on naming and graph position
+  - graph limitations and analyzer blind spots present in the current graph
+  - suggested follow-up MCP queries
+- MCP summary/statistics tools:
+  - compact graph stats with node-kind, relation, and confidence breakdowns
+  - symbol summary retrieval without broad neighbor traversal
+  - optional token-budgeted response mode for broad exploratory queries
+- assistant workflow integration docs:
+  - how agents should use Meridian before grep/read
+  - how to combine Meridian with targeted grep when a concept is not yet in source
+  - how to avoid overclaiming from graph absence
+- real-project benchmark report comparing:
+  - broad grep/read
+  - broad MCP text search
+  - targeted MCP graph navigation
+  - hybrid Meridian + grep workflow
+
+Not in scope:
+
+- multi-language tree-sitter analysis
+- document, PDF, image, video, or URL ingestion
+- replacing Roslyn semantic analysis with heuristic extraction
+- automatic assistant hook installation across third-party tools
+
 ## 0.5.0-alpha.1 — Performance and hardening
 
 Goal: prepare Meridian for large real-world solutions.
@@ -245,10 +327,11 @@ Scope:
 
 - benchmark suite
 - large solution benchmark report
-- cache design
-- incremental analysis design
+- MCP payload-size benchmarks for realistic agent workflows
+- cache design with stable file fingerprints and safe invalidation
+- incremental analysis design for changed projects/files
+- graph diff stability and stable node ID review
 - CI hardening
-- graph diff stability
 - memory usage tracking
 - performance documentation updates
 
@@ -257,6 +340,31 @@ Benchmark targets:
 - small solution: under 30 seconds
 - medium solution, 10-25 projects: under 2 minutes
 - large solution, 50+ projects / 500k+ LOC: measured and published before stable release
+
+## 0.6.0-alpha.1 — UI bindings and conditional flow research
+
+Goal: close major blind spots that matter for desktop/UI-heavy .NET applications and explain not only that symbols are connected, but which static conditions select a route.
+
+Scope:
+
+- XAML/View-ViewModel binding analyzer research:
+  - Avalonia and WPF view-to-ViewModel association patterns
+  - bindings from XAML properties to ViewModel properties
+  - command bindings to ViewModel methods or command properties
+  - diagnostics when bindings cannot be resolved statically
+- method-body conditional analysis preview:
+  - `if`/`switch` branches over source-resolved enum values and simple constants
+  - method-level `switches_on` or `branches_on` edges to properties, fields, enum types, and enum members
+  - conservative branch metadata that records the condition text and source location
+  - no inferred runtime path when a condition cannot be statically tied to known symbols
+- golden-file samples for UI binding and conditional routing patterns
+
+Not in scope:
+
+- complete XAML runtime behavior
+- arbitrary binding converters, reflection-heavy bindings, or dynamic DataContext inference
+- full symbolic execution or path-sensitive dataflow
+- proving that a branch is reachable at runtime
 
 ## Future
 

@@ -7,7 +7,7 @@ namespace Meridian.Mcp;
 [McpServerToolType]
 public sealed class MeridianMcpTools
 {
-    private const string SchemaNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again and the running MCP server is reloaded with reload_graph or restarted. Available node kinds include project, type, method, endpoint, diagnostic, dbcontext, mediatr_request, mediatr_notification, mediatr_handler. Available relations include contains, calls, uses, injects, registered_as, implemented_by, handled_by, sends, publishes, queries, writes, reflects.";
+    private const string SchemaNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again and the running MCP server is reloaded with reload_graph or restarted. Available node kinds include project, type, method, enum, enum_member, property, field, endpoint, diagnostic, dbcontext, mediatr_request, mediatr_notification, mediatr_handler. Available relations include contains, calls, uses, reads, injects, registered_as, implemented_by, handled_by, sends, publishes, queries, writes, reflects.";
     private const string SeeSchemaNote = "See get_schema for graph freshness and schema notes.";
 
     private readonly MeridianGraphToolService _service;
@@ -66,6 +66,26 @@ public sealed class MeridianMcpTools
         [Description("Optional edge relations to exclude, such as contains, before traversal and result capping.")] string[]? excludeRelations = null)
     {
         return _service.GetNeighborsWithOptions(idOrLabel, direction, depth, relation, maxResults, includeEvidence, excludeRelations);
+    }
+
+    [McpServerTool(Name = "get_symbol_summary", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
+    [Description("Return compact context for one symbol: relation counts, contained members, interface/DI links, and follow-up queries without bulk edge evidence. " + SeeSchemaNote)]
+    public SymbolSummaryResponse GetSymbolSummary(
+        [Description("Graph node id, label, or symbol.")] string idOrLabel,
+        [Description("Maximum returned items per summary section. The server caps this to protect the agent context window.")] int? maxResults = null)
+    {
+        return _service.GetSymbolSummary(idOrLabel, maxResults);
+    }
+
+    [McpServerTool(Name = "plan_feature", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
+    [Description("Rank likely existing edit points for adding a feature, especially when the new concept is absent from the graph. This is deterministic graph navigation, not an LLM-generated implementation plan. " + SeeSchemaNote)]
+    public FeaturePlanResponse PlanFeature(
+        [Description("Feature goal in natural language, such as 'add a new execution mode'.")] string goal,
+        [Description("Optional seed node ids, labels, or symbols that should influence ranking.")] string[]? seedSymbols = null,
+        [Description("Optional extra search terms when the goal uses domain vocabulary not yet represented in the graph.")] string[]? terms = null,
+        [Description("Maximum returned ranked edit points. The server caps this to protect the agent context window.")] int? maxResults = null)
+    {
+        return _service.PlanFeature(goal, seedSymbols, terms, maxResults);
     }
 
     [McpServerTool(Name = "shortest_path", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]

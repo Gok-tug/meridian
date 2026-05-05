@@ -20,8 +20,12 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(MeridianMcpMessages.StaleGraphNote, result.StaleGraphNote);
         Assert.Contains(GraphNodeKinds.Method, result.NodeKindsPresent);
         Assert.Contains(GraphRelations.Calls, result.RelationsPresent);
+        Assert.Contains(GraphNodeKinds.Enum, result.KnownNodeKinds);
+        Assert.Contains(GraphRelations.Reads, result.KnownRelations);
         Assert.Contains("get_schema", result.Tools);
         Assert.Contains("reload_graph", result.Tools);
+        Assert.Contains("get_symbol_summary", result.Tools);
+        Assert.Contains("plan_feature", result.Tools);
         Assert.Contains(result.UsageHints, hint => hint.Contains("includeEvidence defaults to false", StringComparison.Ordinal));
         Assert.Contains(result.UsageHints, hint => hint.Contains("excludeRelations", StringComparison.Ordinal));
         Assert.Contains(result.UsageHints, hint => hint.Contains("not proof of absence in source code", StringComparison.Ordinal));
@@ -643,6 +647,40 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetSymbolSummary_returns_compact_member_and_relation_context()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.GetSymbolSummary("MintTask", maxResults: 5);
+
+        Assert.Equal("ok", result.Status);
+        Assert.Equal("MintTask", result.Node?.Label);
+        Assert.Contains(result.ContainedProperties ?? [], node => node.Label == "MintTask.ExecutionStrategy");
+        Assert.Equal(1, result.OutgoingRelationCounts?[GraphRelations.Contains]);
+        Assert.Contains(result.SuggestedQueries ?? [], query => query.Contains("get_neighbors", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void PlanFeature_ranks_existing_extension_points_for_absent_new_concept()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.PlanFeature(
+            "add Flashbot execution mode",
+            seedSymbols: ["ModuleExecutionStrategy"],
+            terms: ["relay"],
+            maxResults: 3);
+
+        Assert.Equal("ok", result.Status);
+        Assert.Equal("found", Assert.Single(result.Seeds).Status);
+        Assert.Equal("ModuleExecutionStrategy", result.EditPoints[0].Node.Label);
+        Assert.Equal(GraphNodeKinds.Enum, result.EditPoints[0].Node.Kind);
+        Assert.Contains("flashbot", result.Limitation, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("not present in the loaded Meridian graph", result.Limitation);
+        Assert.Contains(result.EditPoints[0].SuggestedQueries, query => query.Contains("get_symbol_summary", StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void GetNode_caps_ambiguous_candidates_and_reports_truncation()
     {
         var service = CreateService(CreateManyAmbiguousGraph(), new MeridianMcpServerOptions
@@ -757,6 +795,35 @@ public sealed class MeridianGraphToolServiceTests
         return builder.Build(".");
     }
 
+    private static GraphDocument CreateMemberPlanningGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "enum:Sample:Sample.ModuleExecutionStrategy", "ModuleExecutionStrategy", "Sample.ModuleExecutionStrategy", GraphNodeKinds.Enum, new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["type_kind"] = "enum"
+        });
+        AddNode(builder, "enum_member:Sample:Sample.ModuleExecutionStrategy.RainbowTable", "ModuleExecutionStrategy.RainbowTable", "Sample.ModuleExecutionStrategy.RainbowTable", GraphNodeKinds.EnumMember);
+        AddNode(builder, "enum_member:Sample:Sample.ModuleExecutionStrategy.RuntimeSigning", "ModuleExecutionStrategy.RuntimeSigning", "Sample.ModuleExecutionStrategy.RuntimeSigning", GraphNodeKinds.EnumMember);
+        AddNode(builder, "type:Sample:Sample.IMintModule", "IMintModule", "Sample.IMintModule", GraphNodeKinds.Type, new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["type_kind"] = "interface"
+        });
+        AddNode(builder, "type:Sample:Sample.MintTask", "MintTask", "Sample.MintTask", GraphNodeKinds.Type);
+        AddNode(builder, "property:Sample:Sample.MintTask.ExecutionStrategy", "MintTask.ExecutionStrategy", "Sample.MintTask.ExecutionStrategy", GraphNodeKinds.Property);
+        AddNode(builder, "type:Sample:Sample.TaskExecutionOrchestrator", "TaskExecutionOrchestrator", "Sample.TaskExecutionOrchestrator", GraphNodeKinds.Type);
+        AddNode(builder, "field:Sample:Sample.TaskExecutionOrchestrator._registry", "TaskExecutionOrchestrator._registry", "Sample.TaskExecutionOrchestrator._registry", GraphNodeKinds.Field);
+        AddNode(builder, "method:Sample:Sample.TaskExecutionOrchestrator.Execute()", "TaskExecutionOrchestrator.Execute", "Sample.TaskExecutionOrchestrator.Execute()");
+        AddEdge(builder, "enum:Sample:Sample.ModuleExecutionStrategy", "enum_member:Sample:Sample.ModuleExecutionStrategy.RainbowTable", GraphRelations.Contains, 1, "Enum contains member.");
+        AddEdge(builder, "enum:Sample:Sample.ModuleExecutionStrategy", "enum_member:Sample:Sample.ModuleExecutionStrategy.RuntimeSigning", GraphRelations.Contains, 2, "Enum contains member.");
+        AddEdge(builder, "type:Sample:Sample.MintTask", "property:Sample:Sample.MintTask.ExecutionStrategy", GraphRelations.Contains, 3, "Type contains property.");
+        AddEdge(builder, "type:Sample:Sample.TaskExecutionOrchestrator", "field:Sample:Sample.TaskExecutionOrchestrator._registry", GraphRelations.Contains, 4, "Type contains field.");
+        AddEdge(builder, "type:Sample:Sample.TaskExecutionOrchestrator", "method:Sample:Sample.TaskExecutionOrchestrator.Execute()", GraphRelations.Contains, 5, "Type contains method.");
+        AddEdge(builder, "method:Sample:Sample.TaskExecutionOrchestrator.Execute()", "property:Sample:Sample.MintTask.ExecutionStrategy", GraphRelations.Reads, 6, "Method reads strategy.");
+        AddEdge(builder, "method:Sample:Sample.TaskExecutionOrchestrator.Execute()", "enum_member:Sample:Sample.ModuleExecutionStrategy.RuntimeSigning", GraphRelations.Uses, 7, "Method uses enum member.");
+        AddEdge(builder, "type:Sample:Sample.IMintModule", "type:Sample:Sample.TaskExecutionOrchestrator", GraphRelations.RegisteredAs, 8, "DI registration.");
+        return builder.Build(".");
+    }
+
     private static GraphDocument CreateManyAmbiguousGraph()
     {
         var builder = new GraphBuilder();
@@ -809,9 +876,22 @@ public sealed class MeridianGraphToolServiceTests
         return builder.Build(".");
     }
 
-    private static void AddNode(GraphBuilder builder, string id, string label, string symbol, string kind = GraphNodeKinds.Method)
+    private static void AddNode(
+        GraphBuilder builder,
+        string id,
+        string label,
+        string symbol,
+        string kind = GraphNodeKinds.Method,
+        SortedDictionary<string, string>? metadata = null)
     {
-        builder.AddNode(new GraphNode { Id = id, Label = label, Kind = kind, Symbol = symbol });
+        builder.AddNode(new GraphNode
+        {
+            Id = id,
+            Label = label,
+            Kind = kind,
+            Symbol = symbol,
+            Metadata = metadata ?? new SortedDictionary<string, string>(StringComparer.Ordinal)
+        });
     }
 
     private static void AddEdge(GraphBuilder builder, string source, string target, string relation, int line, string reason)

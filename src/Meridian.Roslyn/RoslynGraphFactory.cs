@@ -1,3 +1,4 @@
+using System.Globalization;
 using Meridian.Abstractions;
 using Microsoft.CodeAnalysis;
 
@@ -49,6 +50,120 @@ internal sealed class RoslynGraphFactory
         };
     }
 
+    public GraphNode CreateEnumNode(INamedTypeSymbol enumSymbol)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(enumSymbol);
+        var symbol = enumSymbol.ToDisplayString(SymbolDisplay.TypeFormat);
+        var metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["accessibility"] = enumSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
+            ["type_kind"] = enumSymbol.TypeKind.ToString().ToLowerInvariant()
+        };
+
+        if (enumSymbol.EnumUnderlyingType is { } underlyingType)
+        {
+            metadata["underlying_type"] = underlyingType.ToDisplayString(SymbolDisplay.TypeFormat);
+        }
+
+        return new GraphNode
+        {
+            Id = $"enum:{enumSymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = enumSymbol.Name,
+            Kind = GraphNodeKinds.Enum,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = metadata
+        };
+    }
+
+    public GraphNode CreateEnumMemberNode(IFieldSymbol enumMemberSymbol)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(enumMemberSymbol);
+        var containingEnum = enumMemberSymbol.ContainingType;
+        var enumSymbol = containingEnum.ToDisplayString(SymbolDisplay.TypeFormat);
+        var symbol = enumMemberSymbol.ToDisplayString(SymbolDisplay.MemberFormat);
+        var metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["accessibility"] = enumMemberSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
+            ["containing_enum"] = enumSymbol,
+            ["is_const"] = BoolString(enumMemberSymbol.IsConst),
+            ["is_static"] = BoolString(enumMemberSymbol.IsStatic),
+            ["member_type"] = enumMemberSymbol.Type.ToDisplayString(SymbolDisplay.TypeFormat)
+        };
+
+        if (enumMemberSymbol.HasConstantValue)
+        {
+            metadata["constant_value"] = ConstantValueString(enumMemberSymbol.ConstantValue);
+        }
+
+        return new GraphNode
+        {
+            Id = $"enum_member:{enumMemberSymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = $"{containingEnum.Name}.{enumMemberSymbol.Name}",
+            Kind = GraphNodeKinds.EnumMember,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = metadata
+        };
+    }
+
+    public GraphNode CreatePropertyNode(IPropertySymbol propertySymbol)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(propertySymbol);
+        var symbol = propertySymbol.ToDisplayString(SymbolDisplay.MemberFormat);
+        return new GraphNode
+        {
+            Id = $"property:{propertySymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = $"{propertySymbol.ContainingType.Name}.{propertySymbol.Name}",
+            Kind = GraphNodeKinds.Property,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["accessibility"] = propertySymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
+                ["containing_type"] = propertySymbol.ContainingType.ToDisplayString(SymbolDisplay.TypeFormat),
+                ["has_getter"] = BoolString(propertySymbol.GetMethod is not null),
+                ["has_setter"] = BoolString(propertySymbol.SetMethod is not null),
+                ["is_static"] = BoolString(propertySymbol.IsStatic),
+                ["member_type"] = propertySymbol.Type.ToDisplayString(SymbolDisplay.TypeFormat)
+            }
+        };
+    }
+
+    public GraphNode CreateFieldNode(IFieldSymbol fieldSymbol)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(fieldSymbol);
+        var symbol = fieldSymbol.ToDisplayString(SymbolDisplay.MemberFormat);
+        var metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["accessibility"] = fieldSymbol.DeclaredAccessibility.ToString().ToLowerInvariant(),
+            ["containing_type"] = fieldSymbol.ContainingType.ToDisplayString(SymbolDisplay.TypeFormat),
+            ["is_const"] = BoolString(fieldSymbol.IsConst),
+            ["is_readonly"] = BoolString(fieldSymbol.IsReadOnly),
+            ["is_static"] = BoolString(fieldSymbol.IsStatic),
+            ["member_type"] = fieldSymbol.Type.ToDisplayString(SymbolDisplay.TypeFormat)
+        };
+
+        if (fieldSymbol.HasConstantValue)
+        {
+            metadata["constant_value"] = ConstantValueString(fieldSymbol.ConstantValue);
+        }
+
+        return new GraphNode
+        {
+            Id = $"field:{fieldSymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = $"{fieldSymbol.ContainingType.Name}.{fieldSymbol.Name}",
+            Kind = GraphNodeKinds.Field,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = metadata
+        };
+    }
+
     public GraphNode CreateMethodNode(IMethodSymbol methodSymbol)
     {
         var location = _sourceFilter.FirstAnalyzableSourceLocation(methodSymbol);
@@ -61,6 +176,22 @@ internal sealed class RoslynGraphFactory
             Symbol = symbol,
             SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
             SourceLocation = SourcePath.SourceLocation(location)
+        };
+    }
+
+    private static string BoolString(bool value)
+    {
+        return value ? "true" : "false";
+    }
+
+    private static string ConstantValueString(object? value)
+    {
+        return value switch
+        {
+            null => "null",
+            bool boolValue => BoolString(boolValue),
+            IFormattable formattable => formattable.ToString(null, CultureInfo.InvariantCulture),
+            _ => value.ToString() ?? string.Empty
         };
     }
 

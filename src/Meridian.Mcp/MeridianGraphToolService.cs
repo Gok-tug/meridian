@@ -13,6 +13,8 @@ public sealed class MeridianGraphToolService
         "query_graph",
         "get_node",
         "get_neighbors",
+        "get_symbol_summary",
+        "plan_feature",
         "shortest_path",
         "explain_path",
         "list_entrypoints",
@@ -24,6 +26,10 @@ public sealed class MeridianGraphToolService
         GraphNodeKinds.Project,
         GraphNodeKinds.Type,
         GraphNodeKinds.Method,
+        GraphNodeKinds.Enum,
+        GraphNodeKinds.EnumMember,
+        GraphNodeKinds.Property,
+        GraphNodeKinds.Field,
         GraphNodeKinds.Endpoint,
         GraphNodeKinds.Diagnostic,
         GraphNodeKinds.DbContext,
@@ -37,6 +43,7 @@ public sealed class MeridianGraphToolService
         GraphRelations.Contains,
         GraphRelations.Calls,
         GraphRelations.Uses,
+        GraphRelations.Reads,
         GraphRelations.Injects,
         GraphRelations.RegisteredAs,
         GraphRelations.ImplementedBy,
@@ -53,9 +60,68 @@ public sealed class MeridianGraphToolService
         "Start with compact bulk calls; includeEvidence defaults to false for query_graph, get_neighbors, and find_flows_to_symbol.",
         "Use includeEvidence:true only when you need evidence file, line, symbol, and reason details.",
         "For get_neighbors on service or type nodes, use excludeRelations:[\"contains\"] to reduce declaration-containment noise.",
+        "Use get_symbol_summary before broad neighbor traversal when you need compact symbol context.",
+        "Use plan_feature for absent new concepts; it ranks existing extension points instead of pretending the concept exists.",
         "No node, edge, or path result means the fact is absent from the loaded Meridian graph, not proof of absence in source code.",
         "If source changed, run meridian scan and reload_graph before concluding."
     ];
+
+    private static readonly string[] ImportantSummaryRelations =
+    [
+        GraphRelations.Calls,
+        GraphRelations.Uses,
+        GraphRelations.Reads,
+        GraphRelations.Writes,
+        GraphRelations.Queries,
+        GraphRelations.Sends,
+        GraphRelations.Publishes,
+        GraphRelations.Reflects,
+        GraphRelations.Injects,
+        GraphRelations.RegisteredAs,
+        GraphRelations.HandledBy
+    ];
+
+    private static readonly string[] ExtensionPointTerms =
+    [
+        "Mode",
+        "Strategy",
+        "Policy",
+        "Factory",
+        "Registry",
+        "Resolver",
+        "Selector",
+        "Executor",
+        "Orchestrator",
+        "Dispatcher",
+        "Handler"
+    ];
+
+    private static readonly HashSet<string> FeatureStopWords = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "a",
+        "an",
+        "and",
+        "add",
+        "create",
+        "for",
+        "feature",
+        "implement",
+        "implementation",
+        "in",
+        "new",
+        "of",
+        "on",
+        "or",
+        "should",
+        "support",
+        "the",
+        "to",
+        "use",
+        "using",
+        "where",
+        "with",
+        "without"
+    };
 
     private const char EdgeKeySeparator = '\u001f';
 
@@ -321,6 +387,119 @@ public sealed class MeridianGraphToolService
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
     }
 
+    public SymbolSummaryResponse GetSymbolSummary(string? idOrLabel, int? maxResults = null)
+    {
+        if (IsBlank(idOrLabel))
+        {
+            return InvalidSymbolSummaryInput("idOrLabel");
+        }
+
+        var context = _store.Current;
+        var resolution = ResolveNodeForMcp(context, idOrLabel!);
+        if (resolution.Status != GraphNodeResolutionStatus.Found)
+        {
+            return ResolutionSymbolSummaryFailure(context, resolution);
+        }
+
+        var limit = context.ClampMaxResults(maxResults);
+        var node = resolution.Node!;
+        var incoming = context.GetEdges(node.Id, GraphDirection.Incoming);
+        var outgoing = context.GetEdges(node.Id, GraphDirection.Outgoing);
+        var containedMethods = RelatedNodes(context, node.Id, outgoing, GraphRelations.Contains, GraphNodeKinds.Method, limit);
+        var containedProperties = RelatedNodes(context, node.Id, outgoing, GraphRelations.Contains, GraphNodeKinds.Property, limit);
+        var containedFields = RelatedNodes(context, node.Id, outgoing, GraphRelations.Contains, GraphNodeKinds.Field, limit);
+        var containedEnumMembers = RelatedNodes(context, node.Id, outgoing, GraphRelations.Contains, GraphNodeKinds.EnumMember, limit);
+        var implementedInterfaces = RelatedNodes(context, node.Id, incoming, GraphRelations.ImplementedBy, null, limit);
+        var implementations = RelatedNodes(context, node.Id, outgoing, GraphRelations.ImplementedBy, null, limit);
+        var diRegistrations = RelatedNodes(context, node.Id, incoming.Concat(outgoing), GraphRelations.RegisteredAs, null, limit);
+        var injectionSites = RelatedNodes(context, node.Id, incoming, GraphRelations.Injects, null, limit);
+        var injectedDependencies = RelatedNodes(context, node.Id, outgoing, GraphRelations.Injects, null, limit);
+        var truncated = containedMethods.Truncated ||
+            containedProperties.Truncated ||
+            containedFields.Truncated ||
+            containedEnumMembers.Truncated ||
+            implementedInterfaces.Truncated ||
+            implementations.Truncated ||
+            diRegistrations.Truncated ||
+            injectionSites.Truncated ||
+            injectedDependencies.Truncated;
+
+        return new SymbolSummaryResponse(
+            "ok",
+            MeridianMcpMessages.StaleGraphNote,
+            NodeDto.From(node),
+            CountRelations(incoming),
+            CountRelations(outgoing),
+            CountImportantRelations(incoming.Concat(outgoing)),
+            containedMethods.Items,
+            containedProperties.Items,
+            containedFields.Items,
+            containedEnumMembers.Items,
+            implementedInterfaces.Items,
+            implementations.Items,
+            diRegistrations.Items,
+            injectionSites.Items,
+            injectedDependencies.Items,
+            SuggestedSummaryQueries(node),
+            Truncated: truncated,
+            TruncationNote: truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
+    }
+
+    public FeaturePlanResponse PlanFeature(string? goal, string[]? seedSymbols = null, string[]? terms = null, int? maxResults = null)
+    {
+        if (IsBlank(goal))
+        {
+            return new FeaturePlanResponse(
+                "invalid_input",
+                MeridianMcpMessages.StaleGraphNote,
+                goal ?? string.Empty,
+                [],
+                [],
+                [],
+                "Parameter 'goal' is required.",
+                Message: "Parameter 'goal' is required.");
+        }
+
+        var context = _store.Current;
+        var limit = context.ClampMaxResults(maxResults);
+        var planTerms = TokenizeFeatureTerms(goal!, terms).ToArray();
+        var seedResolutions = ResolveFeatureSeeds(context, seedSymbols).ToArray();
+        var foundSeeds = seedResolutions
+            .Where(seed => seed.Node is not null)
+            .Select(seed => context.NodesById[seed.Node!.Id])
+            .ToArray();
+        var seedDistances = ComputeSeedDistances(context, foundSeeds);
+        var candidates = context.Graph.Nodes
+            .Select(node => ScoreFeatureCandidate(context, node, planTerms, seedDistances))
+            .OfType<FeatureCandidate>()
+            .OrderByDescending(candidate => candidate.Score)
+            .ThenBy(candidate => candidate.Node.SourceFile, StringComparer.Ordinal)
+            .ThenBy(candidate => candidate.Node.Label, StringComparer.Ordinal)
+            .ThenBy(candidate => candidate.Node.Id, StringComparer.Ordinal)
+            .ToArray();
+        var capped = Cap(candidates, limit);
+        var editPoints = capped.Items
+            .Select((candidate, index) => new FeaturePlanCandidateDto(
+                index + 1,
+                candidate.Score,
+                NodeDto.From(candidate.Node),
+                candidate.Reasons,
+                SuggestedFeatureQueries(candidate.Node)))
+            .ToArray();
+
+        return new FeaturePlanResponse(
+            editPoints.Length == 0 ? "no_results" : "ok",
+            MeridianMcpMessages.StaleGraphNote,
+            goal!,
+            planTerms,
+            seedResolutions,
+            editPoints,
+            FeaturePlanLimitation(context, planTerms),
+            capped.Truncated,
+            capped.Truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
+            editPoints.Length == 0 ? "No ranked edit points were found in the loaded Meridian graph. This does not prove no source-code extension point exists." : null);
+    }
+
     public PathResponse ShortestPath(string? source, string? target)
     {
         var context = _store.Current;
@@ -425,6 +604,366 @@ public sealed class MeridianGraphToolService
             truncated,
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
             limitation);
+    }
+
+    private static IReadOnlyDictionary<string, int> CountRelations(IEnumerable<GraphEdge> edges)
+    {
+        return edges
+            .GroupBy(edge => edge.Relation, StringComparer.OrdinalIgnoreCase)
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
+    }
+
+    private static IReadOnlyDictionary<string, int> CountImportantRelations(IEnumerable<GraphEdge> edges)
+    {
+        var importantRelations = ImportantSummaryRelations.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        return CountRelations(edges.Where(edge => importantRelations.Contains(edge.Relation)));
+    }
+
+    private static (IReadOnlyList<NodeDto> Items, bool Truncated) RelatedNodes(
+        McpGraphContext context,
+        string centerNodeId,
+        IEnumerable<GraphEdge> edges,
+        string relation,
+        string? nodeKind,
+        int limit)
+    {
+        var nodes = edges
+            .Where(edge => edge.Relation.Equals(relation, StringComparison.OrdinalIgnoreCase))
+            .Select(edge => edge.Source == centerNodeId ? edge.Target : edge.Target == centerNodeId ? edge.Source : null)
+            .OfType<string>()
+            .Select(id => context.NodesById.GetValueOrDefault(id))
+            .OfType<GraphNode>()
+            .Where(node => nodeKind is null || node.Kind.Equals(nodeKind, StringComparison.OrdinalIgnoreCase))
+            .DistinctBy(node => node.Id)
+            .OrderBy(node => node.Label, StringComparer.Ordinal)
+            .ThenBy(node => node.Id, StringComparer.Ordinal)
+            .Select(NodeDto.From);
+        return Cap(nodes, limit);
+    }
+
+    private static IReadOnlyList<string> SuggestedSummaryQueries(GraphNode node)
+    {
+        var id = EscapeSuggestionValue(node.Id);
+        return
+        [
+            $"get_neighbors idOrLabel:\"{id}\" direction:\"Both\" depth:1 excludeRelations:[\"contains\"]",
+            $"query_graph source:\"{id}\" maxResults:20 excludeRelations:[\"contains\"]"
+        ];
+    }
+
+    private static IReadOnlyList<string> SuggestedFeatureQueries(GraphNode node)
+    {
+        var id = EscapeSuggestionValue(node.Id);
+        return
+        [
+            $"get_symbol_summary idOrLabel:\"{id}\"",
+            $"get_neighbors idOrLabel:\"{id}\" direction:\"Both\" depth:1 excludeRelations:[\"contains\"]"
+        ];
+    }
+
+    private static SeedResolutionDto[] ResolveFeatureSeeds(McpGraphContext context, string[]? seedSymbols)
+    {
+        if (seedSymbols is null)
+        {
+            return [];
+        }
+
+        return seedSymbols
+            .Where(seed => !IsBlank(seed))
+            .Select(seed => seed.Trim())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.Ordinal)
+            .Select(seed => ResolveFeatureSeed(context, seed))
+            .ToArray();
+    }
+
+    private static SeedResolutionDto ResolveFeatureSeed(McpGraphContext context, string seed)
+    {
+        var resolution = ResolveNodeForMcp(context, seed);
+        if (resolution.Status == GraphNodeResolutionStatus.Found)
+        {
+            return new SeedResolutionDto(seed, "found", NodeDto.From(resolution.Node!));
+        }
+
+        if (resolution.Status == GraphNodeResolutionStatus.Ambiguous)
+        {
+            var candidates = CapCandidates(context, resolution);
+            return new SeedResolutionDto(
+                seed,
+                "ambiguous",
+                Candidates: candidates.Items,
+                Truncated: candidates.Truncated,
+                TruncationNote: candidates.Truncated ? MeridianMcpMessages.TruncationNote(context.ClampMaxResults(null)) : null,
+                Message: $"Seed symbol '{seed}' is ambiguous. More precise seed symbols improve ranking.");
+        }
+
+        return new SeedResolutionDto(
+            seed,
+            "not_found",
+            Message: $"No seed node in the loaded Meridian graph matched '{seed}'. This does not prove the symbol is absent from source.");
+    }
+
+    private static IReadOnlyDictionary<string, int> ComputeSeedDistances(McpGraphContext context, IEnumerable<GraphNode> seedNodes)
+    {
+        var distances = new Dictionary<string, int>(StringComparer.Ordinal);
+        var queue = new Queue<(string NodeId, int Distance)>();
+        foreach (var seed in seedNodes.OrderBy(seed => seed.Id, StringComparer.Ordinal))
+        {
+            if (distances.TryAdd(seed.Id, 0))
+            {
+                queue.Enqueue((seed.Id, 0));
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            if (current.Distance >= 2)
+            {
+                continue;
+            }
+
+            foreach (var edge in context.GetEdges(current.NodeId, GraphDirection.Both))
+            {
+                var nextNodeId = edge.Source == current.NodeId ? edge.Target : edge.Source;
+                if (distances.TryAdd(nextNodeId, current.Distance + 1))
+                {
+                    queue.Enqueue((nextNodeId, current.Distance + 1));
+                }
+            }
+        }
+
+        return distances;
+    }
+
+    private static FeatureCandidate? ScoreFeatureCandidate(
+        McpGraphContext context,
+        GraphNode node,
+        IReadOnlyList<string> terms,
+        IReadOnlyDictionary<string, int> seedDistances)
+    {
+        var score = 0;
+        var reasons = new List<string>();
+        var matchedTerms = terms
+            .Where(term => TermMatchesNode(node, term))
+            .Take(5)
+            .ToArray();
+        if (matchedTerms.Length > 0)
+        {
+            score += matchedTerms.Length * 12;
+            reasons.Add($"Matches term(s): {string.Join(", ", matchedTerms)}.");
+        }
+
+        if (TryGetExtensionPointTerm(node) is { } extensionPointTerm)
+        {
+            score += 16;
+            reasons.Add($"Name suggests extension point: {extensionPointTerm}.");
+        }
+
+        var kindBoost = FeatureKindBoost(node, out var kindReason);
+        if (kindBoost > 0)
+        {
+            score += kindBoost;
+            reasons.Add(kindReason!);
+        }
+
+        var relationCount = context.GetEdges(node.Id, GraphDirection.Both)
+            .Count(edge => !edge.Relation.Equals(GraphRelations.Contains, StringComparison.OrdinalIgnoreCase));
+        if (relationCount > 0)
+        {
+            var centralityBoost = Math.Min(relationCount * 2, 12);
+            score += centralityBoost;
+            reasons.Add($"Has {relationCount} non-containment relation(s) in the graph.");
+        }
+
+        if (seedDistances.TryGetValue(node.Id, out var seedDistance))
+        {
+            var seedBoost = seedDistance switch
+            {
+                0 => 35,
+                1 => 25,
+                _ => 12
+            };
+            score += seedBoost;
+            reasons.Add(seedDistance == 0 ? "Resolved seed symbol." : $"Within graph distance {seedDistance} of a resolved seed.");
+        }
+
+        return score == 0 ? null : new FeatureCandidate(node, score, reasons);
+    }
+
+    private static int FeatureKindBoost(GraphNode node, out string? reason)
+    {
+        switch (node.Kind)
+        {
+            case GraphNodeKinds.Enum:
+                reason = "Enum nodes often define selectable modes.";
+                return 24;
+            case GraphNodeKinds.Property:
+            case GraphNodeKinds.Field:
+                reason = "Member node can indicate persisted, routed, or domain state.";
+                return 14;
+            case GraphNodeKinds.Type when node.Metadata.TryGetValue("type_kind", out var typeKind) && typeKind.Equals("interface", StringComparison.OrdinalIgnoreCase):
+                reason = "Interface type is a likely extension point.";
+                return 18;
+            case GraphNodeKinds.Type:
+            case GraphNodeKinds.DbContext:
+            case GraphNodeKinds.MediatRHandler:
+                reason = "Type node may own extension-point behavior.";
+                return 8;
+            case GraphNodeKinds.Method:
+                reason = "Method node may contain dispatch or orchestration logic.";
+                return 4;
+            default:
+                reason = null;
+                return 0;
+        }
+    }
+
+    private static string? TryGetExtensionPointTerm(GraphNode node)
+    {
+        return ExtensionPointTerms.FirstOrDefault(term =>
+            node.Id.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+            node.Label.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+            node.Symbol?.Contains(term, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    private static IReadOnlyList<string> TokenizeFeatureTerms(string goal, string[]? explicitTerms)
+    {
+        return SplitFeatureText(goal)
+            .Concat((explicitTerms ?? []).SelectMany(SplitFeatureText))
+            .Select(term => term.ToLowerInvariant())
+            .Where(term => term.Length > 1 && !FeatureStopWords.Contains(term))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+    }
+
+    private static IEnumerable<string> SplitFeatureText(string text)
+    {
+        foreach (var word in SplitWords(text))
+        {
+            yield return word;
+            foreach (var part in SplitPascalCase(word))
+            {
+                yield return part;
+            }
+        }
+    }
+
+    private static IEnumerable<string> SplitWords(string text)
+    {
+        var start = -1;
+        for (var i = 0; i < text.Length; i++)
+        {
+            if (char.IsLetterOrDigit(text[i]))
+            {
+                if (start < 0)
+                {
+                    start = i;
+                }
+
+                continue;
+            }
+
+            if (start >= 0)
+            {
+                yield return text[start..i];
+                start = -1;
+            }
+        }
+
+        if (start >= 0)
+        {
+            yield return text[start..];
+        }
+    }
+
+    private static IEnumerable<string> SplitPascalCase(string value)
+    {
+        if (value.Length == 0)
+        {
+            yield break;
+        }
+
+        var start = 0;
+        for (var i = 1; i < value.Length; i++)
+        {
+            var current = value[i];
+            var previous = value[i - 1];
+            var nextStartsWord = char.IsUpper(current) &&
+                (char.IsLower(previous) || i + 1 < value.Length && char.IsLower(value[i + 1]));
+            if (!nextStartsWord)
+            {
+                continue;
+            }
+
+            if (i > start)
+            {
+                yield return value[start..i];
+            }
+
+            start = i;
+        }
+
+        if (start == 0)
+        {
+            yield break;
+        }
+
+        yield return value[start..];
+    }
+
+    private static bool TermMatchesNode(GraphNode node, string term)
+    {
+        return node.Id.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+            node.Label.Contains(term, StringComparison.OrdinalIgnoreCase) ||
+            node.Symbol?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
+            node.SourceFile?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
+            node.Metadata.Values.Any(value => value.Contains(term, StringComparison.OrdinalIgnoreCase));
+    }
+
+    private static string FeaturePlanLimitation(McpGraphContext context, IReadOnlyList<string> terms)
+    {
+        var absentTerms = terms
+            .Where(term => !context.Graph.Nodes.Any(node => TermMatchesNode(node, term)))
+            .ToArray();
+        if (absentTerms.Length == 0)
+        {
+            return "Ranked deterministically from the loaded Meridian graph; verify source before editing.";
+        }
+
+        return $"Term(s) not present in the loaded Meridian graph: {string.Join(", ", absentTerms)}. Ranked edit points are existing graph extension points; this does not prove the terms are absent from source.";
+    }
+
+    private static string EscapeSuggestionValue(string value)
+    {
+        return value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal);
+    }
+
+    private static SymbolSummaryResponse InvalidSymbolSummaryInput(string parameterName)
+    {
+        return new SymbolSummaryResponse("invalid_input", MeridianMcpMessages.StaleGraphNote, Message: $"Parameter '{parameterName}' is required.");
+    }
+
+    private static SymbolSummaryResponse ResolutionSymbolSummaryFailure(McpGraphContext context, GraphNodeResolution resolution)
+    {
+        if (resolution.Status == GraphNodeResolutionStatus.Ambiguous)
+        {
+            var candidates = CapCandidates(context, resolution);
+            return new SymbolSummaryResponse(
+                "ambiguous",
+                MeridianMcpMessages.StaleGraphNote,
+                Candidates: candidates.Items,
+                Truncated: candidates.Truncated,
+                TruncationNote: candidates.Truncated ? MeridianMcpMessages.TruncationNote(context.ClampMaxResults(null)) : null,
+                Message: $"Node query '{resolution.Query}' is ambiguous. Use a more precise label, symbol, or node ID.");
+        }
+
+        return new SymbolSummaryResponse(
+            "not_found",
+            MeridianMcpMessages.StaleGraphNote,
+            Message: $"No node in the loaded Meridian graph matched '{resolution.Query}'. This does not prove the symbol is absent from source; regenerate and reload the graph if source changed.");
     }
 
     private PathResponse BuildPathResponse(McpGraphContext context, string? source, string? target, bool includeEvidence)
@@ -648,4 +1187,6 @@ public sealed class MeridianGraphToolService
 
         return new PathResponse("not_found", MeridianMcpMessages.StaleGraphNote, Message: $"No {role} node in the loaded Meridian graph matched '{resolution.Query}'. This does not prove the symbol is absent from source; regenerate and reload the graph if source changed.");
     }
+
+    private sealed record FeatureCandidate(GraphNode Node, int Score, IReadOnlyList<string> Reasons);
 }

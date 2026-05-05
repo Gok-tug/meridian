@@ -2,7 +2,7 @@
 
 MCP support is a core Meridian use case.
 
-The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. MCP does not load or analyze the solution live.
+The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. `0.4.0-alpha.2` adds compact symbol summaries and deterministic feature-planning navigation over the loaded graph. MCP does not load or analyze the solution live.
 
 ## Purpose
 
@@ -165,6 +165,50 @@ When a cap is reached, responses include:
 TRUNCATED: Limit of 50 results reached. Use get_node or narrower query_graph filters to drill down.
 ```
 
+### `get_symbol_summary`
+
+Returns compact context for one resolved node without dumping broad edge payloads.
+
+Input:
+
+```json
+{
+  "idOrLabel": "TaskExecutionOrchestrator",
+  "maxResults": 25
+}
+```
+
+Output includes:
+
+- the resolved node and source location,
+- incoming and outgoing relation counts,
+- important relation counts such as `calls`, `uses`, `reads`, `writes`, `queries`, `sends`, `publishes`, and `reflects`,
+- contained methods, properties, fields, or enum members capped by `maxResults`,
+- implemented interfaces and implementations,
+- DI registration and injection neighbors,
+- suggested follow-up MCP queries.
+
+Use this before broad `get_neighbors` calls when an agent needs compact symbol context.
+
+### `plan_feature`
+
+Ranks likely existing edit points for adding a feature, especially when the requested new concept does not exist in the graph yet.
+
+Input:
+
+```json
+{
+  "goal": "add Flashbot execution mode",
+  "seedSymbols": ["ModuleExecutionStrategy"],
+  "terms": ["relay", "bundle"],
+  "maxResults": 10
+}
+```
+
+The tool tokenizes the goal and terms, resolves seed symbols, boosts nearby graph nodes, and ranks existing abstractions and extension-point names such as `Mode`, `Strategy`, `Policy`, `Factory`, `Registry`, `Resolver`, `Selector`, `Executor`, `Orchestrator`, `Dispatcher`, and `Handler`.
+
+It returns ranked edit points, reasons, seed resolution details, and follow-up queries. It does not read source live, generate an implementation plan, or prove absence from source when a term is missing from the loaded graph.
+
 ### `shortest_path`
 
 Returns the shortest directed graph path between two resolved nodes.
@@ -266,4 +310,4 @@ The MCP server should:
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
 - include confidence by default and make detailed evidence available on request so agents do not overstate uncertain links,
-- surface endpoint and graph-absence limitations when facts have not been emitted, and avoid inventing EF Core, reflection, or native interop facts until those analyzers exist.
+- surface endpoint and graph-absence limitations when facts have not been emitted, and avoid inventing endpoint, XAML, conditional-flow, or native interop facts until those analyzers exist.

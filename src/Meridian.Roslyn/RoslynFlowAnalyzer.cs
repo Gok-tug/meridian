@@ -56,6 +56,7 @@ public sealed class RoslynFlowAnalyzer
             return efCoreKind == GraphNodeKinds.Type ? mediatrClassifier.ClassifyType(typeSymbol) : efCoreKind;
         });
         var typeDeclarationAnalyzer = new TypeDeclarationAnalyzer(sourceFilter, graphFactory);
+        var memberReferenceAnalyzer = new MemberReferenceAnalyzer(sourceFilter, graphFactory);
         var directCallAnalyzer = new DirectCallAnalyzer(sourceFilter, graphFactory);
         var dependencyInjectionAnalyzer = new DependencyInjectionAnalyzer(sourceFilter, graphFactory);
         var mediatrDeclarationAnalyzer = new MediatRDeclarationAnalyzer(sourceFilter, graphFactory, mediatrClassifier);
@@ -71,6 +72,7 @@ public sealed class RoslynFlowAnalyzer
                 graph,
                 sourceFilter,
                 typeDeclarationAnalyzer,
+                memberReferenceAnalyzer,
                 directCallAnalyzer,
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
@@ -88,6 +90,7 @@ public sealed class RoslynFlowAnalyzer
         GraphBuilder graph,
         RoslynSourceFilter sourceFilter,
         TypeDeclarationAnalyzer typeDeclarationAnalyzer,
+        MemberReferenceAnalyzer memberReferenceAnalyzer,
         DirectCallAnalyzer directCallAnalyzer,
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
@@ -116,6 +119,7 @@ public sealed class RoslynFlowAnalyzer
                 document,
                 graph,
                 typeDeclarationAnalyzer,
+                memberReferenceAnalyzer,
                 directCallAnalyzer,
                 dependencyInjectionAnalyzer,
                 mediatrDeclarationAnalyzer,
@@ -130,6 +134,7 @@ public sealed class RoslynFlowAnalyzer
         Document document,
         GraphBuilder graph,
         TypeDeclarationAnalyzer typeDeclarationAnalyzer,
+        MemberReferenceAnalyzer memberReferenceAnalyzer,
         DirectCallAnalyzer directCallAnalyzer,
         DependencyInjectionAnalyzer dependencyInjectionAnalyzer,
         MediatRDeclarationAnalyzer mediatrDeclarationAnalyzer,
@@ -155,6 +160,12 @@ public sealed class RoslynFlowAnalyzer
                 mediatrDeclarationAnalyzer.Analyze(result, semanticModel, graph, cancellationToken);
                 efCoreAnalyzer.AnalyzeType(result, graph);
             }
+        }
+
+        foreach (var enumDeclaration in root.DescendantNodes().OfType<EnumDeclarationSyntax>().OrderBy(enumDeclaration => enumDeclaration.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            typeDeclarationAnalyzer.AnalyzeEnum(enumDeclaration, semanticModel, graph, cancellationToken);
         }
 
         foreach (var invocation in root.DescendantNodes().OfType<InvocationExpressionSyntax>().OrderBy(invocation => invocation.SpanStart))
@@ -183,6 +194,15 @@ public sealed class RoslynFlowAnalyzer
         {
             cancellationToken.ThrowIfCancellationRequested();
             reflectionAnalyzer.AnalyzeTypeOf(typeOfExpression, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var referenceNode in root.DescendantNodes()
+            .Where(MemberReferenceAnalyzer.IsCandidateReference)
+            .OrderBy(referenceNode => referenceNode.SpanStart)
+            .ThenBy(referenceNode => referenceNode.Span.Length))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            memberReferenceAnalyzer.Analyze(referenceNode, semanticModel, graph, cancellationToken);
         }
     }
 }

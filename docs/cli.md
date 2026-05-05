@@ -191,7 +191,7 @@ Starts a local MCP server over an existing generated graph file.
 meridian mcp --graph meridian-out/graph.json
 ```
 
-The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
+The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `get_symbol_summary`, `plan_feature`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
 
 The graph is not updated live by `scan` alone. If source code changes, rerun `meridian scan`, then call `reload_graph` on the running MCP server or restart the MCP server before relying on tool results for the changed code.
 

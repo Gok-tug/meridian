@@ -46,6 +46,11 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP schema discovery values for `dbcontext`, `queries`, `writes`, and `reflects`.
 - MCP `get_schema` usage hints plus node-kind and relation counts so agents can choose compact queries, evidence opt-in, and relation exclusions more reliably.
 - MCP relation exclusion filters for broad graph searches and traversals, including `contains` filtering for noisy neighbor queries.
+- Member graph preview nodes for source enums, enum members, properties, and fields.
+- Method-level member-reference edges with conservative `reads`, `writes`, and `uses` relations for directly resolved source members, enum references, and `nameof(...)` references.
+- `Sample.MemberGraph` with golden-file analyzer coverage for member declarations, member access, enum usage, and feature-planning naming patterns.
+- MCP `get_symbol_summary` for compact symbol context with relation counts, contained members, interface/DI links, and follow-up queries.
+- MCP `plan_feature` for deterministic graph-guided feature-planning navigation when a requested new concept may be absent from the graph.
 
 ### Changed
 
@@ -56,6 +61,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP required blank inputs now return structured `invalid_input` responses instead of unstructured argument exceptions.
 - `meridian scan` now makes the MSBuild project-evaluation trust boundary explicit and supports `--trust-project` to suppress the warning for trusted repositories.
 - MCP bulk graph tools now omit edge evidence by default to reduce agent context usage while keeping evidence available through `includeEvidence: true`.
+- Updated the prototype generator/package version to `0.4.0-alpha.2` for member graph and feature-planning MCP preview output.
 
 ## 0.1.0-alpha.1 — Planned
 

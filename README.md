@@ -21,6 +21,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.3.0-alpha.1
 0.3.0-alpha.2
 0.4.0-alpha.1
+0.4.0-alpha.2
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -90,15 +91,16 @@ The first useful version should focus on application flow, not every possible C#
 Current prototype support:
 
 - Roslyn solution/project loading
-- Type and method nodes with `contains` edges
+- Type, method, enum, enum member, property, and field nodes with `contains` edges
 - Direct method `calls` edges
+- Method-level `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges
 - Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
 - `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
 - Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up work:
@@ -124,7 +126,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.1",
+  "generator_version": "0.4.0-alpha.2",
   "nodes": [],
   "edges": []
 }

@@ -1,9 +1,25 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.1",
+  "generator_version": "0.4.0-alpha.2",
   "root": ".",
   "nodes": [
+    {
+      "id": "field:Sample.DependencyInjection:Sample.DependencyInjection.OrderService._repository",
+      "label": "OrderService._repository",
+      "kind": "field",
+      "symbol": "Sample.DependencyInjection.OrderService._repository",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L43",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.DependencyInjection.OrderService",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Sample.DependencyInjection.IOrderRepository"
+      }
+    },
     {
       "id": "method:Sample.DependencyInjection:Sample.DependencyInjection.IClock.Now()",
       "label": "IClock.Now",
@@ -57,6 +73,22 @@
       "source_file": "ServiceFlow.cs",
       "source_location": "L25",
       "metadata": {}
+    },
+    {
+      "id": "property:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory.CreatedAt",
+      "label": "ClockFactory.CreatedAt",
+      "kind": "property",
+      "symbol": "Sample.DependencyInjection.ClockFactory.CreatedAt",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L38",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.DependencyInjection.ClockFactory",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "System.DateTimeOffset"
+      }
     },
     {
       "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory",
@@ -139,6 +171,20 @@
   "edges": [
     {
       "source": "method:Sample.DependencyInjection:Sample.DependencyInjection.OrderService.Load()",
+      "target": "field:Sample.DependencyInjection:Sample.DependencyInjection.OrderService._repository",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 52,
+        "symbol": "Sample.DependencyInjection.OrderService.Load()",
+        "reason": "Roslyn resolved member reference '_repository' to 'Sample.DependencyInjection.OrderService._repository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.DependencyInjection:Sample.DependencyInjection.OrderService.Load()",
       "target": "method:Sample.DependencyInjection:Sample.DependencyInjection.IOrderRepository.Load()",
       "relation": "calls",
       "confidence": "EXTRACTED",
@@ -148,6 +194,20 @@
         "line": 52,
         "symbol": "Sample.DependencyInjection.OrderService.Load()",
         "reason": "Roslyn resolved invocation '_repository.Load' to 'Sample.DependencyInjection.IOrderRepository.Load()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory",
+      "target": "property:Sample.DependencyInjection:Sample.DependencyInjection.ClockFactory.CreatedAt",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 38,
+        "symbol": "Sample.DependencyInjection.ClockFactory",
+        "reason": "Roslyn declared property 'Sample.DependencyInjection.ClockFactory.CreatedAt' in 'Sample.DependencyInjection.ClockFactory'."
       },
       "metadata": {}
     },
@@ -254,6 +314,20 @@
       "metadata": {
         "lifetime": "scoped"
       }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
+      "target": "field:Sample.DependencyInjection:Sample.DependencyInjection.OrderService._repository",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 43,
+        "symbol": "Sample.DependencyInjection.OrderService",
+        "reason": "Roslyn declared field 'Sample.DependencyInjection.OrderService._repository' in 'Sample.DependencyInjection.OrderService'."
+      },
+      "metadata": {}
     },
     {
       "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",

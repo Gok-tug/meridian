@@ -30,6 +30,20 @@ Analysis can be incomplete when:
 - projects require environment-specific properties,
 - the loaded target framework differs from the production target.
 
+## Member graph limits
+
+Member graph analysis is conservative. Meridian emits source enum, enum member, property, and field declaration nodes, plus method-level references when Roslyn directly resolves the symbol.
+
+It does not perform:
+
+- full interprocedural dataflow,
+- runtime dynamic dispatch resolution,
+- path-sensitive control-flow or branch reachability analysis,
+- XAML/View-ViewModel binding analysis,
+- arbitrary reflection or string-based member resolution.
+
+`reads` and `writes` edges describe direct source member access in a method body. They do not prove a runtime path always reads or writes that member.
+
 ## Dependency Injection limits
 
 Source-resolved direct generic registrations and narrow direct-`new` factory registrations are the currently reliable DI cases:

@@ -63,6 +63,56 @@ public sealed record ReloadGraphResponse(
     bool PreviousGraphPreserved = false,
     string? Message = null);
 
+public sealed record SymbolSummaryResponse(
+    string Status,
+    string StaleGraphNote,
+    NodeDto? Node = null,
+    IReadOnlyDictionary<string, int>? IncomingRelationCounts = null,
+    IReadOnlyDictionary<string, int>? OutgoingRelationCounts = null,
+    IReadOnlyDictionary<string, int>? ImportantRelationCounts = null,
+    IReadOnlyList<NodeDto>? ContainedMethods = null,
+    IReadOnlyList<NodeDto>? ContainedProperties = null,
+    IReadOnlyList<NodeDto>? ContainedFields = null,
+    IReadOnlyList<NodeDto>? ContainedEnumMembers = null,
+    IReadOnlyList<NodeDto>? ImplementedInterfaces = null,
+    IReadOnlyList<NodeDto>? Implementations = null,
+    IReadOnlyList<NodeDto>? DiRegistrations = null,
+    IReadOnlyList<NodeDto>? InjectionSites = null,
+    IReadOnlyList<NodeDto>? InjectedDependencies = null,
+    IReadOnlyList<string>? SuggestedQueries = null,
+    IReadOnlyList<CandidateDto>? Candidates = null,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
+public sealed record FeaturePlanResponse(
+    string Status,
+    string StaleGraphNote,
+    string Goal,
+    IReadOnlyList<string> Terms,
+    IReadOnlyList<SeedResolutionDto> Seeds,
+    IReadOnlyList<FeaturePlanCandidateDto> EditPoints,
+    string Limitation,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
+public sealed record SeedResolutionDto(
+    string Query,
+    string Status,
+    NodeDto? Node = null,
+    IReadOnlyList<CandidateDto>? Candidates = null,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
+public sealed record FeaturePlanCandidateDto(
+    int Rank,
+    int Score,
+    NodeDto Node,
+    IReadOnlyList<string> Reasons,
+    IReadOnlyList<string> SuggestedQueries);
+
 public sealed record GraphMetadataDto(
     string SchemaVersion,
     string Generator,

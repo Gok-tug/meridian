@@ -24,13 +24,15 @@ Meridian answers from a precomputed `graph.json`. It does not analyze source cod
 
 5. Resolve nodes before traversal. If you do not know the exact node ID, use `query_graph` or `get_node` first.
 
-6. Use exact returned node IDs for `get_neighbors`, `shortest_path`, and `explain_path` when possible.
+6. Use `get_symbol_summary` before broad neighbor traversal when you need compact context for one symbol.
 
-7. If a response is truncated, narrow the query instead of asking for a larger graph dump.
+7. Use exact returned node IDs for `get_neighbors`, `shortest_path`, and `explain_path` when possible.
 
-8. Cite confidence and evidence when making claims about code flow.
+8. If a response is truncated, narrow the query instead of asking for a larger graph dump.
 
-9. State unsupported analyzer limitations honestly.
+9. Cite confidence and evidence when making claims about code flow.
+
+10. State unsupported analyzer limitations honestly.
 
 ## Freshness workflow after edits
 
@@ -104,7 +106,17 @@ Use for exact resolution by ID, label, or symbol. Treat ambiguity as a request t
 
 ### `get_neighbors`
 
-Use after resolving a node. Prefer exact node IDs. Keep depth and result limits small.
+Use after resolving a node. Prefer exact node IDs. Keep depth and result limits small. For service or type nodes, prefer `excludeRelations: ["contains"]` unless declaration containment is what you need.
+
+### `get_symbol_summary`
+
+Use after resolving a node when you need source location, relation counts, contained members, interface/DI links, and suggested follow-up queries without loading full neighbor edge arrays.
+
+### `plan_feature`
+
+Use when the user asks where to add a new concept that may not exist yet. Provide the goal, known seed symbols, and optional domain terms. Treat the result as ranked graph navigation, not an implementation plan.
+
+If a new term is absent, do not search only for that term. Start from existing abstractions and extension points such as modes, strategies, policies, factories, registries, resolvers, selectors, executors, orchestrators, dispatchers, and handlers. Use grep/read only for missing domain vocabulary or source details not represented in the graph.
 
 ### `shortest_path` and `explain_path`
 
@@ -120,7 +132,8 @@ If reload fails, keep using the previous graph only if the response says the pre
 
 Current alpha builds emit:
 
-- direct method calls, type containment, and interface implementation edges
+- direct method calls, type/member containment, enum/property/field nodes, and interface implementation edges
+- method-level `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - constructor injection and generic DI registration edges (including narrow factory lambdas)
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types

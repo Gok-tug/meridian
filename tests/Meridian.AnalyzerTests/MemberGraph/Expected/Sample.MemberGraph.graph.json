@@ -1,0 +1,947 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.4.0-alpha.2",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "label": "ExecutionMode",
+      "kind": "enum",
+      "symbol": "Sample.MemberGraph.ExecutionMode",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L3",
+      "metadata": {
+        "accessibility": "public",
+        "type_kind": "enum",
+        "underlying_type": "System.Int32"
+      }
+    },
+    {
+      "id": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RainbowTable",
+      "label": "ExecutionMode.RainbowTable",
+      "kind": "enum_member",
+      "symbol": "Sample.MemberGraph.ExecutionMode.RainbowTable",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L5",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "0",
+        "containing_enum": "Sample.MemberGraph.ExecutionMode",
+        "is_const": "true",
+        "is_static": "true",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RuntimeSigning",
+      "label": "ExecutionMode.RuntimeSigning",
+      "kind": "enum_member",
+      "symbol": "Sample.MemberGraph.ExecutionMode.RuntimeSigning",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L6",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "1",
+        "containing_enum": "Sample.MemberGraph.ExecutionMode",
+        "is_const": "true",
+        "is_static": "true",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.Simulation",
+      "label": "ExecutionMode.Simulation",
+      "kind": "enum_member",
+      "symbol": "Sample.MemberGraph.ExecutionMode.Simulation",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L7",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "2",
+        "containing_enum": "Sample.MemberGraph.ExecutionMode",
+        "is_const": "true",
+        "is_static": "true",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode",
+      "label": "ExecutionStrategyRegistry._lastResolvedMode",
+      "kind": "field",
+      "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L51",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._strategies",
+      "label": "ExecutionStrategyRegistry._strategies",
+      "kind": "field",
+      "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry._strategies",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L50",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "System.Collections.Generic.Dictionary<Sample.MemberGraph.ExecutionMode, Sample.MemberGraph.IExecutionStrategy>"
+      }
+    },
+    {
+      "id": "field:Sample.MemberGraph:Sample.MemberGraph.MintTask._prepared",
+      "label": "MintTask._prepared",
+      "kind": "field",
+      "symbol": "Sample.MemberGraph.MintTask._prepared",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L12",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MemberGraph.MintTask",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "System.Boolean"
+      }
+    },
+    {
+      "id": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._lastExecutorName",
+      "label": "MintTaskExecutor._lastExecutorName",
+      "kind": "field",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor._lastExecutorName",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L68",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MemberGraph.MintTaskExecutor",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._registry",
+      "label": "MintTaskExecutor._registry",
+      "kind": "field",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor._registry",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L67",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MemberGraph.MintTaskExecutor",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Sample.MemberGraph.ExecutionStrategyRegistry"
+      }
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "label": "DefaultExecutionStrategy.Execute",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L37",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+      "label": "ExecutionStrategyRegistry.Register",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L53",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "label": "ExecutionStrategyRegistry.Resolve",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L58",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "label": "IExecutionStrategy.Execute",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L30",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.MintTask.MarkPrepared()",
+      "label": "MintTask.MarkPrepared",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.MintTask.MarkPrepared()",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L20",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
+      "label": "MintTaskExecutor.ChangeMode",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L78",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "label": "MintTaskExecutor.Execute",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L70",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()",
+      "label": "MintTaskExecutor.ExecutionModePropertyName",
+      "kind": "method",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L83",
+      "metadata": {}
+    },
+    {
+      "id": "property:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Mode",
+      "label": "DefaultExecutionStrategy.Mode",
+      "kind": "property",
+      "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Mode",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L35",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MemberGraph.DefaultExecutionStrategy",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "property:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Mode",
+      "label": "IExecutionStrategy.Mode",
+      "kind": "property",
+      "symbol": "Sample.MemberGraph.IExecutionStrategy.Mode",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L28",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MemberGraph.IExecutionStrategy",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.AttemptCount",
+      "label": "MintTask.AttemptCount",
+      "kind": "property",
+      "symbol": "Sample.MemberGraph.MintTask.AttemptCount",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L16",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MemberGraph.MintTask",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "label": "MintTask.ExecutionMode",
+      "kind": "property",
+      "symbol": "Sample.MemberGraph.MintTask.ExecutionMode",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L14",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MemberGraph.MintTask",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "Sample.MemberGraph.ExecutionMode"
+      }
+    },
+    {
+      "id": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.LastExecutorName",
+      "label": "MintTask.LastExecutorName",
+      "kind": "property",
+      "symbol": "Sample.MemberGraph.MintTask.LastExecutorName",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L18",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MemberGraph.MintTask",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "type:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy",
+      "label": "DefaultExecutionStrategy",
+      "kind": "type",
+      "symbol": "Sample.MemberGraph.DefaultExecutionStrategy",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L33",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry",
+      "label": "ExecutionStrategyRegistry",
+      "kind": "type",
+      "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L48",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy",
+      "label": "IExecutionStrategy",
+      "kind": "type",
+      "symbol": "Sample.MemberGraph.IExecutionStrategy",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L26",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
+      "id": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "label": "MintTask",
+      "kind": "type",
+      "symbol": "Sample.MemberGraph.MintTask",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L10",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "label": "MintTaskExecutor",
+      "kind": "type",
+      "symbol": "Sample.MemberGraph.MintTaskExecutor",
+      "source_file": "ExecutionFlow.cs",
+      "source_location": "L65",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "target": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RainbowTable",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 5,
+        "symbol": "Sample.MemberGraph.ExecutionMode",
+        "reason": "Roslyn declared enum member 'Sample.MemberGraph.ExecutionMode.RainbowTable' in 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "target": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RuntimeSigning",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 6,
+        "symbol": "Sample.MemberGraph.ExecutionMode",
+        "reason": "Roslyn declared enum member 'Sample.MemberGraph.ExecutionMode.RuntimeSigning' in 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "target": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.Simulation",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 7,
+        "symbol": "Sample.MemberGraph.ExecutionMode",
+        "reason": "Roslyn declared enum member 'Sample.MemberGraph.ExecutionMode.Simulation' in 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'ExecutionMode' to 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RuntimeSigning",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'ExecutionMode.RuntimeSigning' to 'Sample.MemberGraph.ExecutionMode.RuntimeSigning'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.MintTask.MarkPrepared()",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 43,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved invocation 'task.MarkPrepared' to 'Sample.MemberGraph.MintTask.MarkPrepared()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.AttemptCount",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 39,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'task.AttemptCount' to 'Sample.MemberGraph.MintTask.AttemptCount'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.AttemptCount",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 39,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'task.AttemptCount' to 'Sample.MemberGraph.MintTask.AttemptCount'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'task.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.LastExecutorName",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 40,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'task.LastExecutorName' to 'Sample.MemberGraph.MintTask.LastExecutorName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._strategies",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 55,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+        "reason": "Roslyn resolved member reference '_strategies' to 'Sample.MemberGraph.ExecutionStrategyRegistry._strategies'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Mode",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 55,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+        "reason": "Roslyn resolved member reference 'strategy.Mode' to 'Sample.MemberGraph.IExecutionStrategy.Mode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 60,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+        "reason": "Roslyn resolved member reference '_lastResolvedMode' to 'Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._strategies",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 61,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+        "reason": "Roslyn resolved member reference '_strategies' to 'Sample.MemberGraph.ExecutionStrategyRegistry._strategies'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTask.MarkPrepared()",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTask._prepared",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 22,
+        "symbol": "Sample.MemberGraph.MintTask.MarkPrepared()",
+        "reason": "Roslyn resolved member reference '_prepared' to 'Sample.MemberGraph.MintTask._prepared'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 80,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
+        "reason": "Roslyn resolved member reference 'task.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 72,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'var' to 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._lastExecutorName",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 74,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference '_lastExecutorName' to 'Sample.MemberGraph.MintTaskExecutor._lastExecutorName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._registry",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 73,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference '_registry' to 'Sample.MemberGraph.MintTaskExecutor._registry'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 73,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved invocation '_registry.Resolve' to 'Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 75,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved invocation 'strategy.Execute' to 'Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 72,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved member reference 'task.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 85,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()",
+        "reason": "Roslyn resolved member reference 'MintTask.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 37,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)' in type 'Sample.MemberGraph.DefaultExecutionStrategy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Mode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 35,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy",
+        "reason": "Roslyn declared property 'Sample.MemberGraph.DefaultExecutionStrategy.Mode' in 'Sample.MemberGraph.DefaultExecutionStrategy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 51,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "reason": "Roslyn declared field 'Sample.MemberGraph.ExecutionStrategyRegistry._lastResolvedMode' in 'Sample.MemberGraph.ExecutionStrategyRegistry'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry._strategies",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 50,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "reason": "Roslyn declared field 'Sample.MemberGraph.ExecutionStrategyRegistry._strategies' in 'Sample.MemberGraph.ExecutionStrategyRegistry'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 53,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.ExecutionStrategyRegistry.Register(Sample.MemberGraph.IExecutionStrategy strategy)' in type 'Sample.MemberGraph.ExecutionStrategyRegistry'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 58,
+        "symbol": "Sample.MemberGraph.ExecutionStrategyRegistry",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.ExecutionStrategyRegistry.Resolve(Sample.MemberGraph.ExecutionMode mode)' in type 'Sample.MemberGraph.ExecutionStrategyRegistry'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 30,
+        "symbol": "Sample.MemberGraph.IExecutionStrategy",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.IExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)' in type 'Sample.MemberGraph.IExecutionStrategy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy.Mode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 28,
+        "symbol": "Sample.MemberGraph.IExecutionStrategy",
+        "reason": "Roslyn declared property 'Sample.MemberGraph.IExecutionStrategy.Mode' in 'Sample.MemberGraph.IExecutionStrategy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.IExecutionStrategy",
+      "target": "type:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 33,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy",
+        "reason": "Roslyn resolved 'Sample.MemberGraph.DefaultExecutionStrategy' as an implementation of 'Sample.MemberGraph.IExecutionStrategy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTask._prepared",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 12,
+        "symbol": "Sample.MemberGraph.MintTask",
+        "reason": "Roslyn declared field 'Sample.MemberGraph.MintTask._prepared' in 'Sample.MemberGraph.MintTask'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.MintTask.MarkPrepared()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 20,
+        "symbol": "Sample.MemberGraph.MintTask",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.MintTask.MarkPrepared()' in type 'Sample.MemberGraph.MintTask'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.AttemptCount",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 16,
+        "symbol": "Sample.MemberGraph.MintTask",
+        "reason": "Roslyn declared property 'Sample.MemberGraph.MintTask.AttemptCount' in 'Sample.MemberGraph.MintTask'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 14,
+        "symbol": "Sample.MemberGraph.MintTask",
+        "reason": "Roslyn declared property 'Sample.MemberGraph.MintTask.ExecutionMode' in 'Sample.MemberGraph.MintTask'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTask",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.LastExecutorName",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 18,
+        "symbol": "Sample.MemberGraph.MintTask",
+        "reason": "Roslyn declared property 'Sample.MemberGraph.MintTask.LastExecutorName' in 'Sample.MemberGraph.MintTask'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._lastExecutorName",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 68,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor",
+        "reason": "Roslyn declared field 'Sample.MemberGraph.MintTaskExecutor._lastExecutorName' in 'Sample.MemberGraph.MintTaskExecutor'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "target": "field:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor._registry",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 67,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor",
+        "reason": "Roslyn declared field 'Sample.MemberGraph.MintTaskExecutor._registry' in 'Sample.MemberGraph.MintTaskExecutor'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 78,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.MintTaskExecutor.ChangeMode(Sample.MemberGraph.MintTask task, Sample.MemberGraph.ExecutionMode mode)' in type 'Sample.MemberGraph.MintTaskExecutor'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 70,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.MintTaskExecutor.Execute(Sample.MemberGraph.MintTask task)' in type 'Sample.MemberGraph.MintTaskExecutor'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor",
+      "target": "method:Sample.MemberGraph:Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 83,
+        "symbol": "Sample.MemberGraph.MintTaskExecutor",
+        "reason": "Roslyn declared method 'Sample.MemberGraph.MintTaskExecutor.ExecutionModePropertyName()' in type 'Sample.MemberGraph.MintTaskExecutor'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

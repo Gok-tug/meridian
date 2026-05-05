@@ -19,7 +19,7 @@ Analyzers should:
 
 Framework-aware analysis should run in deterministic passes:
 
-1. Roslyn foundation facts: symbols, locations, type/method nodes, `contains`, direct `calls`, and interface implementations.
+1. Roslyn foundation facts: symbols, locations, type/method/member nodes, `contains`, direct `calls`, member `reads`/`writes`/`uses`, and interface implementations.
 2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and MediatR sends/publishes.
 3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
@@ -28,28 +28,36 @@ DI facts are expected to be consumed by later ASP.NET Core and MediatR linking. 
 
 ## Roslyn base analyzer
 
-Implemented in the current prototype for project loading, type/method nodes, `contains`, and direct `calls` edges.
+Implemented in the current prototype for project loading, type/method/member nodes, `contains`, direct `calls`, and conservative member-reference edges.
 
 Responsibilities:
 
 - load projects and compilations,
 - index symbols,
-- create type and method nodes,
+- create type, method, enum, enum member, property, and field nodes,
 - extract direct method calls,
+- extract method-level static references to source properties, fields, enum types, and enum members,
+- classify direct property/field access as `reads`, `writes`, or both for assignments, compound assignments, increments, `ref`, and `out`,
+- emit `uses` for enum references and `nameof(...)` references,
 - skip generated/bin/obj source noise by default,
 - map symbols to source locations,
 - provide shared semantic services to other analyzers.
 
-Example relation:
+Example relations:
 
 ```text
 GetOrderQueryHandler.Handle --calls--> OrderService.GetByIdAsync
+TaskExecutor.Execute --reads--> MintTask.ExecutionMode
+TaskExecutor.ChangeMode --writes--> MintTask.ExecutionMode
+TaskExecutor.Execute --uses--> ExecutionMode.RuntimeSigning
 ```
 
 Confidence:
 
 - `EXTRACTED` when Roslyn resolves the target symbol.
 - `AMBIGUOUS` when overload or dynamic dispatch cannot be resolved precisely.
+
+Member references are intentionally method-level and conservative. Meridian does not perform path-sensitive control-flow analysis, interprocedural dataflow, runtime dispatch resolution, or XAML binding analysis in this slice.
 
 ## ASP.NET Core analyzer
 

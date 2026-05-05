@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.1",
+  "generator_version": "0.4.0-alpha.2",
   "root": ".",
   "nodes": [
     {
@@ -147,6 +147,86 @@
       "source_file": "Handlers.cs",
       "source_location": "L42",
       "metadata": {}
+    },
+    {
+      "id": "property:Sample.MediatR:Sample.MediatR.GetOrderQuery.OrderId",
+      "label": "GetOrderQuery.OrderId",
+      "kind": "property",
+      "symbol": "Sample.MediatR.GetOrderQuery.OrderId",
+      "source_file": "Messages.cs",
+      "source_location": "L5",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MediatR.GetOrderQuery",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.MediatR:Sample.MediatR.OrderDto.OrderId",
+      "label": "OrderDto.OrderId",
+      "kind": "property",
+      "symbol": "Sample.MediatR.OrderDto.OrderId",
+      "source_file": "Messages.cs",
+      "source_location": "L13",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MediatR.OrderDto",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.MediatR:Sample.MediatR.OrderDto.Status",
+      "label": "OrderDto.Status",
+      "kind": "property",
+      "symbol": "Sample.MediatR.OrderDto.Status",
+      "source_file": "Messages.cs",
+      "source_location": "L13",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MediatR.OrderDto",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification.OrderId",
+      "label": "OrderUpdatedNotification.OrderId",
+      "kind": "property",
+      "symbol": "Sample.MediatR.OrderUpdatedNotification.OrderId",
+      "source_file": "Messages.cs",
+      "source_location": "L11",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MediatR.OrderUpdatedNotification",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.MediatR:Sample.MediatR.WatchOrderStream.OrderId",
+      "label": "WatchOrderStream.OrderId",
+      "kind": "property",
+      "symbol": "Sample.MediatR.WatchOrderStream.OrderId",
+      "source_file": "Messages.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MediatR.WatchOrderStream",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
     },
     {
       "id": "type:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler",
@@ -303,6 +383,20 @@
   ],
   "edges": [
     {
+      "source": "method:Sample.MediatR:Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.MediatR:Sample.MediatR.GetOrderQuery.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 20,
+        "symbol": "Sample.MediatR.GetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'request.OrderId' to 'Sample.MediatR.GetOrderQuery.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
       "source": "method:Sample.MediatR:Sample.MediatR.OrderDispatchSamples.CreateLambdaDispatch(MediatR.ISender sender, System.Threading.CancellationToken cancellationToken)",
       "target": "type:Sample.MediatR:Sample.MediatR.GetOrderQuery",
       "relation": "sends",
@@ -443,6 +537,20 @@
       "metadata": {}
     },
     {
+      "source": "method:Sample.MediatR:Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.MediatR:Sample.MediatR.WatchOrderStream.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Handlers.cs",
+        "line": 46,
+        "symbol": "Sample.MediatR.WatchOrderStreamHandler.Handle(Sample.MediatR.WatchOrderStream request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'request.OrderId' to 'Sample.MediatR.WatchOrderStream.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
       "source": "type:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler",
       "target": "method:Sample.MediatR:Sample.MediatR.AbstractGetOrderQueryHandler.Handle(Sample.MediatR.GetOrderQuery request, System.Threading.CancellationToken cancellationToken)",
       "relation": "contains",
@@ -481,6 +589,20 @@
         "line": 52,
         "symbol": "Sample.MediatR.ExternalOrderQueryHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.ExternalOrderQueryHandler.Handle(Sample.MediatR.Contracts.ExternalOrderQuery request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.ExternalOrderQueryHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.GetOrderQuery",
+      "target": "property:Sample.MediatR:Sample.MediatR.GetOrderQuery.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Messages.cs",
+        "line": 5,
+        "symbol": "Sample.MediatR.GetOrderQuery",
+        "reason": "Roslyn declared property 'Sample.MediatR.GetOrderQuery.OrderId' in 'Sample.MediatR.GetOrderQuery'."
       },
       "metadata": {}
     },
@@ -653,6 +775,48 @@
       "metadata": {}
     },
     {
+      "source": "type:Sample.MediatR:Sample.MediatR.OrderDto",
+      "target": "property:Sample.MediatR:Sample.MediatR.OrderDto.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Messages.cs",
+        "line": 13,
+        "symbol": "Sample.MediatR.OrderDto",
+        "reason": "Roslyn declared property 'Sample.MediatR.OrderDto.OrderId' in 'Sample.MediatR.OrderDto'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.OrderDto",
+      "target": "property:Sample.MediatR:Sample.MediatR.OrderDto.Status",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Messages.cs",
+        "line": 13,
+        "symbol": "Sample.MediatR.OrderDto",
+        "reason": "Roslyn declared property 'Sample.MediatR.OrderDto.Status' in 'Sample.MediatR.OrderDto'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification",
+      "target": "property:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Messages.cs",
+        "line": 11,
+        "symbol": "Sample.MediatR.OrderUpdatedNotification",
+        "reason": "Roslyn declared property 'Sample.MediatR.OrderUpdatedNotification.OrderId' in 'Sample.MediatR.OrderUpdatedNotification'."
+      },
+      "metadata": {}
+    },
+    {
       "source": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotification",
       "target": "type:Sample.MediatR:Sample.MediatR.OrderUpdatedNotificationHandler",
       "relation": "handled_by",
@@ -705,6 +869,20 @@
         "line": 26,
         "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
         "reason": "Roslyn declared method 'Sample.MediatR.RefreshCacheCommandHandler.Handle(Sample.MediatR.RefreshCacheCommand request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.MediatR.RefreshCacheCommandHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MediatR:Sample.MediatR.WatchOrderStream",
+      "target": "property:Sample.MediatR:Sample.MediatR.WatchOrderStream.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Messages.cs",
+        "line": 9,
+        "symbol": "Sample.MediatR.WatchOrderStream",
+        "reason": "Roslyn declared property 'Sample.MediatR.WatchOrderStream.OrderId' in 'Sample.MediatR.WatchOrderStream'."
       },
       "metadata": {}
     },

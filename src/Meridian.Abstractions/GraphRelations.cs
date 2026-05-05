@@ -5,6 +5,7 @@ public static class GraphRelations
     public const string Contains = "contains";
     public const string Calls = "calls";
     public const string Uses = "uses";
+    public const string Reads = "reads";
     public const string Injects = "injects";
     public const string RegisteredAs = "registered_as";
     public const string ImplementedBy = "implemented_by";

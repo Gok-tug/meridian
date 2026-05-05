@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.1",
+  "generator_version": "0.4.0-alpha.2",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -81,68 +81,54 @@ Recommended fields:
 
 ## Node kinds
 
-Initial node kinds:
+Current emitted node kinds:
 
 ```text
 project
-namespace
 type
 method
+enum
+enum_member
+property
+field
 endpoint
-controller
-action
-minimal_api
-service_registration
-service_interface
-service_implementation
+diagnostic
+dbcontext
 mediatr_request
 mediatr_notification
 mediatr_handler
-dbcontext
-dbset
-entity
-reflection_site
-assembly_scan
-native_library
-ffi_boundary
 ```
 
 Analyzer packs may add new node kinds, but additions must be documented.
 
 ## Edge relations
 
-Initial relations:
+Current emitted relations:
 
 ```text
 contains
 calls
-returns
 uses
-creates
+reads
+injects
+registered_as
+implemented_by
+handled_by
 sends
 publishes
-handled_by
-registered_as
-injects
-implemented_by
 queries
 writes
-maps_to
-configured_by
 reflects
-scans
-loads
-crosses_boundary
 ```
 
 Relation meanings:
 
 | Relation | Meaning |
 | --- | --- |
-| `contains` | Project/file/type ownership or hierarchy |
+| `contains` | Type/enum declaration containment for methods, properties, fields, enum members, or framework-owned facts such as DbSet entity containment |
 | `calls` | Direct method invocation resolved by Roslyn |
-| `uses` | Symbol, type, service, or DbContext usage |
-| `creates` | Object creation expression |
+| `uses` | Static symbolic usage that is not a read/write, including enum type/member use and `nameof(...)` references |
+| `reads` | Method reads a directly resolved source property or field |
 | `sends` | Method or endpoint dispatches a MediatR request |
 | `publishes` | Method or endpoint publishes a MediatR notification |
 | `handled_by` | Message/request handled by handler type |
@@ -150,12 +136,8 @@ Relation meanings:
 | `injects` | Constructor or parameter injection dependency |
 | `implemented_by` | Interface/base abstraction implemented by concrete type |
 | `queries` | EF Core read/query access to DbSet/entity |
-| `writes` | EF Core direct mutation access to DbSet/entity |
-| `configured_by` | Registration or options configured by code site |
-| `reflects` | Reflection references a type/member |
-| `scans` | Assembly scanning may register or discover types |
-| `loads` | Runtime assembly/native library loading |
-| `crosses_boundary` | Flow crosses into native/Rust/external boundary |
+| `writes` | EF Core direct mutation access to DbSet/entity, or method writes a directly resolved source property or field |
+| `reflects` | Static reflection references a type/member |
 
 ## Confidence
 

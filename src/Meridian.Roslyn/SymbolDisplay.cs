@@ -20,4 +20,16 @@ internal static class SymbolDisplay
             SymbolDisplayParameterOptions.IncludeName |
             SymbolDisplayParameterOptions.IncludeParamsRefOut,
         miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
+
+    public static readonly SymbolDisplayFormat MemberFormat = new(
+        typeQualificationStyle: SymbolDisplayTypeQualificationStyle.NameAndContainingTypesAndNamespaces,
+        genericsOptions: SymbolDisplayGenericsOptions.IncludeTypeParameters,
+        memberOptions:
+            SymbolDisplayMemberOptions.IncludeContainingType |
+            SymbolDisplayMemberOptions.IncludeParameters,
+        parameterOptions:
+            SymbolDisplayParameterOptions.IncludeType |
+            SymbolDisplayParameterOptions.IncludeName |
+            SymbolDisplayParameterOptions.IncludeParamsRefOut,
+        miscellaneousOptions: SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
 }
