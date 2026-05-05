@@ -13,6 +13,7 @@ Use SemVer prerelease versions:
 0.2.0-alpha.2
 0.2.0-alpha.3
 0.3.0-alpha.1
+0.3.0-alpha.2
 ```
 
 Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.
@@ -80,6 +81,8 @@ Before publishing:
 - CLI docs match implementation,
 - graph schema version documented,
 - golden tests pass,
+- CLI smoke tests validate exit codes and generated graph contents,
+- MCP freshness workflow and agent playbook are reviewed,
 - package installs locally as a global tool,
 - `meridian --help` works,
 - generated package does not include build artifacts or secrets.

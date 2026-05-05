@@ -11,6 +11,7 @@ Valid alpha versions:
 0.2.0-alpha.2
 0.2.0-alpha.3
 0.3.0-alpha.1
+0.3.0-alpha.2
 ```
 
 Stable versions such as `0.1.0` should not be published until the package has a tested analyzer pipeline and documented graph contract.
@@ -174,6 +175,38 @@ Scope:
 - agent usage examples
 - MCP tests over fixture graph JSON files
 
+## 0.3.0-alpha.2 — MCP freshness and agent hardening
+
+Goal: make the MCP preview trustworthy for iterative agent workflows without expanding analyzer scope.
+
+Scope:
+
+- `reload_graph` MCP tool that rereads the configured `--graph` file into the running MCP server
+- reloadable MCP graph state that atomically swaps complete graph snapshots
+- reload failure behavior that preserves the previous active graph
+- reload response metadata with previous/new graph counts, generator version, graph path, load timestamp, file timestamp, and failure messages
+- agent playbook for graph-guided CLI/MCP usage
+- explicit node ID strategy for agents:
+  - never invent node IDs
+  - use `get_schema` for available kinds and relations
+  - use `query_graph` or returned candidates to discover exact IDs before path or neighbor tools
+- freshness protocol:
+  - after source edits, run `meridian scan`
+  - then call `reload_graph` or restart the MCP server before trusting changed-code graph results
+- CLI smoke-test coverage that validates generated graph contents, not only exit codes
+- preview contract for planned human-readable `summary`, `tree`, and `report` outputs derived from `graph.json`
+- honest hook/watch limitation wording: automatic watch is not implemented; future automation must trigger both scan and MCP reload
+
+Not in scope:
+
+- ASP.NET Core MVC or Minimal API endpoint analyzers
+- EF Core analyzer
+- reflection or assembly scanning implementation
+- live Roslyn analysis inside MCP tools
+- automatic FileSystemWatcher hot-reload as the default freshness mechanism
+- broad multi-language analysis
+- Rust/native interop implementation
+
 ## 0.4.0-alpha.1 — EF Core and dynamic wiring
 
 Goal: expand beyond request/handler flow into persistence and dynamic registration patterns.
@@ -258,6 +291,8 @@ Before a public stable release:
 - limitations are explicit
 - compatibility matrix is current
 - all analyzers have golden-file tests
+- CLI smoke tests validate exit codes and graph contents
+- MCP freshness workflow and agent playbook are current
 - large solution benchmark has been published
 - NuGet package metadata is complete
 - changelog is updated

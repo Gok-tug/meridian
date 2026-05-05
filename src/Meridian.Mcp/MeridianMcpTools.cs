@@ -7,7 +7,7 @@ namespace Meridian.Mcp;
 [McpServerToolType]
 public sealed class MeridianMcpTools
 {
-    private const string SharedNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again. Available node kinds include project, type, method, endpoint, diagnostic, mediatr_request, mediatr_notification, mediatr_handler. Available relations include contains, calls, uses, injects, registered_as, implemented_by, handled_by, sends, publishes.";
+    private const string SharedNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again and the running MCP server is reloaded with reload_graph or restarted. Available node kinds include project, type, method, endpoint, diagnostic, mediatr_request, mediatr_notification, mediatr_handler. Available relations include contains, calls, uses, injects, registered_as, implemented_by, handled_by, sends, publishes.";
 
     private readonly MeridianGraphToolService _service;
 
@@ -21,6 +21,13 @@ public sealed class MeridianMcpTools
     public SchemaResponse GetSchema()
     {
         return _service.GetSchema();
+    }
+
+    [McpServerTool(Name = "reload_graph", ReadOnly = false, Destructive = false, Idempotent = false, OpenWorld = true, UseStructuredContent = true)]
+    [Description("Reload the configured graph.json file into this running MCP server. This does not run Roslyn/MSBuild or execute source code; run meridian scan first when source files change. " + SharedNote)]
+    public Task<ReloadGraphResponse> ReloadGraph()
+    {
+        return _service.ReloadGraphAsync();
     }
 
     [McpServerTool(Name = "query_graph", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]

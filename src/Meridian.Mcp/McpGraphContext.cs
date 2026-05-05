@@ -8,13 +8,21 @@ public sealed class McpGraphContext
     private readonly IReadOnlyDictionary<string, IReadOnlyList<GraphEdge>> _incomingByNode;
     private readonly IReadOnlyDictionary<string, IReadOnlyList<GraphEdge>> _outgoingByNode;
 
-    public McpGraphContext(GraphDocument graph, MeridianMcpServerOptions options)
+    public McpGraphContext(
+        GraphDocument graph,
+        MeridianMcpServerOptions options,
+        DateTimeOffset? loadedAt = null,
+        DateTimeOffset? fileLastWriteTime = null,
+        string? graphPath = null)
     {
         ArgumentNullException.ThrowIfNull(graph);
         ArgumentNullException.ThrowIfNull(options);
 
         Graph = graph;
         Options = options;
+        LoadedAt = loadedAt ?? DateTimeOffset.UtcNow;
+        FileLastWriteTime = fileLastWriteTime;
+        GraphPath = graphPath ?? options.GraphPath;
         Query = new GraphQueryService(graph);
         NodesById = graph.Nodes.ToDictionary(node => node.Id, StringComparer.Ordinal);
         _incomingByNode = graph.Edges
@@ -40,6 +48,12 @@ public sealed class McpGraphContext
     public MeridianMcpServerOptions Options { get; }
 
     public GraphQueryService Query { get; }
+
+    public DateTimeOffset LoadedAt { get; }
+
+    public DateTimeOffset? FileLastWriteTime { get; }
+
+    public string GraphPath { get; }
 
     public IReadOnlyDictionary<string, GraphNode> NodesById { get; }
 

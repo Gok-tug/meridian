@@ -19,6 +19,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.2.0-alpha.2
 0.2.0-alpha.3
 0.3.0-alpha.1
+0.3.0-alpha.2
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -93,20 +94,21 @@ Current prototype support:
 - MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - JSON graph export
 - `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, stale-graph notes, and endpoint/EF/reflection limitation reporting
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint/EF/reflection limitation reporting
 - Golden-file analyzer tests and MCP tool tests
 
-Planned follow-up analyzer work:
+Planned follow-up work:
 
 - ASP.NET Core MVC controllers and Minimal APIs
 - Endpoint-to-MediatR bridging and framework-aware `path` ranking across endpoint, DI, MediatR, and direct-call edges
 - Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
 - Entity Framework Core DbContext and DbSet usage in `0.4.0-alpha.1`
 - Reflection and assembly scanning in `0.4.0-alpha.1`
+- Agent workflow hardening, CLI graph-validity smoke tests, and planned human-readable graph views in `0.3.0-alpha.2`
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, full reflection resolution, broad DI factory/dataflow analysis, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, EF Core flow, full reflection resolution, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `summary`/`tree`/`report` views, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -118,7 +120,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.3.0-alpha.1",
+  "generator_version": "0.3.0-alpha.2",
   "nodes": [],
   "edges": []
 }
@@ -169,6 +171,7 @@ See [docs/performance.md](docs/performance.md).
 - [docs/testing.md](docs/testing.md)
 - [docs/performance.md](docs/performance.md)
 - [docs/mcp.md](docs/mcp.md)
+- [docs/agent-playbook.md](docs/agent-playbook.md)
 - [docs/rust-interop.md](docs/rust-interop.md)
 - [docs/limitations.md](docs/limitations.md)
 

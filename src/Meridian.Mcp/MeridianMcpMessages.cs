@@ -2,7 +2,7 @@ namespace Meridian.Mcp;
 
 public static class MeridianMcpMessages
 {
-    public const string StaleGraphNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again.";
+    public const string StaleGraphNote = "This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again and the running MCP server is reloaded with reload_graph or restarted.";
 
     public const string EndpointAnalyzerLimit = "Current Meridian analyzers do not yet emit ASP.NET Core endpoint nodes. Run this query again after endpoint analyzers are implemented and the graph is regenerated.";
 

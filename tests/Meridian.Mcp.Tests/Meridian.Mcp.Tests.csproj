@@ -21,6 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Meridian.Abstractions\Meridian.Abstractions.csproj" />
     <ProjectReference Include="..\..\src\Meridian.Core\Meridian.Core.csproj" />
+    <ProjectReference Include="..\..\src\Meridian.Exporters.Json\Meridian.Exporters.Json.csproj" />
     <ProjectReference Include="..\..\src\Meridian.Mcp\Meridian.Mcp.csproj" />
   </ItemGroup>
 

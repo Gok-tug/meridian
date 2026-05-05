@@ -2,7 +2,7 @@
 
 MCP support is a core Meridian use case.
 
-The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. It does not load or analyze the solution live.
+The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. MCP does not load or analyze the solution live.
 
 ## Purpose
 
@@ -15,7 +15,7 @@ The MCP server is optimized for agent use:
 - exposes schema discovery so agents can see available node kinds and relations,
 - caps broad result sets and marks truncation explicitly,
 - preserves ambiguity handling instead of silently picking a node,
-- reminds callers that graph data is stale until `meridian scan` is rerun.
+- reminds callers that graph data is stale until `meridian scan` is rerun and the running MCP server is reloaded or restarted.
 
 ## Run
 
@@ -31,10 +31,18 @@ The MCP server communicates over stdio for local MCP clients.
 Every tool should be understood with this rule:
 
 ```text
-This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again.
+This graph is precomputed. If source code changes, MCP results will not reflect those changes until meridian scan is run again and the running MCP server is reloaded with reload_graph or restarted.
 ```
 
-Agents should rerun `meridian scan` after code edits before relying on graph queries for the changed code.
+`meridian scan` regenerates `graph.json` on disk. A running MCP server keeps its current in-memory graph until `reload_graph` succeeds or the MCP process restarts.
+
+Freshness workflow after source edits:
+
+```text
+edit source -> meridian scan -> reload_graph -> query again
+```
+
+See [agent-playbook.md](agent-playbook.md) for agent workflow guidance.
 
 ## Initial tools
 
@@ -56,6 +64,29 @@ Output includes:
 - known Meridian node-kind constants,
 - known Meridian relation constants,
 - stale graph note.
+
+### `reload_graph`
+
+Rereads the configured graph file into the running MCP server.
+
+Use this after rerunning `meridian scan` while the MCP server is still connected.
+
+Input: none.
+
+Output includes:
+
+- status,
+- graph path,
+- previous node and edge counts,
+- current node and edge counts,
+- generator version,
+- load timestamp,
+- graph file timestamp,
+- failure message when reload fails.
+
+If reload fails, the previous graph remains active.
+
+`reload_graph` does not run Roslyn/MSBuild, does not execute application code, and does not choose another graph file. It only rereads the file configured with `meridian mcp --graph`.
 
 ### `query_graph`
 
@@ -92,6 +123,8 @@ Input:
 ```
 
 If the query is ambiguous, the response contains candidates with labels, kinds, symbols, IDs, and scores. The agent should retry with an exact node ID or more precise symbol.
+
+Agents must not invent node IDs. If the exact ID is unknown, use `query_graph` or returned candidates to discover it, then pass the exact returned ID to traversal tools.
 
 ### `get_neighbors`
 
@@ -190,7 +223,7 @@ Agents should respond to truncation by narrowing filters, lowering depth, or que
 
 ## Data source
 
-The initial MCP server reads generated graph JSON files only:
+The MCP server reads generated graph JSON files only:
 
 ```bash
 meridian mcp --graph meridian-out/graph.json
@@ -198,11 +231,22 @@ meridian mcp --graph meridian-out/graph.json
 
 It does not execute analyzed application code and does not run Roslyn/MSBuild live during MCP tool calls.
 
+When `graph.json` changes on disk, the running MCP server does not observe that change until `reload_graph` succeeds or the server restarts.
+
+## Hooks and watch mode
+
+Automatic watch/hot-reload is not currently implemented.
+
+External hooks may run `meridian scan`, but scan alone only updates `graph.json` on disk. Any automation that changes the graph file must also call `reload_graph` or restart the MCP server before agents rely on the new data.
+
+Built-in watch support should remain opt-in and should wait for a clearer cache/incremental analysis design.
+
 ## Security
 
 The MCP server should:
 
 - read only the configured graph file,
+- reload only the configured graph file when `reload_graph` is called,
 - not execute analyzed application code,
 - not expose source file contents,
 - avoid returning huge graph payloads by default,

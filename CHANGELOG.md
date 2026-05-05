@@ -34,12 +34,15 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `meridian mcp --graph <graph.json>` CLI command for local stdio MCP clients.
 - MCP graph tools for schema discovery, typed graph search, node lookup, neighbors, shortest paths, path explanations, entrypoint listing, and reverse flow lookup.
 - MCP result truncation metadata, stale-graph notes, and explicit endpoint-analyzer limitation responses for agent safety.
+- MCP `reload_graph` support so a running MCP server can reread the configured graph file after `meridian scan` regenerates it.
+- Agent playbook guidance for MCP freshness, node ID resolution, truncation, and unsupported analyzer limitations.
 - MCP tool tests over in-memory fixture graphs.
 
 ### Changed
 
 - Split the Roslyn analyzer internals into focused loading, source filtering, graph factory, direct-call, type-declaration, and DI analyzer components.
-- Updated the prototype generator/package version to `0.3.0-alpha.1` for the MCP server preview output.
+- Updated the prototype generator/package version to `0.3.0-alpha.2` for MCP freshness and agent-hardening output.
+- Revised the roadmap with `0.3.0-alpha.2` as MCP freshness and agent-hardening work before EF Core/reflection analyzer expansion.
 
 ## 0.1.0-alpha.1 — Planned
 

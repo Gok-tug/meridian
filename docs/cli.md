@@ -31,15 +31,14 @@ meridian scan MyApp.sln --analyzers aspnetcore,di,mediatr  # planned
 meridian scan MyApp.sln --no-restore                       # planned
 ```
 
-Default output:
+Current default output:
 
 ```text
 meridian-out/
   graph.json
-  report.md
 ```
 
-Initial `0.1.0-alpha.1` may only support `graph.json`.
+Planned human-readable outputs such as `report.md`, `summary`, and `tree` are derived views over `graph.json`; they are not emitted by the current scan command.
 
 ## `meridian explain`
 
@@ -69,7 +68,7 @@ Current behavior reads an existing graph file, defaulting to `meridian-out/graph
 meridian explain "GetOrderQuery" --graph meridian-out/graph.json
 ```
 
-If a query matches multiple nodes at the same best score, Meridian reports the ambiguity and prints candidate labels, kinds, symbols, and node IDs instead of choosing one silently:
+If a query matches multiple nodes at the same best score, Meridian reports the ambiguity and prints candidate labels, kinds, symbols, and node IDs instead of choosing one silently. Agents and scripts should not invent node IDs; they should copy exact IDs from `explain`, MCP `get_node`, or MCP `query_graph` results before calling traversal commands or tools:
 
 ```text
 Node query 'CreateGroupAsync' is ambiguous. Use a more precise label, symbol, or node ID.
@@ -178,11 +177,21 @@ Starts a local MCP server over an existing generated graph file.
 meridian mcp --graph meridian-out/graph.json
 ```
 
-The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
+The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
 
-The graph is not updated live. If source code changes, rerun `meridian scan` before relying on MCP tool results for the changed code.
+The graph is not updated live by `scan` alone. If source code changes, rerun `meridian scan`, then call `reload_graph` on the running MCP server or restart the MCP server before relying on tool results for the changed code.
 
 See [mcp.md](mcp.md) for tool contracts, truncation behavior, schema discovery, and limitations.
+
+## Planned human-readable views
+
+Future CLI work may add graph views derived from an existing `graph.json`:
+
+- `summary`: node and edge counts, diagnostics, top node kinds, and relation counts
+- `tree`: bounded hierarchical view from a node, type, namespace, or entrypoint
+- `report`: Markdown overview for humans and agents
+
+These views should not expand the graph schema or imply analyzer support that has not emitted facts.
 
 ## Exit codes
 

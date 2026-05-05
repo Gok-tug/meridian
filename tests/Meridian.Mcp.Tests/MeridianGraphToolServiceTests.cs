@@ -1,5 +1,6 @@
 using Meridian.Abstractions;
 using Meridian.Core;
+using Meridian.Exporters.Json;
 using Meridian.Mcp.Responses;
 
 namespace Meridian.Mcp.Tests;
@@ -18,7 +19,148 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(GraphNodeKinds.Method, result.NodeKindsPresent);
         Assert.Contains(GraphRelations.Calls, result.RelationsPresent);
         Assert.Contains("get_schema", result.Tools);
+        Assert.Contains("reload_graph", result.Tools);
         Assert.Equal(7, result.Graph.NodeCount);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_updates_visible_graph_from_configured_file()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+
+        await JsonGraphExporter.WriteAsync(CreateReloadedGraph(), graphPath);
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("ok", reload.Status);
+        Assert.Equal(7, reload.PreviousNodeCount);
+        Assert.Equal(1, reload.NodeCount);
+        Assert.Equal(graphPath, reload.GraphPath);
+        Assert.Equal("ok", service.GetNode("Reloaded.Run").Status);
+        Assert.Equal("not_found", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_preserves_previous_graph_when_json_is_invalid()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, "{ invalid json");
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.Equal(7, reload.NodeCount);
+        Assert.NotNull(reload.Message);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_null_generator_version_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, """
+            {
+              "schema_version": "0.1",
+              "generator": "Meridian",
+              "generator_version": null,
+              "nodes": [],
+              "edges": [],
+              "diagnostics": []
+            }
+            """);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.Contains("generator version", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_null_node_metadata_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await File.WriteAllTextAsync(graphPath, """
+            {
+              "schema_version": "0.1",
+              "generator": "Meridian",
+              "generator_version": "0.3.0-alpha.2",
+              "nodes": [
+                {
+                  "id": "method:Sample:Broken.Run()",
+                  "label": "Broken.Run",
+                  "kind": "method",
+                  "symbol": "Sample.Broken.Run()",
+                  "metadata": null
+                }
+              ],
+              "edges": [],
+              "diagnostics": []
+            }
+            """);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.Contains("metadata collection", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_duplicate_node_ids_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await JsonGraphExporter.WriteAsync(CreateDuplicateNodeIdGraph(), graphPath);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.Contains("duplicate node id", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_rejects_dangling_edges_and_preserves_previous_graph()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var service = await CreateReloadableService(graphPath);
+        await JsonGraphExporter.WriteAsync(CreateDanglingEdgeGraph(), graphPath);
+
+        var reload = await service.ReloadGraphAsync();
+
+        Assert.Equal("reload_failed", reload.Status);
+        Assert.Contains("does not match a node id", reload.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Equal("ok", service.GetNode("Start.Run").Status);
+    }
+
+    [Fact]
+    public async Task ReloadGraph_swaps_complete_snapshots_without_mutating_existing_context()
+    {
+        var graphPath = CreateGraphPath();
+        await JsonGraphExporter.WriteAsync(CreateGraph(), graphPath);
+        var options = new MeridianMcpServerOptions { GraphPath = graphPath };
+        var store = await McpGraphStore.CreateAsync(options);
+        var previous = store.Current;
+        await JsonGraphExporter.WriteAsync(CreateReloadedGraph(), graphPath);
+
+        var reload = await store.ReloadAsync();
+
+        Assert.Equal("ok", reload.Status);
+        Assert.Same(previous, reload.Previous);
+        Assert.NotSame(previous, reload.Current);
+        Assert.Same(reload.Current, store.Current);
+        Assert.Equal(7, previous.Graph.Nodes.Count);
+        Assert.Single(store.Current.Graph.Nodes);
     }
 
     [Fact]
@@ -197,6 +339,17 @@ public sealed class MeridianGraphToolServiceTests
         return new MeridianGraphToolService(new McpGraphContext(graph, serverOptions));
     }
 
+    private static async Task<MeridianGraphToolService> CreateReloadableService(string graphPath)
+    {
+        var store = await McpGraphStore.CreateAsync(new MeridianMcpServerOptions { GraphPath = graphPath });
+        return new MeridianGraphToolService(store);
+    }
+
+    private static string CreateGraphPath()
+    {
+        return Path.Combine(Path.GetTempPath(), "Meridian.Mcp.Tests", Guid.NewGuid().ToString("N"), "graph.json");
+    }
+
     private static GraphDocument CreateGraph()
     {
         var builder = new GraphBuilder();
@@ -211,6 +364,48 @@ public sealed class MeridianGraphToolServiceTests
         AddEdge(builder, "method:Sample:Middle.Run()", "method:Sample:End.Run()", GraphRelations.Calls, 20, "Middle calls End.");
         AddEdge(builder, "type:Sample:IService", "type:Sample:Service", GraphRelations.RegisteredAs, 30, "DI registration.");
         return builder.Build(".");
+    }
+
+    private static GraphDocument CreateReloadedGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "method:Sample:Reloaded.Run()", "Reloaded.Run", "Sample.Reloaded.Run()");
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateDuplicateNodeIdGraph()
+    {
+        return new GraphDocument
+        {
+            Nodes =
+            [
+                new GraphNode { Id = "method:Sample:Duplicate.Run()", Label = "Duplicate.Run", Kind = GraphNodeKinds.Method, Symbol = "Sample.FirstDuplicate.Run()" },
+                new GraphNode { Id = "method:Sample:Duplicate.Run()", Label = "Duplicate.Run", Kind = GraphNodeKinds.Method, Symbol = "Sample.SecondDuplicate.Run()" }
+            ]
+        };
+    }
+
+    private static GraphDocument CreateDanglingEdgeGraph()
+    {
+        return new GraphDocument
+        {
+            Nodes =
+            [
+                new GraphNode { Id = "method:Sample:Source.Run()", Label = "Source.Run", Kind = GraphNodeKinds.Method, Symbol = "Sample.Source.Run()" }
+            ],
+            Edges =
+            [
+                new GraphEdge
+                {
+                    Source = "method:Sample:Source.Run()",
+                    Target = "method:Sample:Missing.Run()",
+                    Relation = GraphRelations.Calls,
+                    Confidence = ConfidenceLevels.Extracted,
+                    ConfidenceScore = 1,
+                    Evidence = new GraphEvidence { File = "Sample.cs", Line = 1, Reason = "Dangling edge." }
+                }
+            ]
+        };
     }
 
     private static GraphDocument CreateGraphWithUnrelatedEndpoint()

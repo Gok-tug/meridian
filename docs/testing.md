@@ -157,24 +157,51 @@ Example expected edge:
 
 ## CLI tests
 
-CLI tests should verify:
+CLI tests should verify the process-level public contract:
 
-- exit codes,
+- root help output,
+- unknown command exit codes,
+- missing argument exit codes,
+- missing graph exit codes,
 - output files,
 - JSON parseability,
 - command errors,
 - `path` output for known fixtures,
 - `explain` output for known nodes.
 
+Scan smoke tests must also validate graph contents. A successful exit code with an empty graph is a failure.
+
+Minimum graph-validity smoke assertions should include:
+
+- node count above zero or a fixture-specific minimum,
+- expected node kinds are present,
+- expected relations such as `contains`, `calls`, `sends`, `publishes`, `handled_by`, `injects`, or `registered_as` are present when the fixture is meant to emit them,
+- every edge source and target points to an existing node ID,
+- required graph metadata such as schema version and generator is present.
+
+Prefer process-level tests for CLI behavior because stdout, stderr, exit codes, and output files are the public contract.
+
 ## MCP tests
 
 MCP tests should use fixture graph files and verify:
 
+- `get_schema`,
+- `reload_graph`,
 - `get_node`,
 - `get_neighbors`,
 - `shortest_path`,
 - `explain_path`,
-- compact output shape for agent consumption.
+- compact output shape for agent consumption,
+- truncation behavior,
+- ambiguity candidates,
+- stale graph notes.
+
+Reload tests should verify:
+
+- `reload_graph` updates visible schema and node counts after the configured file changes,
+- queries after reload can see new graph facts,
+- invalid JSON, duplicate node IDs, or dangling edge endpoints preserve the previous active graph,
+- `get_schema` advertises `reload_graph`.
 
 ## Benchmark tests
 

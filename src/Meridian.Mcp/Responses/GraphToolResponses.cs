@@ -43,6 +43,19 @@ public sealed record PathResponse(
     string? Message = null,
     string? Limitation = null);
 
+public sealed record ReloadGraphResponse(
+    string Status,
+    string StaleGraphNote,
+    string GraphPath,
+    int PreviousNodeCount,
+    int PreviousEdgeCount,
+    int NodeCount,
+    int EdgeCount,
+    string GeneratorVersion,
+    DateTimeOffset LoadedAt,
+    DateTimeOffset? FileLastWriteTime = null,
+    string? Message = null);
+
 public sealed record GraphMetadataDto(
     string SchemaVersion,
     string Generator,
