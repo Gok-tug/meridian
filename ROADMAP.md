@@ -307,6 +307,12 @@ Scope:
   - how to combine Meridian with targeted grep when a concept is not yet in source
   - how to avoid overclaiming from graph absence
   - feature-planning ranking guardrails: keep rankings conservative, expose reasons and limitations, and avoid hard-coded domain-specific edit orders
+- Claude Code skill preview for Meridian workflows:
+  - package a minimal graph-guided exploration and feature-planning workflow for agents
+  - guide agents to refresh stale graphs, start with `get_schema`, use `plan_feature` for absent concepts, and follow with `get_symbol_summary` before reading source
+  - reinforce MCP guardrails: graph absence is not source absence, broad traversals should stay capped, and evidence should be requested only when needed
+  - keep MCP as the capability layer and the skill as workflow guidance, not a replacement for MCP tools
+  - defer plugin-style distribution until Meridian has multiple skills, reusable settings, or install targets that justify a packaged plugin
 - real-project benchmark report comparing:
   - broad grep/read
   - broad MCP text search

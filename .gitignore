@@ -6,7 +6,6 @@ obj/
 TestResults/
 coverage/
 artifacts/
-graphify-6/
 .claude/
 *.user
 *.suo
