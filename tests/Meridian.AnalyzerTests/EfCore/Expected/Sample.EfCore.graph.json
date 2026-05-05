@@ -19,7 +19,7 @@
       "kind": "method",
       "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
       "source_file": "CatalogQueries.cs",
-      "source_location": "L22",
+      "source_location": "L27",
       "metadata": {}
     },
     {
@@ -28,7 +28,16 @@
       "kind": "method",
       "symbol": "Sample.EfCore.CatalogQueries.CustomersMemberName()",
       "source_file": "CatalogQueries.cs",
-      "source_location": "L27",
+      "source_location": "L32",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "label": "CatalogQueries.HasCustomersAsync",
+      "kind": "method",
+      "symbol": "Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "source_file": "CatalogQueries.cs",
+      "source_location": "L22",
       "metadata": {}
     },
     {
@@ -131,9 +140,37 @@
       "confidence_score": 1,
       "evidence": {
         "file": "CatalogQueries.cs",
-        "line": 24,
+        "line": 29,
         "symbol": "Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)",
         "reason": "Roslyn resolved EF Core DbContext use '_context.Customers' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "target": "type:Sample.EfCore:Sample.EfCore.CatalogDbContext",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 24,
+        "symbol": "Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+        "reason": "Roslyn resolved EF Core DbContext use '_context.Customers' to 'Sample.EfCore.CatalogDbContext'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "target": "type:Sample.EfCore:Sample.EfCore.Customer",
+      "relation": "queries",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 24,
+        "symbol": "Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+        "reason": "Roslyn resolved EF Core query '_context.Customers.AnyAsync()' to entity 'Sample.EfCore.Customer'."
       },
       "metadata": {}
     },
@@ -243,7 +280,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "CatalogQueries.cs",
-        "line": 22,
+        "line": 27,
         "symbol": "Sample.EfCore.CatalogQueries",
         "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.AddCustomer(Sample.EfCore.Customer customer)' in type 'Sample.EfCore.CatalogQueries'."
       },
@@ -257,9 +294,23 @@
       "confidence_score": 1,
       "evidence": {
         "file": "CatalogQueries.cs",
-        "line": 27,
+        "line": 32,
         "symbol": "Sample.EfCore.CatalogQueries",
         "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.CustomersMemberName()' in type 'Sample.EfCore.CatalogQueries'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.EfCore:Sample.EfCore.CatalogQueries",
+      "target": "method:Sample.EfCore:Sample.EfCore.CatalogQueries.HasCustomersAsync()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "CatalogQueries.cs",
+        "line": 22,
+        "symbol": "Sample.EfCore.CatalogQueries",
+        "reason": "Roslyn declared method 'Sample.EfCore.CatalogQueries.HasCustomersAsync()' in type 'Sample.EfCore.CatalogQueries'."
       },
       "metadata": {}
     },

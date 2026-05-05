@@ -15,6 +15,11 @@ public sealed class DbSet<TEntity> where TEntity : class
         return [];
     }
 
+    public Task<bool> AnyAsync()
+    {
+        return Task.FromResult(false);
+    }
+
     public void Add(TEntity entity)
     {
     }

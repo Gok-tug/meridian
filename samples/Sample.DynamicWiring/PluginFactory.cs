@@ -35,8 +35,22 @@ public sealed class RuntimePluginFactory
         return Activator.CreateInstance(pluginType);
     }
 
+    public object? CreateRuntimeWithConstructorArgument(Type pluginType)
+    {
+        return Activator.CreateInstance(pluginType, typeof(ReportPlugin));
+    }
+
     public object? CreateGenericRuntime<T>() where T : class
     {
         return Activator.CreateInstance<T>();
+    }
+
+    public void ConfigureMigrationMetadata()
+    {
+        ConfigureColumn(clrType: typeof(int), keyClrType: typeof(Guid), oldClrType: typeof(string));
+    }
+
+    private static void ConfigureColumn(Type clrType, Type keyClrType, Type oldClrType)
+    {
     }
 }

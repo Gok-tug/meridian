@@ -19,6 +19,11 @@ public sealed class CatalogQueries
         return _context.Set<Order>().ToList();
     }
 
+    public Task<bool> HasCustomersAsync()
+    {
+        return _context.Customers.AnyAsync();
+    }
+
     public void AddCustomer(Customer customer)
     {
         _context.Customers.Add(customer);

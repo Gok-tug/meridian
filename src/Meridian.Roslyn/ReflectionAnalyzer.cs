@@ -9,6 +9,13 @@ internal sealed class ReflectionAnalyzer
 {
     private const string DynamicTargetDiagnosticId = "MERIDIAN_REFLECTION_DYNAMIC_TARGET";
 
+    private static readonly HashSet<string> MetadataOnlyTypeArgumentNames = new(StringComparer.Ordinal)
+    {
+        "clrType",
+        "keyClrType",
+        "oldClrType"
+    };
+
     private readonly RoslynSourceFilter _sourceFilter;
     private readonly RoslynGraphFactory _graphFactory;
 
@@ -26,7 +33,8 @@ internal sealed class ReflectionAnalyzer
         GraphBuilder graph,
         CancellationToken cancellationToken)
     {
-        if (IsArgumentToActivatorCreateInstance(typeOfExpression, semanticModel, cancellationToken))
+        if (IsArgumentToActivatorCreateInstance(typeOfExpression, semanticModel, cancellationToken) ||
+            IsMetadataOnlyTypeArgument(typeOfExpression))
         {
             return;
         }
@@ -100,13 +108,7 @@ internal sealed class ReflectionAnalyzer
         SemanticModel semanticModel,
         CancellationToken cancellationToken)
     {
-        var typeArgument = invocation.ArgumentList.Arguments.FirstOrDefault(static argument =>
-            argument.NameColon?.Name.Identifier.ValueText.Equals("type", StringComparison.Ordinal) == true &&
-            argument.Expression is TypeOfExpressionSyntax);
-        typeArgument ??= invocation.ArgumentList.Arguments.FirstOrDefault(static argument =>
-            argument.NameColon is null && argument.Expression is TypeOfExpressionSyntax);
-
-        return typeArgument?.Expression is TypeOfExpressionSyntax typeOfExpression
+        return TryGetActivatorTypeArgument(invocation)?.Expression is TypeOfExpressionSyntax typeOfExpression
             ? TryResolveType(typeOfExpression.Type, semanticModel, cancellationToken)
             : null;
     }
@@ -118,6 +120,19 @@ internal sealed class ReflectionAnalyzer
     {
         var typeInfo = semanticModel.GetTypeInfo(typeSyntax, cancellationToken);
         return TryNormalizeNamedType(typeInfo.Type ?? typeInfo.ConvertedType);
+    }
+
+    private static ArgumentSyntax? TryGetActivatorTypeArgument(InvocationExpressionSyntax invocation)
+    {
+        var namedTypeArgument = invocation.ArgumentList.Arguments.FirstOrDefault(static argument =>
+            argument.NameColon?.Name.Identifier.ValueText.Equals("type", StringComparison.Ordinal) == true);
+        if (namedTypeArgument is not null)
+        {
+            return namedTypeArgument;
+        }
+
+        var firstPositionalArgument = invocation.ArgumentList.Arguments.FirstOrDefault(static argument => argument.NameColon is null);
+        return firstPositionalArgument?.Expression is TypeOfExpressionSyntax ? firstPositionalArgument : null;
     }
 
     private void EmitReflectsEdge(
@@ -145,6 +160,13 @@ internal sealed class ReflectionAnalyzer
         });
     }
 
+    private static bool IsMetadataOnlyTypeArgument(TypeOfExpressionSyntax typeOfExpression)
+    {
+        return typeOfExpression.Parent is ArgumentSyntax argument &&
+            argument.NameColon?.Name.Identifier.ValueText is { } argumentName &&
+            MetadataOnlyTypeArgumentNames.Contains(argumentName);
+    }
+
     private static bool IsArgumentToActivatorCreateInstance(
         TypeOfExpressionSyntax typeOfExpression,
         SemanticModel semanticModel,
@@ -158,7 +180,9 @@ internal sealed class ReflectionAnalyzer
         }
 
         var methodSymbol = InvocationSymbolResolver.ResolveTargetMethod(semanticModel, invocation, cancellationToken);
-        return methodSymbol is not null && IsActivatorCreateInstance(methodSymbol);
+        return methodSymbol is not null &&
+            IsActivatorCreateInstance(methodSymbol) &&
+            TryGetActivatorTypeArgument(invocation) == argument;
     }
 
     private static bool IsActivatorCreateInstance(IMethodSymbol methodSymbol)

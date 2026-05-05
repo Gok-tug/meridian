@@ -12,6 +12,7 @@ Valid alpha versions:
 0.2.0-alpha.3
 0.3.0-alpha.1
 0.3.0-alpha.2
+0.4.0-alpha.1
 ```
 
 Stable versions such as `0.1.0` should not be published until the package has a tested analyzer pipeline and documented graph contract.
