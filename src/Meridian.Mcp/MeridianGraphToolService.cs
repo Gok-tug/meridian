@@ -44,6 +44,8 @@ public sealed class MeridianGraphToolService
         GraphRelations.Publishes
     ];
 
+    private const char EdgeKeySeparator = '';
+
     private readonly McpGraphStore _store;
 
     public MeridianGraphToolService(McpGraphStore store)
@@ -412,7 +414,7 @@ public sealed class MeridianGraphToolService
     private static string EdgeKey(GraphEdge edge)
     {
         return string.Join(
-            '',
+            EdgeKeySeparator,
             edge.Source,
             edge.Target,
             edge.Relation,
