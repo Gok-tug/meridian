@@ -87,14 +87,20 @@ Positive signal:
 - EF Core use can be traced, e.g. `SeedData.InitializeAsync -> AppDbContext` succeeds with a `uses` edge.
 - `explain Create.ExecuteAsync` correctly resolves method, field reads, request property reads, and normal method calls.
 
-Coverage gaps:
+Initial coverage gaps before `0.4.0-alpha.4`:
 
-- FastEndpoints route configuration is not emitted as endpoint nodes or route edges. Examples:
+- FastEndpoints route configuration was not emitted as endpoint nodes or route edges. Examples:
   - `.dogfood/CleanArchitecture/src/Clean.Architecture.Web/Contributors/Create.cs:23` configures `Post(CreateContributorRequest.Route)`.
   - `.dogfood/CleanArchitecture/src/Clean.Architecture.Web/Contributors/List.cs:12` configures `Get("/Contributors")`.
-- `Mediator.SourceGenerator` is not detected as MediatR-like mediator flow. Example:
+- `Mediator.SourceGenerator` was not detected as MediatR-like mediator flow. Example:
   - `.dogfood/CleanArchitecture/src/Clean.Architecture.Web/Contributors/Create.cs:54` calls `_mediator.Send(new CreateContributorCommand(...))`.
   - `path Create.ExecuteAsync CreateContributorCommand` returned `No path found` with exit code 5.
+
+Follow-up status after `0.4.0-alpha.4`:
+
+- FastEndpoints route facts are emitted for the static `Configure()` verb patterns covered by this milestone.
+- `Mediator.SourceGenerator` request/handler and `Send` patterns are represented with the same mediator graph relations used for MediatR.
+- `POST /Contributors -> CreateContributorHandler` now succeeds through `calls -> sends -> handled_by`.
 
 ### eShopOnWeb
 
@@ -135,15 +141,21 @@ Positive signal:
   - `path BasketQueryService.CountTotalBasketItems CatalogContext.BasketItems` succeeded.
 - Ambiguity UX is useful. Querying `IReadRepository` returned candidate node IDs instead of guessing.
 
-Coverage gaps:
+Initial coverage gaps before `0.4.0-alpha.4`:
 
-- ASP.NET Core controller route/action metadata is not represented as endpoint flow.
+- ASP.NET Core controller route/action metadata was not represented as endpoint flow.
   - `.dogfood/eShopOnWeb/src/Web/Controllers/OrderController.cs:12` has `[Route("[controller]/[action]")]`.
   - `.dogfood/eShopOnWeb/src/Web/Controllers/OrderController.cs:22` and `.dogfood/eShopOnWeb/src/Web/Controllers/OrderController.cs:31` define `[HttpGet]` actions.
-- MinimalApi.Endpoint route registration is not represented as an endpoint-to-handler/service path.
+- MinimalApi.Endpoint route registration was not represented as an endpoint-to-handler/service path.
   - `.dogfood/eShopOnWeb/src/PublicApi/CatalogItemEndpoints/CatalogItemListPagedEndpoint.cs:29` defines `AddRoute`.
   - `.dogfood/eShopOnWeb/src/PublicApi/CatalogItemEndpoints/CatalogItemListPagedEndpoint.cs:31` maps `api/catalog-items`.
   - `path CatalogItemListPagedEndpoint CatalogItemViewModelService` returned `No path found`.
+
+Follow-up status after `0.4.0-alpha.4`:
+
+- MVC controller route/action metadata is emitted as endpoint flow for the static attribute patterns covered by this milestone.
+- MinimalApi.Endpoint `AddRoute` patterns are represented for statically resolved route delegates.
+- `GET /Order/MyOrders -> GetMyOrdersHandler` now succeeds through `calls -> sends -> handled_by`.
 
 ### CrossMacro
 
@@ -191,7 +203,7 @@ Accuracy call:
 | `agent-summary --budget compact` | eShopOnWeb | Exit 0, 0.21s, 120 lines. |
 | `explain Create.ExecuteAsync` | CleanArchitecture | Exit 0, useful incoming/outgoing relations. |
 | `explain GetMyOrders` | eShopOnWeb | Exit 0, correctly shows `mediatr_request`, incoming `sends`, outgoing `handled_by`. |
-| `path Create.ExecuteAsync CreateContributorCommand` | CleanArchitecture | Exit 5, no path found. This reflects missing `Mediator.SourceGenerator` support. |
+| `path "POST /Contributors" CreateContributorHandler` | CleanArchitecture | Exit 0, found `calls -> sends -> handled_by` after FastEndpoints and `Mediator.SourceGenerator` support. |
 | `path OrderController.MyOrders GetMyOrdersHandler` | eShopOnWeb | Exit 0, found `sends -> handled_by`. |
 | `path BasketQueryService.CountTotalBasketItems CatalogContext.BasketItems` | eShopOnWeb | Exit 0, found EF Core context/DbSet path. |
 | `path GetMyOrdersHandler.Handle IReadRepository` | eShopOnWeb | Exit 5, ambiguity reported with candidate node IDs. |
@@ -200,7 +212,7 @@ No unhandled CLI exceptions were observed during this audit.
 
 ## Meridian test and coverage baseline
 
-`dotnet test Meridian.sln -c Release --collect:"XPlat Code Coverage"` passed:
+The initial coverage run used `dotnet test Meridian.sln -c Release --collect:"XPlat Code Coverage"` and passed:
 
 | Test assembly | Passed | Failed | Skipped |
 | --- | ---: | ---: | ---: |
@@ -209,6 +221,8 @@ No unhandled CLI exceptions were observed during this audit.
 | `Meridian.AnalyzerTests` | 8 | 0 | 0 |
 | `Meridian.Cli.Tests` | 11 | 0 | 0 |
 | Total | 81 | 0 | 0 |
+
+Later `0.4.0-alpha.4` hardening verification, without collecting coverage, passed `86` tests across the same solution. The coverage percentages below remain the initial coverage baseline until the coverage run is repeated.
 
 Raw Cobertura outputs were generated per test assembly. A best-effort merged line coverage estimate across unique source lines is:
 
@@ -237,30 +251,15 @@ The CLI coverage gap is partly a measurement problem: process-level CLI tests ve
 
 `dotnet list Meridian.sln package --vulnerable` found no vulnerable packages in Meridian projects.
 
-## Priority recommendations from the initial audit
+## Priority recommendation status
 
-1. Add ASP.NET Core endpoint analysis.
-   - Controller attributes: `[Route]`, `[HttpGet]`, `[HttpPost]`, route tokens like `[controller]/[action]`.
-   - Minimal API calls: `MapGet`, `MapPost`, `MapGroup`, typed route handlers.
-   - Endpoint libraries seen in dogfood: FastEndpoints and MinimalApi.Endpoint.
-   - Expected graph value: route node -> action/handler method -> mediator/service -> EF/repository.
-
-2. Add `Mediator.SourceGenerator` support alongside MediatR.
-   - Detect `Mediator.IMediator`, `Mediator.IRequest<T>`, `Mediator.IRequestHandler<TRequest,TResponse>` patterns.
-   - Emit `mediator_request`, `mediator_handler`, `sends`, and `handled_by` or reuse existing MediatR relation names if the graph model should stay framework-neutral.
-   - CleanArchitecture is a strong fixture candidate because it currently misses `_mediator.Send(new CreateContributorCommand(...))`.
-
-3. Improve workspace diagnostic severity mapping.
-   - NuGet audit warnings from eShopOnWeb currently show as `failure` diagnostics while scan exits 0.
-   - Preserve useful visibility, but distinguish non-fatal MSBuild warnings from project-load failures.
-
-4. Add dogfood fixtures or scripted audits to CI/manual validation.
-   - Keep full external repo scans manual or scheduled, not per PR.
-   - Add small in-repo fixtures copied from observed patterns: controller route, FastEndpoints route, MinimalApi.Endpoint route, `Mediator.SourceGenerator` send/handler.
-
-5. Improve CLI coverage measurement.
-   - Keep process-level tests for public contract.
-   - Add direct tests for `ExplainCommand`, `PathCommand`, and rendering logic so coverage reflects behavior already exercised through child processes.
+| Recommendation from the initial audit | Status | Notes |
+| --- | --- | --- |
+| Add ASP.NET Core endpoint analysis | Done in `0.4.0-alpha.4` for the static patterns covered by this milestone | MVC attributes, Minimal API verb calls, simple local `MapGroup`, FastEndpoints verbs, and MinimalApi.Endpoint route registration are represented. Runtime routing semantics remain out of scope. |
+| Add `Mediator.SourceGenerator` support alongside MediatR | Done in `0.4.0-alpha.4` for source-resolved request, command, query, notification, handler, `Send`, and `Publish` patterns | Meridian reuses the existing mediator graph node kinds and relations so agents can reason across MediatR and `Mediator` packages consistently. |
+| Improve workspace diagnostic severity mapping | Done in `0.4.0-alpha.4` | NuGet advisory messages are warnings while unsupported project-load failures remain errors. |
+| Add dogfood fixtures or scripted audits to CI/manual validation | Partially done | Small in-repo fixtures now cover ASP.NET, FastEndpoints, MinimalApi.Endpoint, and mediator patterns. Full external repository scans should remain manual or scheduled, not per PR. A repeatable dogfood checklist/script is still useful for `0.5`. |
+| Improve CLI coverage measurement | Still useful | Process-level tests verify public CLI behavior, but child process execution is not attributed to command classes by the current coverage collection approach. Direct command-level tests or a child-process coverage strategy would make coverage numbers more representative. |
 
 ## Current readiness call
 
