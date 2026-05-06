@@ -18,6 +18,9 @@ Use SemVer prerelease versions:
 0.4.0-alpha.2
 0.4.0-alpha.3
 0.4.0-alpha.4
+0.5.0-alpha.1
+0.6.0-alpha.1
+0.7.0-alpha.1
 ```
 
 Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.
@@ -41,38 +44,58 @@ NuGet metadata should include:
   - mediatr
   - aspnetcore
 
-## Manual release flow
+## Manual GitHub Actions release flow
 
-Recommended early release flow:
+The preferred release path is the manually triggered `Release` workflow in `.github/workflows/release.yml`. Publishing should not happen automatically from every push to main.
+
+Before running the workflow:
+
+1. Update and commit the intended version in `src/Meridian.Cli/Meridian.Cli.csproj`.
+2. Update `CHANGELOG.md`, README/docs, and roadmap status as needed.
+3. Configure the GitHub repository secret `NUGET_API_KEY`.
+4. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
+5. Run the `Release` workflow manually with the exact version input, for example `0.4.0-alpha.4`.
+
+The workflow validates that the input version matches the project file, restores, builds with warnings as errors, tests, checks formatting, checks vulnerable packages, packs the CLI tool, installs the package locally as a tool, runs `meridian --help` and `meridian mcp --help`, and then publishes the package to NuGet.
+
+The workflow intentionally does not use `--skip-duplicate`; rerunning a published version should fail visibly.
+
+By default, create the Git tag manually after NuGet publish succeeds:
 
 ```bash
-dotnet restore
-dotnet build --configuration Release
-dotnet test --configuration Release
-dotnet pack --configuration Release
+git tag v<version>
+git push origin v<version>
+```
+
+The workflow has an optional `create_github_release` input. Leave it false unless you want the workflow to create `v<version>` and attach the package artifact as a GitHub release after NuGet publish.
+
+## Local fallback release flow
+
+Use the local flow only as a fallback when GitHub Actions is unavailable.
+
+```bash
+dotnet restore Meridian.sln
+dotnet build Meridian.sln --configuration Release -warnaserror
+dotnet test Meridian.sln --configuration Release
+dotnet format Meridian.sln --verify-no-changes
+dotnet pack src/Meridian.Cli/Meridian.Cli.csproj --configuration Release --output artifacts/package
+```
+
+Validate the generated package locally:
+
+```bash
+dotnet tool install --tool-path artifacts/tool-smoke --add-source artifacts/package meridian --version <version>
+artifacts/tool-smoke/meridian --help
+artifacts/tool-smoke/meridian mcp --help
 ```
 
 Then publish manually after reviewing package contents:
 
 ```bash
-dotnet nuget push artifacts/package/meridian.<version>.nupkg --source nuget.org
+dotnet nuget push artifacts/package/meridian.<version>.nupkg --source "https://api.nuget.org/v3/index.json" --api-key <NUGET_API_KEY>
 ```
 
 The actual API key should never be committed.
-
-## CI release flow
-
-A future GitHub Actions release workflow should:
-
-1. restore,
-2. build,
-3. test,
-4. run golden-file analyzer tests,
-5. pack,
-6. upload artifacts,
-7. publish only from tagged releases or manual approval.
-
-Publishing should not happen automatically from every push to main.
 
 ## Release checklist
 

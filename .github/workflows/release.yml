@@ -1,0 +1,126 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Package version to publish, matching src/Meridian.Cli/Meridian.Cli.csproj"
+        required: true
+        type: string
+      create_github_release:
+        description: "Create v<version> GitHub release after NuGet publish"
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: nuget-release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Validate version input
+        shell: pwsh
+        run: |
+          $version = "${{ inputs.version }}"
+          if ($version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$') {
+            Write-Error "Version '$version' must be a SemVer prerelease such as 0.4.0-alpha.4."
+            exit 1
+          }
+
+      - name: Validate project version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content "src/Meridian.Cli/Meridian.Cli.csproj"
+          $projectVersion = $project.Project.PropertyGroup.Version
+          $inputVersion = "${{ inputs.version }}"
+          if ($projectVersion -ne $inputVersion) {
+            Write-Error "Project version '$projectVersion' does not match release input '$inputVersion'."
+            exit 1
+          }
+          Write-Host "Validated package version $projectVersion."
+
+      - name: Restore
+        run: dotnet restore Meridian.sln
+
+      - name: Build
+        run: dotnet build Meridian.sln --configuration Release --no-restore -warnaserror
+
+      - name: Test
+        run: dotnet test Meridian.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+
+      - name: Format check
+        run: dotnet format Meridian.sln --verify-no-changes --no-restore
+
+      - name: Vulnerability check
+        shell: pwsh
+        run: |
+          $json = dotnet list Meridian.sln package --vulnerable --include-transitive --format json
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $report = $json | ConvertFrom-Json
+          $vulnerablePackages = @()
+          foreach ($project in @($report.projects)) {
+            foreach ($framework in @($project.frameworks)) {
+              foreach ($package in @($framework.topLevelPackages) + @($framework.transitivePackages)) {
+                if ($null -ne $package -and $null -ne $package.vulnerabilities -and @($package.vulnerabilities).Count -gt 0) {
+                  $vulnerablePackages += "$($project.path): $($package.id) $($package.resolvedVersion)"
+                }
+              }
+            }
+          }
+          if ($vulnerablePackages.Count -gt 0) {
+            $vulnerablePackages | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
+          Write-Host "No vulnerable packages found."
+
+      - name: Pack CLI tool
+        run: dotnet pack src/Meridian.Cli/Meridian.Cli.csproj --configuration Release --no-build --output artifacts/package
+
+      - name: Validate package artifact
+        shell: pwsh
+        run: |
+          $packagePath = "artifacts/package/meridian.${{ inputs.version }}.nupkg"
+          if (-not (Test-Path $packagePath)) {
+            Write-Error "Expected package '$packagePath' was not created."
+            Get-ChildItem "artifacts/package" | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
+          $packages = @(Get-ChildItem "artifacts/package" -Filter "*.nupkg")
+          if ($packages.Count -ne 1) {
+            Write-Error "Expected exactly one .nupkg artifact, found $($packages.Count)."
+            $packages | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
+          Write-Host "Validated package artifact $packagePath."
+
+      - name: Local tool smoke test
+        shell: pwsh
+        run: |
+          dotnet tool install meridian --tool-path "artifacts/tool-smoke" --add-source "artifacts/package" --version "${{ inputs.version }}"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "artifacts/tool-smoke/meridian" --help
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & "artifacts/tool-smoke/meridian" mcp --help
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Publish to NuGet
+        run: dotnet nuget push "artifacts/package/meridian.${{ inputs.version }}.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
+
+      - name: Create GitHub release
+        if: ${{ inputs.create_github_release }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "v${{ inputs.version }}" "artifacts/package/meridian.${{ inputs.version }}.nupkg" --title "v${{ inputs.version }}" --notes-file CHANGELOG.md
