@@ -25,6 +25,8 @@ The NuGet package is published as prerelease alpha builds, but the analyzer impl
 0.4.0-alpha.3
 0.4.0-alpha.4
 0.5.0-alpha.1
+0.5.0-alpha.2
+0.5.0-alpha.3
 0.6.0-alpha.1
 0.7.0-alpha.1
 ```

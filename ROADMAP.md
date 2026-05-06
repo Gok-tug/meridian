@@ -17,6 +17,8 @@ Valid alpha versions:
 0.4.0-alpha.3
 0.4.0-alpha.4
 0.5.0-alpha.1
+0.5.0-alpha.2
+0.5.0-alpha.3
 0.6.0-alpha.1
 0.7.0-alpha.1
 ```
@@ -353,31 +355,58 @@ Not in scope:
 
 - route precedence, authorization/filter/middleware graphing, model binding, runtime route discovery, generated-code execution, arbitrary delegate dataflow, stream mediator dispatch, broad DI factory/dataflow analysis, XAML binding analysis, CommunityToolkit.Mvvm generated member analysis, CLI runtime routing, native boundary analysis, cache, or incremental analysis
 
-## 0.5.0-alpha.1 — Performance and hardening
+## 0.5.0-alpha.1 — Metrics baseline and dogfood repeatability
 
-Goal: prepare Meridian for large real-world solutions.
+Goal: make real-repository validation repeatable and measurable before deeper performance, cache, or incremental-analysis work.
 
 Scope:
 
-- CLI `scan --metrics` sidecar output for repeatable baseline timings, graph counts, diagnostics, and environment metadata
+- CLI `scan --metrics` sidecar output for repeatable baseline timings, graph counts, diagnostics, memory, and environment metadata
+- process-level CLI coverage for metrics help text, parseability, non-negative timings, metadata, and graph count consistency
 - repeatable dogfood baseline script for pinned CleanArchitecture, eShopOnWeb, and CrossMacro scans
-- benchmark suite
-- large solution benchmark report
-- repeatable dogfood accuracy audit checklist/scripts for CrossMacro-class repositories
-- large-graph summary sanity checks for duplicate evidence edges and fixture/test skew
-- MCP payload-size benchmarks for realistic agent workflows
-- cache design with stable file fingerprints and safe invalidation
-- incremental analysis design for changed projects/files
-- graph diff stability and stable node ID review
-- CI hardening
-- memory usage tracking
-- performance documentation updates
+- compact `agent-summary` capture alongside dogfood graph and metrics artifacts
+- first `0.5.0-alpha.1` dogfood metrics baseline documented in dogfood and performance docs
+- initial memory usage tracking through `peak_working_set_mb`
+
+Not in scope:
+
+- BenchmarkDotNet suite, scheduled benchmark workflow, cache implementation, incremental analysis implementation, or graph schema changes
+
+## 0.5.0-alpha.2 — Benchmarks, payload measurements, and CI hardening
+
+Goal: turn the dogfood baseline into repeatable engineering signals without making normal PR CI slow or network-dependent.
+
+Scope:
+
+- benchmark suite for representative small and medium local fixtures
+- large-solution benchmark report using dogfood or explicitly documented external targets
+- MCP payload-size benchmarks for realistic agent workflows such as `get_agent_summary`, `get_symbol_summary`, bounded `query_graph`, and path tools
+- manual or scheduled dogfood/benchmark workflow that stores artifacts outside normal PR CI
+- CI/release hardening for CLI smoke coverage, package validation, vulnerable package checks, and generated artifact hygiene
+- large-graph summary sanity checks for duplicate evidence edges, fixture/test skew, and bounded output behavior
+- performance documentation updates with benchmark methodology and trend guidance
 
 Benchmark targets:
 
 - small solution: under 30 seconds
 - medium solution, 10-25 projects: under 2 minutes
 - large solution, 50+ projects / 500k+ LOC: measured and published before stable release
+
+## 0.5.0-alpha.3 — Cache and graph stability design
+
+Goal: de-risk future incremental analysis before implementing caching by documenting stable inputs, invalidation rules, and graph identity guarantees.
+
+Scope:
+
+- cache design with stable file fingerprints, analyzer version inputs, graph schema inputs, package/project inputs, and conservative invalidation
+- incremental analysis design for changed projects/files and affected analyzer passes
+- graph diff stability review across repeated scans of the same inputs
+- stable node ID review for source symbols, endpoint nodes, synthetic nodes, and generated/filtered-source boundaries
+- cache-friendly analyzer boundary review so later caching does not require graph contract churn
+
+Not in scope:
+
+- turning cache or incremental analysis on by default before correctness and stale-graph behavior are proven
 
 ## 0.6.0-alpha.1 — UI bindings, source-generator graph preview, and conditional flow research
 
