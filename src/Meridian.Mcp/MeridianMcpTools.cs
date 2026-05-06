@@ -125,14 +125,14 @@ public sealed class MeridianMcpTools
     }
 
     [McpServerTool(Name = "list_entrypoints", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
-    [Description("List emitted application entrypoint nodes. If empty, current analyzers do not yet emit ASP.NET endpoint nodes. " + SeeSchemaNote)]
+    [Description("List emitted application entrypoint nodes. If empty, the loaded graph may be stale, older, non-web, or using unsupported endpoint patterns. " + SeeSchemaNote)]
     public GraphSearchResponse ListEntrypoints([Description("Maximum returned entrypoint nodes.")] int? maxResults = null)
     {
         return _service.ListEntrypoints(maxResults);
     }
 
     [McpServerTool(Name = "find_flows_to_symbol", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
-    [Description("Reverse-traverse existing graph edges to find upstream nodes that can reach a target symbol. If no endpoint nodes exist, returns upstream nodes with an endpoint analyzer limitation. " + SeeSchemaNote)]
+    [Description("Reverse-traverse existing graph edges to find upstream nodes that can reach a target symbol. If no endpoint nodes exist, returns upstream nodes with a graph-specific endpoint coverage note. " + SeeSchemaNote)]
     public GraphSearchResponse FindFlowsToSymbol(
         [Description("Target node id, label, or symbol.")] string target,
         [Description("Reverse traversal depth. The server caps this to avoid huge traversals.")] int? maxDepth = null,

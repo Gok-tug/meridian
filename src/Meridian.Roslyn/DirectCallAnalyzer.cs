@@ -24,7 +24,7 @@ internal sealed class DirectCallAnalyzer
         GraphBuilder graph,
         CancellationToken cancellationToken)
     {
-        var sourceSymbol = semanticModel.GetEnclosingSymbol(invocation.SpanStart, cancellationToken) as IMethodSymbol;
+        var sourceSymbol = ResolveSourceMethod(invocation, semanticModel, cancellationToken);
         var targetSymbol = InvocationSymbolResolver.ResolveTargetMethod(semanticModel, invocation, cancellationToken);
         if (sourceSymbol is null || targetSymbol is null)
         {
@@ -53,5 +53,22 @@ internal sealed class DirectCallAnalyzer
                 sourceNode.Symbol,
                 $"Roslyn resolved invocation '{invocation.Expression}' to '{targetNode.Symbol}'.")
         });
+    }
+
+    private static IMethodSymbol? ResolveSourceMethod(
+        InvocationExpressionSyntax invocation,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        var sourceSymbol = semanticModel.GetEnclosingSymbol(invocation.SpanStart, cancellationToken) as IMethodSymbol;
+        if (sourceSymbol?.MethodKind != MethodKind.AnonymousFunction)
+        {
+            return sourceSymbol;
+        }
+
+        return invocation.Ancestors()
+            .OfType<BaseMethodDeclarationSyntax>()
+            .Select(declaration => semanticModel.GetDeclaredSymbol(declaration, cancellationToken) as IMethodSymbol)
+            .FirstOrDefault(symbol => symbol is not null);
     }
 }

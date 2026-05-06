@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Text.Json;
+using Meridian.Abstractions;
 using Meridian.Exporters.Json;
 
 namespace Meridian.Cli.Tests;
@@ -72,6 +73,27 @@ public sealed class MeridianCliProcessTests
             var graph = JsonGraphExporter.Deserialize(await File.ReadAllTextAsync(graphPath));
             Assert.NotEmpty(graph.Nodes);
             Assert.NotEmpty(graph.Edges);
+        }
+        finally
+        {
+            Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task Scan_writes_aspnet_endpoint_and_mediator_flow()
+    {
+        var outputDirectory = CreateTempDirectory();
+        try
+        {
+            var result = await RunCliAsync("scan", AspNetCoreSampleProjectPath(), "--output", outputDirectory, "--trust-project");
+            var graphPath = Path.Combine(outputDirectory, "graph.json");
+
+            Assert.Equal(0, result.ExitCode);
+            var graph = JsonGraphExporter.Deserialize(await File.ReadAllTextAsync(graphPath));
+            Assert.Contains(graph.Nodes, node => node.Kind == GraphNodeKinds.Endpoint && node.Label == "POST /orders");
+            Assert.Contains(graph.Edges, edge => edge.Relation == GraphRelations.Sends);
+            Assert.Contains(graph.Edges, edge => edge.Relation == GraphRelations.HandledBy);
         }
         finally
         {
@@ -232,6 +254,11 @@ public sealed class MeridianCliProcessTests
     private static string SampleProjectPath()
     {
         return Path.Combine(RepositoryRoot(), "samples", "Sample.BasicCalls", "Sample.BasicCalls.csproj");
+    }
+
+    private static string AspNetCoreSampleProjectPath()
+    {
+        return Path.Combine(RepositoryRoot(), "samples", "Sample.AspNetCoreFlow", "Sample.AspNetCoreFlow.csproj");
     }
 
     private static string RepositoryRoot()

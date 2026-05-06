@@ -36,7 +36,7 @@ Analysis can be incomplete when:
 
 Central-node and extension-point rankings are deterministic heuristics based on graph structure, node names, node kinds, and known relation types. They are navigation hints for agents, not a replacement for source review.
 
-Graph clusters use non-containment graph components only when the loaded graph has enough separated structure. A cluster means "these nodes are connected in the graph," not "this is a real subsystem boundary." Budget modes cap returned items deterministically; they are not exact token counts.
+Graph clusters use non-containment graph components only when the loaded graph has enough separated structure. A cluster means "these nodes are connected in the graph," not "this is a real subsystem boundary." Summary rankings and clusters score distinct structural non-containment edges by source, target, and relation; raw graph JSON and graph statistics still preserve all evidence-bearing edges. Budget modes cap returned items deterministically; they are not exact token counts.
 
 ## Member graph limits
 
@@ -55,7 +55,7 @@ It does not perform:
 
 ## Dependency Injection limits
 
-Source-resolved direct generic registrations and narrow direct-`new` factory registrations are the currently reliable DI cases:
+Source-resolved direct generic registrations, narrow direct-`new` factory registrations, and direct `GetRequiredService<TImplementation>()` factory aliases are the currently reliable DI cases:
 
 ```csharp
 services.AddScoped<IOrderRepository, EfOrderRepository>();
@@ -65,12 +65,15 @@ services.AddSingleton<ClockFactory>(_ =>
     var createdAt = DateTimeOffset.UtcNow;
     return new ClockFactory(createdAt);
 });
+services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<EmailNotificationSender>());
 ```
 
 Complex factory or convention-based registrations may be inferred, ambiguous, or skipped:
 
 ```csharp
 services.AddScoped<IOrderRepository>(sp => CreateRepository(sp));
+services.AddScoped<IOrderRepository>(sp => sp.GetRequiredService<Func<IOrderRepository>>()());
+services.AddScoped<IOrderRepository>(sp => serviceResolver[tenant]());
 services.AddScoped<IOrderRepository>(sp =>
 {
     if (UseSql())
@@ -85,13 +88,29 @@ services.Scan(scan => scan.FromAssemblies(...));
 
 The current prototype only emits constructor injection edges for unambiguous source class constructors. Multiple unmarked constructors and record constructors are not treated as extracted DI facts yet.
 
-Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, complex factory delegates, ambiguous constructor selection, or external configuration.
+Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, `Func<T>` factories, nested delegate invocation, `GetService<T>()`, factory `.Create()` calls, resolver dictionaries, complex factory delegates, ambiguous constructor selection, or external configuration.
+
+## ASP.NET Core endpoint limits
+
+ASP.NET Core endpoint analysis is a source preview. Meridian emits endpoint nodes for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` calls, simple local `MapGroup` prefixes, FastEndpoints route verbs in `Configure()`, and MinimalApi.Endpoint-style route-registration methods when the source pattern is statically visible.
+
+It does not model:
+
+- ASP.NET Core route precedence,
+- authorization, filters, middleware, or endpoint conventions,
+- model binding behavior,
+- runtime route discovery,
+- arbitrary delegate dataflow,
+- routes built from runtime-only strings,
+- generated endpoint code execution.
+
+Known routes with unresolved handlers produce warnings instead of guessed handler edges.
 
 ## MediatR limits
 
-The current prototype emits declaration facts for source-resolved MediatR requests, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
+The current prototype emits declaration facts for source-resolved MediatR or `Mediator` namespace requests, commands, queries, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
 
-The current prototype also emits method-level `sends` and `publishes` edges for supported `IMediator`, `ISender`, and `IPublisher` call sites. Supported message resolution is intentionally conservative: inline object creation, in-scope local object creation before the dispatch call, and concrete method parameter static type fallback.
+The current prototype also emits method-level `sends` and `publishes` edges for supported `IMediator`, `ISender`, and `IPublisher` call sites in either namespace. Supported message resolution is intentionally conservative: inline object creation, in-scope local object creation before the dispatch call, and concrete method parameter static type fallback.
 
 Runtime-created requests remain ambiguous:
 
@@ -100,7 +119,7 @@ object request = CreateRequestFromRuntimeData();
 await mediator.Send(request);
 ```
 
-Meridian should not claim ASP.NET Core endpoint-to-request flow, `CreateStream`, interprocedural request tracking, runtime-created message resolution, direct method-to-handler shortcut edges, or runtime handler discovery until those analyzers exist.
+Meridian should not claim `CreateStream`, interprocedural request tracking, runtime-created message resolution, direct method-to-handler shortcut edges, or runtime handler discovery until those analyzers exist.
 
 ## Reflection limits
 
@@ -141,13 +160,13 @@ Source-generator-heavy projects require special care.
 
 The current prototype filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
 
-Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option.
+Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm generated members are a known example: `[RelayCommand]` methods may appear as source methods, but generated `*Command` properties are not emitted yet; `[ObservableProperty]` generated public properties are likewise not graph facts unless visible in analyzable source.
 
 ## Native/Rust interop limits
 
 Future Rust/native support starts at the .NET boundary.
 
-Meridian may detect that .NET calls a native library, but it should not initially claim to analyze Rust internals or produce a Rust call graph.
+Meridian does not yet model `DllImport`, `LibraryImport`, or `NativeLibrary.Load/TryLoad` as first-class graph facts. Future support may detect that .NET calls a native library, but it should not initially claim to analyze Rust, C, or C++ internals or produce a native implementation call graph.
 
 ## Performance limits
 

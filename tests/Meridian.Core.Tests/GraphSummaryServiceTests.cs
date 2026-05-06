@@ -97,6 +97,94 @@ public sealed class GraphSummaryServiceTests
         Assert.All(summary.Clusters, cluster => Assert.Contains("Graph cluster only", cluster.Limitation));
     }
 
+    [Fact]
+    public void Agent_summary_scores_duplicate_structural_edges_once_for_central_nodes()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:OrderService", "OrderService", GraphNodeKinds.Type),
+                Node("method:OrderService.Handle", "OrderService.Handle", GraphNodeKinds.Method),
+                Node("type:IOrderRepository", "IOrderRepository", GraphNodeKinds.Type, metadata: new() { ["type_kind"] = "interface" })
+            ],
+            Edges =
+            [
+                Edge("type:OrderService", "method:OrderService.Handle", GraphRelations.Calls),
+                Edge("type:OrderService", "method:OrderService.Handle", GraphRelations.Calls, metadata: new() { ["evidence_line"] = "2" }),
+                Edge("type:OrderService", "type:IOrderRepository", GraphRelations.Uses)
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 5 });
+        var centralNode = Assert.Single(summary.CentralNodes, node => node.Node.Id == "type:OrderService");
+
+        Assert.Equal(3, summary.Statistics.Graph.EdgeCount);
+        Assert.Equal(2, centralNode.NonContainmentDegree);
+        Assert.Equal(1, centralNode.RelationCounts[GraphRelations.Calls]);
+        Assert.Equal(1, centralNode.RelationCounts[GraphRelations.Uses]);
+    }
+
+    [Fact]
+    public void Agent_summary_scores_duplicate_structural_edges_once_for_extension_points()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:IExecutionStrategy", "IExecutionStrategy", GraphNodeKinds.Type, metadata: new() { ["type_kind"] = "interface" }),
+                Node("type:FastExecutionStrategy", "FastExecutionStrategy", GraphNodeKinds.Type)
+            ],
+            Edges =
+            [
+                Edge("type:IExecutionStrategy", "type:FastExecutionStrategy", GraphRelations.ImplementedBy),
+                Edge("type:IExecutionStrategy", "type:FastExecutionStrategy", GraphRelations.ImplementedBy, metadata: new() { ["evidence_line"] = "2" })
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 5 });
+        var extensionPoint = Assert.Single(summary.ExtensionPoints, point => point.Node.Id == "type:IExecutionStrategy");
+
+        Assert.Equal(2, summary.Statistics.Graph.EdgeCount);
+        Assert.Equal(1, extensionPoint.NonContainmentDegree);
+        Assert.Equal(1, extensionPoint.RelationCounts[GraphRelations.ImplementedBy]);
+    }
+
+    [Fact]
+    public void Agent_summary_scores_duplicate_structural_edges_once_for_clusters()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:A", "AService", GraphNodeKinds.Type),
+                Node("method:A.One", "A.One", GraphNodeKinds.Method),
+                Node("method:A.Two", "A.Two", GraphNodeKinds.Method),
+                Node("type:B", "BService", GraphNodeKinds.Type),
+                Node("method:B.One", "B.One", GraphNodeKinds.Method),
+                Node("method:B.Two", "B.Two", GraphNodeKinds.Method)
+            ],
+            Edges =
+            [
+                Edge("type:A", "method:A.One", GraphRelations.Calls),
+                Edge("type:A", "method:A.One", GraphRelations.Calls, metadata: new() { ["evidence_line"] = "2" }),
+                Edge("method:A.One", "method:A.Two", GraphRelations.Uses),
+                Edge("type:B", "method:B.One", GraphRelations.Calls),
+                Edge("method:B.One", "method:B.Two", GraphRelations.Uses)
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 5 });
+        var aCluster = Assert.Single(summary.Clusters, cluster =>
+            cluster.RepresentativeNodes.Any(node => node.Id.StartsWith("type:A", StringComparison.Ordinal) ||
+                node.Id.StartsWith("method:A", StringComparison.Ordinal)));
+
+        Assert.Equal(5, summary.Statistics.Graph.EdgeCount);
+        Assert.Equal(2, aCluster.EdgeCount);
+        Assert.Equal(1, aCluster.TopRelations[GraphRelations.Calls]);
+        Assert.Equal(1, aCluster.TopRelations[GraphRelations.Uses]);
+    }
+
     private static GraphDocument CreatePlanningGraph()
     {
         return new GraphDocument
@@ -145,14 +233,15 @@ public sealed class GraphSummaryServiceTests
         };
     }
 
-    private static GraphEdge Edge(string source, string target, string relation)
+    private static GraphEdge Edge(string source, string target, string relation, SortedDictionary<string, string>? metadata = null)
     {
         return new GraphEdge
         {
             Source = source,
             Target = target,
             Relation = relation,
-            Confidence = ConfidenceLevels.Extracted
+            Confidence = ConfidenceLevels.Extracted,
+            Metadata = metadata ?? []
         };
     }
 }

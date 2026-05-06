@@ -7,7 +7,6 @@ namespace Meridian.Roslyn;
 
 internal sealed class MediatRCallSiteAnalyzer
 {
-    private const string MediatRNamespace = "MediatR";
     private readonly RoslynSourceFilter _sourceFilter;
     private readonly RoslynGraphFactory _graphFactory;
     private readonly MediatRSymbolClassifier _classifier;
@@ -75,7 +74,7 @@ internal sealed class MediatRCallSiteAnalyzer
             Evidence = _graphFactory.CreateEvidence(
                 invocation.GetLocation(),
                 sourceNode.Symbol,
-                $"Roslyn resolved MediatR {methodName} call to '{targetNode.Symbol}' from {message.Reason}.")
+                $"Roslyn resolved mediator {methodName} call to '{targetNode.Symbol}' from {message.Reason}.")
         });
     }
 
@@ -241,7 +240,7 @@ internal sealed class MediatRCallSiteAnalyzer
 
     private static bool IsMediatRNamedType(INamedTypeSymbol typeSymbol, params string[] acceptedNames)
     {
-        return typeSymbol.ContainingNamespace.ToDisplayString().Equals(MediatRNamespace, StringComparison.Ordinal) &&
+        return MediatRSymbolClassifier.IsSupportedMediatorNamespace(typeSymbol.ContainingNamespace) &&
             acceptedNames.Contains(typeSymbol.Name, StringComparer.Ordinal);
     }
 

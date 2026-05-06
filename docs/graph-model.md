@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.3",
+  "generator_version": "0.4.0-alpha.4",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -47,6 +47,8 @@ Recommended fields:
 - `source_location`
 - `metadata`
 
+Endpoint nodes are synthetic and use labels such as `GET /orders/{id}`. Endpoint metadata includes `http_method`, `route_template`, `endpoint_source`, and `handler_symbol` when Meridian resolves a source action or handler method.
+
 ## Edge shape
 
 ```json
@@ -60,7 +62,7 @@ Recommended fields:
     "file": "Controllers/OrdersController.cs",
     "line": 42,
     "symbol": "MyApp.Features.Orders.OrderController.GetById(System.Guid id)",
-    "reason": "Roslyn resolved MediatR Send call to 'MyApp.Features.Orders.GetOrderQuery' from inline object creation."
+    "reason": "Roslyn resolved mediator Send call to 'MyApp.Features.Orders.GetOrderQuery' from inline object creation."
   },
   "metadata": {}
 }
@@ -126,11 +128,11 @@ Relation meanings:
 | Relation | Meaning |
 | --- | --- |
 | `contains` | Type/enum declaration containment for methods, properties, fields, enum members, or framework-owned facts such as DbSet entity containment |
-| `calls` | Direct method invocation resolved by Roslyn |
+| `calls` | Direct method invocation resolved by Roslyn, or endpoint-to-action/handler routing resolved from source metadata |
 | `uses` | Static symbolic usage that is not a read/write, including enum type/member use and `nameof(...)` references |
 | `reads` | Method reads a directly resolved source property or field |
-| `sends` | Method or endpoint dispatches a MediatR request |
-| `publishes` | Method or endpoint publishes a MediatR notification |
+| `sends` | Method or endpoint dispatches a mediator-style request, command, or query |
+| `publishes` | Method or endpoint publishes a mediator-style notification |
 | `handled_by` | Message/request handled by handler type |
 | `registered_as` | DI registration maps abstraction to implementation |
 | `injects` | Constructor or parameter injection dependency |

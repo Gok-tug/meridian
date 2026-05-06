@@ -33,7 +33,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `Meridian.Mcp` preview server over generated `graph.json` files.
 - `meridian mcp --graph <graph.json>` CLI command for local stdio MCP clients.
 - MCP graph tools for schema discovery, typed graph search, node lookup, neighbors, shortest paths, path explanations, entrypoint listing, and reverse flow lookup.
-- MCP result truncation metadata, stale-graph notes, and explicit endpoint-analyzer limitation responses for agent safety.
+- MCP result truncation metadata, stale-graph notes, and explicit graph-specific endpoint coverage notes for agent safety.
 - MCP `reload_graph` support so a running MCP server can reread the configured graph file after `meridian scan` regenerates it.
 - Agent playbook guidance for MCP freshness, node ID resolution, truncation, and unsupported analyzer limitations.
 - MCP tool tests over in-memory fixture graphs.
@@ -54,6 +54,13 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Core graph statistics and agent summary services for deterministic graph metadata, counts, central nodes, extension points, clusters, limitations, and suggested queries.
 - MCP `get_graph_statistics` and `get_agent_summary` tools for compact graph orientation before broad traversal or source reading.
 - `meridian agent-summary` CLI command with text and JSON output over an existing `graph.json`.
+- ASP.NET Core endpoint analyzer preview for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` calls, simple local `MapGroup` prefixes, FastEndpoints `Configure()` verbs, and MinimalApi.Endpoint-style `AddRoute` handlers.
+- Synthetic `endpoint` graph nodes with `calls`, `sends`, and `publishes` edges for statically resolved endpoint flow facts.
+- `Mediator` namespace support alongside MediatR for source request, command, query, notification, handler, `Send`, and `Publish` patterns.
+- Workspace diagnostic severity mapping so non-fatal MSBuild and NuGet warnings stay visible without being surfaced as errors.
+- `Sample.AspNetCoreFlow` plus analyzer golden coverage and CLI smoke coverage for endpoint and mediator flow.
+- Direct Microsoft DI `GetRequiredService<TImplementation>()` factory alias support for source-resolved registrations.
+- CrossMacro dogfood accuracy findings covering graph precision, recall gaps, and agent-summary context size.
 
 ### Changed
 
@@ -66,6 +73,9 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP bulk graph tools now omit edge evidence by default to reduce agent context usage while keeping evidence available through `includeEvidence: true`.
 - Updated the prototype generator/package version to `0.4.0-alpha.2` for member graph and feature-planning MCP preview output.
 - Updated the prototype generator/package version to `0.4.0-alpha.3` for agent summaries and graph-guided workflow output.
+- Updated the prototype generator/package version to `0.4.0-alpha.4` for real ASP.NET flow coverage output.
+- Updated MCP and summary endpoint-absence wording to describe stale, old, non-web, or unsupported graphs instead of implying endpoint analyzers are absent.
+- Updated agent-summary central-node, extension-point, and cluster ranking to score distinct structural non-containment edges while preserving raw graph evidence edges and statistics.
 
 ## 0.1.0-alpha.1 — Planned
 

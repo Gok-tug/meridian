@@ -94,7 +94,7 @@ Use after `get_schema` when you need compact counts, confidence breakdowns, diag
 
 Use before broad source reading or neighbor traversal. Start with `budget: "compact"` for orientation, then follow suggested `get_symbol_summary`, `plan_feature`, or exact node queries.
 
-Treat central nodes and clusters as graph-derived navigation hints, not proof of architectural ownership or source-code absence.
+Treat central nodes and clusters as graph-derived navigation hints, not proof of architectural ownership or source-code absence. Summary ranking uses distinct structural non-containment edges so repeated evidence for the same source/relation/target does not dominate orientation, while graph statistics still report raw loaded edge counts.
 
 ### `query_graph`
 
@@ -146,16 +146,18 @@ Current alpha builds emit:
 
 - direct method calls, type/member containment, enum/property/field nodes, and interface implementation edges
 - ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
-- constructor injection and generic DI registration edges (including narrow factory lambdas)
+- constructor injection and generic DI registration edges, including narrow direct `new` and direct `GetRequiredService<TImplementation>()` factory lambdas
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types
 - static reflection edges for `typeof(T)`, `Activator.CreateInstance<T>()`, and `Activator.CreateInstance(typeof(T))`
+- ASP.NET Core endpoint nodes and endpoint-to-handler flow for MVC attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple local `MapGroup` prefixes, FastEndpoints route verbs, and MinimalApi.Endpoint-style route registration
 
 Current alpha builds do not yet emit:
 
-- ASP.NET Core MVC or Minimal API endpoint nodes and endpoint-to-handler flow
-- broad DI dataflow beyond direct generic and narrow factory registrations
+- broad DI dataflow beyond direct generic registrations and narrow factory aliases
+- CLI/runtime command routing through resolver dictionaries, delegates, or factories
 - native/Rust interop boundary detection
 - XAML/View-ViewModel binding analysis
+- CommunityToolkit.Mvvm generated command/property members
 
 When a Meridian tool reports a limitation, do not fill the gap by guessing. Use normal code inspection separately and label those findings as outside Meridian's graph facts.

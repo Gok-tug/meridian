@@ -15,8 +15,10 @@ Valid alpha versions:
 0.4.0-alpha.1
 0.4.0-alpha.2
 0.4.0-alpha.3
+0.4.0-alpha.4
 0.5.0-alpha.1
 0.6.0-alpha.1
+0.7.0-alpha.1
 ```
 
 Stable versions such as `0.1.0` should not be published until the package has a tested analyzer pipeline and documented graph contract.
@@ -154,10 +156,8 @@ Not in scope:
 
 Later alpha analyzer work should add:
 
-- ASP.NET Core MVC and Minimal API endpoint analyzers
-- endpoint-to-MediatR flow linking
 - source-resolved non-generic DI registrations and diagnostics
-- framework-aware path ranking across endpoint, DI, MediatR, and direct-call edges
+- framework-aware path ranking across endpoint, DI, mediator, and direct-call edges
 
 ## 0.3.0-alpha.1 — MCP server preview
 
@@ -326,6 +326,32 @@ Not in scope:
 - replacing Roslyn semantic analysis with heuristic extraction
 - automatic assistant hook installation across third-party tools
 
+## 0.4.0-alpha.4 — Real ASP.NET flow coverage
+
+Goal: make the graph useful on real ASP.NET Core repositories before performance hardening by adding endpoint entrypoints and `Mediator.SourceGenerator`-style mediator flows surfaced by dogfood scans.
+
+Scope:
+
+- ASP.NET Core endpoint analyzer preview:
+  - MVC/controller route attributes including common `[controller]` and `[action]` tokens
+  - Minimal API `MapGet`, `MapPost`, `MapPut`, `MapDelete`, and `MapPatch`
+  - simple local `MapGroup` prefixes in the same block before route mapping calls
+  - FastEndpoints `Configure()` verb calls linked to same-type `ExecuteAsync` or `HandleAsync`
+  - MinimalApi.Endpoint-style `AddRoute` methods whose supported `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` lambda delegates to source `HandleAsync`
+- endpoint nodes reuse existing `endpoint` graph kind and existing `calls`, `sends`, `publishes`, and `handled_by` relations
+- `Mediator` namespace support alongside MediatR for request, command, query, notification, handler, `Send`, and `Publish` patterns
+- workspace diagnostic severity mapping that keeps non-fatal MSBuild/NuGet warnings visible without surfacing them as failures
+- ASP.NET flow sample project, analyzer golden coverage, and CLI smoke coverage
+- documentation updates from dogfood findings
+- alpha4 hardening after CrossMacro dogfood:
+  - summary ranking scores distinct structural non-containment edges while raw graph evidence remains intact
+  - narrow DI `GetRequiredService<TImplementation>()` factory alias support for source-resolved implementations
+  - CrossMacro accuracy audit documentation for desktop/UI/MVVM/native-boundary recall gaps
+
+Not in scope:
+
+- route precedence, authorization/filter/middleware graphing, model binding, runtime route discovery, generated-code execution, arbitrary delegate dataflow, stream mediator dispatch, broad DI factory/dataflow analysis, XAML binding analysis, CommunityToolkit.Mvvm generated member analysis, CLI runtime routing, native boundary analysis, cache, or incremental analysis
+
 ## 0.5.0-alpha.1 — Performance and hardening
 
 Goal: prepare Meridian for large real-world solutions.
@@ -334,6 +360,8 @@ Scope:
 
 - benchmark suite
 - large solution benchmark report
+- repeatable dogfood accuracy audit checklist/scripts for CrossMacro-class repositories
+- large-graph summary sanity checks for duplicate evidence edges and fixture/test skew
 - MCP payload-size benchmarks for realistic agent workflows
 - cache design with stable file fingerprints and safe invalidation
 - incremental analysis design for changed projects/files
@@ -348,9 +376,9 @@ Benchmark targets:
 - medium solution, 10-25 projects: under 2 minutes
 - large solution, 50+ projects / 500k+ LOC: measured and published before stable release
 
-## 0.6.0-alpha.1 — UI bindings and conditional flow research
+## 0.6.0-alpha.1 — UI bindings, source-generator graph preview, and conditional flow research
 
-Goal: close major blind spots that matter for desktop/UI-heavy .NET applications and explain not only that symbols are connected, but which static conditions select a route.
+Goal: close major blind spots that matter for desktop/UI-heavy .NET applications, generated MVVM members, and static conditions that select a route.
 
 Scope:
 
@@ -358,7 +386,13 @@ Scope:
   - Avalonia and WPF view-to-ViewModel association patterns
   - bindings from XAML properties to ViewModel properties
   - command bindings to ViewModel methods or command properties
+  - command bindings to CommunityToolkit.Mvvm generated command properties
   - diagnostics when bindings cannot be resolved statically
+- CommunityToolkit.Mvvm source-generator-aware graph preview:
+  - `[RelayCommand]` generated command property awareness
+  - `[ObservableProperty]` generated public property awareness
+  - links from generated command properties back to source methods when statically safe
+  - diagnostics when generated member targets cannot be resolved
 - method-body conditional analysis preview:
   - `if`/`switch` branches over source-resolved enum values and simple constants
   - method-level `switches_on` or `branches_on` edges to properties, fields, enum types, and enum members
@@ -370,14 +404,37 @@ Not in scope:
 
 - complete XAML runtime behavior
 - arbitrary binding converters, reflection-heavy bindings, or dynamic DataContext inference
+- full source-generator execution or generated-code inclusion by default
 - full symbolic execution or path-sensitive dataflow
 - proving that a branch is reachable at runtime
+
+## 0.7.0-alpha.1 — Runtime wiring and native boundary preview
+
+Goal: capture common source-visible runtime wiring patterns without executing the app, and expose .NET-side native interop boundaries without claiming native implementation analysis.
+
+Scope:
+
+- CLI command/router/handler runtime wiring patterns where registrations are source-visible and deterministic
+- delegate factory resolution for common DI and routing shapes
+- `Func<T>` and `Func<TArg,TResult>` factory patterns when the target is source-resolved without executing a container
+- .NET-side `DllImport` and `LibraryImport` boundary nodes/edges
+- `NativeLibrary.Load` / `NativeLibrary.TryLoad` constant-library hints
+- diagnostics for runtime-only library names, resolver dictionaries, or delegate factories that cannot be resolved statically
+
+Not in scope:
+
+- runtime DI container execution
+- full runtime command dispatch execution
+- full Rust/C/C++ static analysis
+- Cargo workspace graphing in this .NET analyzer pass
+- native implementation call graphs
+- branch-dependent or environment-dependent runtime factory selection
 
 ## Future
 
 Potential future analyzer packs and integrations:
 
-- Rust/native interop boundary detection
+- deeper native interop analyzer packs beyond .NET-side boundary detection
 - messaging analyzers:
   - MassTransit
   - NServiceBus
@@ -399,7 +456,7 @@ Potential future analyzer packs and integrations:
 - OpenTelemetry/export integrations
 - richer visual graph explorer
 - graph diffing between commits or releases
-- source-generator-aware analysis
+- broader source-generator-aware analysis beyond CommunityToolkit.Mvvm preview
 
 ## Release readiness checklist
 

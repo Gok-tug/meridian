@@ -23,6 +23,10 @@ The NuGet package is published as prerelease alpha builds, but the analyzer impl
 0.4.0-alpha.1
 0.4.0-alpha.2
 0.4.0-alpha.3
+0.4.0-alpha.4
+0.5.0-alpha.1
+0.6.0-alpha.1
+0.7.0-alpha.1
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -96,27 +100,29 @@ Current prototype support:
 - Type, method, enum, enum member, property, and field nodes with `contains` edges
 - Direct method `calls` edges
 - Ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
-- DI `injects`, `implemented_by`, direct generic `registered_as`, and narrow direct-`new` factory `registered_as` edges for source-resolved symbols
-- MediatR declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
+- DI `injects`, `implemented_by`, direct generic `registered_as`, narrow direct-`new` factory `registered_as`, and direct `GetRequiredService<TImplementation>()` factory alias edges for source-resolved symbols
+- ASP.NET Core endpoint preview for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple `MapGroup` prefixes, FastEndpoints `Configure()` verbs, and MinimalApi.Endpoint-style `AddRoute` methods
+- MediatR and `Mediator.SourceGenerator`-style declaration and method-level call-site preview with `mediatr_request`, `mediatr_notification`, `mediatr_handler`, `handled_by`, `sends`, and `publishes`
 - EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges
 - Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
 - `scan`, `explain`, `path`, `agent-summary`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact graph statistics, agent summaries, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact graph statistics, agent summaries, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and graph-specific endpoint coverage notes
 - Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up work:
 
-- ASP.NET Core MVC controllers and Minimal APIs
-- Endpoint-to-MediatR bridging and framework-aware `path` ranking across endpoint, DI, MediatR, and direct-call edges
-- Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
+- Broader ASP.NET Core routing semantics such as routing precedence, filters, middleware, authorization, model binding, runtime route discovery, and arbitrary delegate dataflow
+- Additional mediator dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
 - Broader EF Core query semantics beyond static DbContext/DbSet entity access
 - Reflection assembly scanning patterns such as Scrutor, `Assembly.Load`, `GetTypes`, and `IsAssignableFrom`
 - Additional human-readable graph views such as `tree` and `report`
 - Incremental analysis and caching
+- UI/XAML binding and CommunityToolkit.Mvvm source-generator-aware graph facts
+- CLI/runtime command routing and delegate factory patterns
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `tree`/`report` views, and incremental/cached analysis.
+Not currently implemented: full ASP.NET Core routing precedence, authorization/filter/middleware graphing, model binding, runtime route discovery, arbitrary endpoint delegate dataflow, mediator `CreateStream`, interprocedural/runtime mediator dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, XAML binding analysis, CommunityToolkit.Mvvm generated member analysis, CLI runtime/delegate routing, automatic watch/hot-reload, planned `tree`/`report` views, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -128,7 +134,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.3",
+  "generator_version": "0.4.0-alpha.4",
   "nodes": [],
   "edges": []
 }
@@ -146,7 +152,7 @@ Edges carry relation and confidence metadata:
   "evidence": {
     "file": "OrdersController.cs",
     "line": 42,
-    "reason": "Roslyn resolved MediatR Send call to 'MyApp.Orders.GetOrderQuery' from inline object creation."
+    "reason": "Roslyn resolved mediator Send call to 'MyApp.Orders.GetOrderQuery' from inline object creation."
   }
 }
 ```

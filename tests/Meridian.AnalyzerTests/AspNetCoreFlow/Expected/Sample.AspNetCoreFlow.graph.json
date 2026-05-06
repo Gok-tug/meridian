@@ -1,0 +1,1722 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.4.0-alpha.4",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:GET:/Orders/Detail/{orderId}",
+      "label": "GET /Orders/Detail/{orderId}",
+      "kind": "endpoint",
+      "symbol": "GET /Orders/Detail/{orderId}",
+      "source_file": "Controllers.cs",
+      "source_location": "L16",
+      "metadata": {
+        "endpoint_source": "mvc",
+        "handler_symbol": "Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+        "http_method": "GET",
+        "route_template": "/Orders/Detail/{orderId}"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:GET:/api/orders/{orderId}",
+      "label": "GET /api/orders/{orderId}",
+      "kind": "endpoint",
+      "symbol": "GET /api/orders/{orderId}",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L17",
+      "metadata": {
+        "endpoint_source": "minimal_api",
+        "handler_symbol": "Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+        "http_method": "GET",
+        "route_template": "/api/orders/{orderId}"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:GET:/fast/orders/{orderId}",
+      "label": "GET /fast/orders/{orderId}",
+      "kind": "endpoint",
+      "symbol": "GET /fast/orders/{orderId}",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L37",
+      "metadata": {
+        "endpoint_source": "fastendpoints",
+        "handler_symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+        "http_method": "GET",
+        "route_template": "/fast/orders/{orderId}"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:GET:/health",
+      "label": "GET /health",
+      "kind": "endpoint",
+      "symbol": "GET /health",
+      "source_file": "Controllers.cs",
+      "source_location": "L30",
+      "metadata": {
+        "endpoint_source": "mvc",
+        "handler_symbol": "Sample.AspNetCoreFlow.OrdersController.Health()",
+        "http_method": "GET",
+        "route_template": "/health"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:GET:/regex/{id:regex(^\\d+$)}",
+      "label": "GET /regex/{id:regex(^\\d+$)}",
+      "kind": "endpoint",
+      "symbol": "GET /regex/{id:regex(^\\d+$)}",
+      "source_file": "Controllers.cs",
+      "source_location": "L36",
+      "metadata": {
+        "endpoint_source": "mvc",
+        "handler_symbol": "Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)",
+        "http_method": "GET",
+        "route_template": "/regex/{id:regex(^\\d+$)}"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:POST:/Orders/Create/create/{orderId}",
+      "label": "POST /Orders/Create/create/{orderId}",
+      "kind": "endpoint",
+      "symbol": "POST /Orders/Create/create/{orderId}",
+      "source_file": "Controllers.cs",
+      "source_location": "L23",
+      "metadata": {
+        "endpoint_source": "mvc",
+        "handler_symbol": "Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+        "http_method": "POST",
+        "route_template": "/Orders/Create/create/{orderId}"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:POST:/api/minimalapi/orders",
+      "label": "POST /api/minimalapi/orders",
+      "kind": "endpoint",
+      "symbol": "POST /api/minimalapi/orders",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L17",
+      "metadata": {
+        "endpoint_source": "minimalapi_endpoint",
+        "http_method": "POST",
+        "route_template": "/api/minimalapi/orders"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:POST:/fast/orders",
+      "label": "POST /fast/orders",
+      "kind": "endpoint",
+      "symbol": "POST /fast/orders",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L17",
+      "metadata": {
+        "endpoint_source": "fastendpoints",
+        "handler_symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+        "http_method": "POST",
+        "route_template": "/fast/orders"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:POST:/inline-orders",
+      "label": "POST /inline-orders",
+      "kind": "endpoint",
+      "symbol": "POST /inline-orders",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L19",
+      "metadata": {
+        "endpoint_source": "minimal_api",
+        "http_method": "POST",
+        "route_template": "/inline-orders"
+      }
+    },
+    {
+      "id": "endpoint:Sample.AspNetCoreFlow:POST:/orders",
+      "label": "POST /orders",
+      "kind": "endpoint",
+      "symbol": "POST /orders",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L14",
+      "metadata": {
+        "endpoint_source": "minimal_api",
+        "handler_symbol": "Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+        "http_method": "POST",
+        "route_template": "/orders"
+      }
+    },
+    {
+      "id": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator",
+      "label": "CreateOrderFastEndpoint._mediator",
+      "kind": "field",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L8",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Mediator.IMediator"
+      }
+    },
+    {
+      "id": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.Route",
+      "label": "CreateOrderRequest.Route",
+      "kind": "field",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderRequest.Route",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L13",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "/fast/orders",
+        "containing_type": "Sample.AspNetCoreFlow.CreateOrderRequest",
+        "is_const": "true",
+        "is_readonly": "false",
+        "is_static": "true",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator",
+      "label": "ListOrdersFastEndpoint._mediator",
+      "kind": "field",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L28",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Mediator.IMediator"
+      }
+    },
+    {
+      "id": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.OrdersRoute",
+      "label": "MinimalApis.OrdersRoute",
+      "kind": "field",
+      "symbol": "Sample.AspNetCoreFlow.MinimalApis.OrdersRoute",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L10",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "/orders",
+        "containing_type": "Sample.AspNetCoreFlow.MinimalApis",
+        "is_const": "true",
+        "is_readonly": "false",
+        "is_static": "true",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController._mediator",
+      "label": "OrdersController._mediator",
+      "kind": "field",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController._mediator",
+      "source_file": "Controllers.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.AspNetCoreFlow.OrdersController",
+        "is_const": "false",
+        "is_readonly": "true",
+        "is_static": "false",
+        "member_type": "Mediator.IMediator"
+      }
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)",
+      "label": "CreateOrderCommandHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L22",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()",
+      "label": "CreateOrderFastEndpoint.Configure",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L15",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "label": "CreateOrderFastEndpoint.ExecuteAsync",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L20",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)",
+      "label": "CreateOrderMinimalApiEndpoint.AddRoute",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L15",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "label": "CreateOrderMinimalApiEndpoint.HandleAsync",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L23",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeController.Read(System.Int32 id)",
+      "label": "FakeController.Read",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.FakeController.Read(System.Int32 id)",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L21",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Configure()",
+      "label": "FakeEndpoint.Configure",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.FakeEndpoint.Configure()",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L35",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)",
+      "label": "FakeEndpoint.Get",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L40",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)",
+      "label": "FakeMapper.MapGet",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L28",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
+      "label": "GetOrderQueryHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L30",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)",
+      "label": "IOrderRepository.AddAsync",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L10",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.Configure()",
+      "label": "ListOrdersFastEndpoint.Configure",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.Configure()",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L35",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "label": "ListOrdersFastEndpoint.HandleAsync",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L40",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+      "label": "MinimalApis.CreateOrder",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L26",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "label": "MinimalApis.GetOrder",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L32",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+      "label": "MinimalApis.MapRoutes",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L12",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()",
+      "label": "NonAspNetPatterns.MapRoutes",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L47",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotificationHandler.Handle(Sample.AspNetCoreFlow.OrderViewedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "label": "OrderViewedNotificationHandler.Handle",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.OrderViewedNotificationHandler.Handle(Sample.AspNetCoreFlow.OrderViewedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L38",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "label": "OrdersController.Create",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "source_file": "Controllers.cs",
+      "source_location": "L24",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "label": "OrdersController.Detail",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "source_file": "Controllers.cs",
+      "source_location": "L17",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Health()",
+      "label": "OrdersController.Health",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController.Health()",
+      "source_file": "Controllers.cs",
+      "source_location": "L31",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)",
+      "label": "OrdersController.RegexRoute",
+      "kind": "method",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)",
+      "source_file": "Controllers.cs",
+      "source_location": "L37",
+      "metadata": {}
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand.OrderId",
+      "label": "CreateOrderCommand.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderCommand.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L5",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.CreateOrderCommand",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.OrderId",
+      "label": "CreateOrderRequest.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderRequest.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L11",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.CreateOrderRequest",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery.OrderId",
+      "label": "GetOrderQuery.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.GetOrderQuery.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L7",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.GetOrderQuery",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersRequest.OrderId",
+      "label": "ListOrdersRequest.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersRequest.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L16",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.ListOrdersRequest",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderResult.OrderId",
+      "label": "OrderResult.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.OrderResult.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L18",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.OrderResult",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification.OrderId",
+      "label": "OrderViewedNotification.OrderId",
+      "kind": "property",
+      "symbol": "Sample.AspNetCoreFlow.OrderViewedNotification.OrderId",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AspNetCoreFlow.OrderViewedNotification",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Int32"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "label": "CreateOrderCommand",
+      "kind": "mediatr_request",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderCommand",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L5",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+      "label": "CreateOrderCommandHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L20",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+      "label": "CreateOrderFastEndpoint",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L6",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+      "label": "CreateOrderMinimalApiEndpoint",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L13",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest",
+      "label": "CreateOrderRequest",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.CreateOrderRequest",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L11",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CustomHttpGetAttribute",
+      "label": "CustomHttpGetAttribute",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.CustomHttpGetAttribute",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L10",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CustomRouteAttribute",
+      "label": "CustomRouteAttribute",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.CustomRouteAttribute",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L3",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeController",
+      "label": "FakeController",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.FakeController",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L18",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint",
+      "label": "FakeEndpoint",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.FakeEndpoint",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L33",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeMapper",
+      "label": "FakeMapper",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.FakeMapper",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L26",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery",
+      "label": "GetOrderQuery",
+      "kind": "mediatr_request",
+      "symbol": "Sample.AspNetCoreFlow.GetOrderQuery",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L7",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler",
+      "label": "GetOrderQueryHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.AspNetCoreFlow.GetOrderQueryHandler",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L28",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.IOrderRepository",
+      "label": "IOrderRepository",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.IOrderRepository",
+      "source_file": "MinimalApiEndpoint.cs",
+      "source_location": "L8",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+      "label": "ListOrdersFastEndpoint",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+      "source_file": "FastEndpoints.cs",
+      "source_location": "L26",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersRequest",
+      "label": "ListOrdersRequest",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.ListOrdersRequest",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L16",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis",
+      "label": "MinimalApis",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.MinimalApis",
+      "source_file": "MinimalApis.cs",
+      "source_location": "L8",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.NonAspNetPatterns",
+      "label": "NonAspNetPatterns",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.NonAspNetPatterns",
+      "source_file": "NonAspNetPatterns.cs",
+      "source_location": "L45",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderResult",
+      "label": "OrderResult",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.OrderResult",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L18",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification",
+      "label": "OrderViewedNotification",
+      "kind": "mediatr_notification",
+      "symbol": "Sample.AspNetCoreFlow.OrderViewedNotification",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L9",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+      "label": "OrderViewedNotificationHandler",
+      "kind": "mediatr_handler",
+      "symbol": "Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+      "source_file": "MessagesAndHandlers.cs",
+      "source_location": "L36",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "label": "OrdersController",
+      "kind": "type",
+      "symbol": "Sample.AspNetCoreFlow.OrdersController",
+      "source_file": "Controllers.cs",
+      "source_location": "L7",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:GET:/Orders/Detail/{orderId}",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 16,
+        "symbol": "GET /Orders/Detail/{orderId}",
+        "reason": "MVC route attribute maps endpoint to action method 'Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:GET:/api/orders/{orderId}",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 17,
+        "symbol": "GET /api/orders/{orderId}",
+        "reason": "ASP.NET Core endpoint route maps to method group handler 'Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:GET:/fast/orders/{orderId}",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 37,
+        "symbol": "GET /fast/orders/{orderId}",
+        "reason": "FastEndpoints route configuration maps endpoint to handler method 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:GET:/health",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Health()",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 30,
+        "symbol": "GET /health",
+        "reason": "MVC route attribute maps endpoint to action method 'Sample.AspNetCoreFlow.OrdersController.Health()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:GET:/regex/{id:regex(^\\d+$)}",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 36,
+        "symbol": "GET /regex/{id:regex(^\\d+$)}",
+        "reason": "MVC route attribute maps endpoint to action method 'Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:POST:/Orders/Create/create/{orderId}",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 23,
+        "symbol": "POST /Orders/Create/create/{orderId}",
+        "reason": "MVC route attribute maps endpoint to action method 'Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:POST:/api/minimalapi/orders",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 19,
+        "symbol": "POST /api/minimalapi/orders",
+        "reason": "ASP.NET Core endpoint lambda delegates to source handler method 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:POST:/fast/orders",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 17,
+        "symbol": "POST /fast/orders",
+        "reason": "FastEndpoints route configuration maps endpoint to handler method 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:POST:/inline-orders",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 21,
+        "symbol": "POST /inline-orders",
+        "reason": "ASP.NET Core endpoint lambda directly performs mediator Send for 'Sample.AspNetCoreFlow.CreateOrderCommand'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "endpoint:Sample.AspNetCoreFlow:POST:/orders",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 14,
+        "symbol": "POST /orders",
+        "reason": "ASP.NET Core endpoint route maps to method group handler 'Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 24,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'command.OrderId' to 'Sample.AspNetCoreFlow.CreateOrderCommand.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.Route",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 17,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()",
+        "reason": "Roslyn resolved member reference 'CreateOrderRequest.Route' to 'Sample.AspNetCoreFlow.CreateOrderRequest.Route'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 22,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference '_mediator' to 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 22,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'request.OrderId' to 'Sample.AspNetCoreFlow.CreateOrderRequest.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 22,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.CreateOrderCommand' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 19,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)",
+        "reason": "Roslyn resolved invocation 'HandleAsync' to 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 25,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+        "reason": "Roslyn resolved invocation 'repository.AddAsync' to 'Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 25,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+        "reason": "Roslyn resolved member reference 'request.OrderId' to 'Sample.AspNetCoreFlow.CreateOrderRequest.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Configure()",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 37,
+        "symbol": "Sample.AspNetCoreFlow.FakeEndpoint.Configure()",
+        "reason": "Roslyn resolved invocation 'Get' to 'Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 32,
+        "symbol": "Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'query.OrderId' to 'Sample.AspNetCoreFlow.GetOrderQuery.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 42,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference '_mediator' to 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersRequest.OrderId",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 42,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved member reference 'request.OrderId' to 'Sample.AspNetCoreFlow.ListOrdersRequest.OrderId'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification",
+      "relation": "publishes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 42,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+        "reason": "Roslyn resolved mediator Publish call to 'Sample.AspNetCoreFlow.OrderViewedNotification' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "relation": "sends",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 28,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.CreateOrderCommand' from static parameter type."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 34,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.GetOrderQuery' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification",
+      "relation": "publishes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 35,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+        "reason": "Roslyn resolved mediator Publish call to 'Sample.AspNetCoreFlow.OrderViewedNotification' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.OrdersRoute",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 14,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+        "reason": "Roslyn resolved member reference 'OrdersRoute' to 'Sample.AspNetCoreFlow.MinimalApis.OrdersRoute'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 21,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.CreateOrderCommand' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)",
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 49,
+        "symbol": "Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()",
+        "reason": "Roslyn resolved invocation 'FakeMapper.MapGet' to 'Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController._mediator",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 26,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+        "reason": "Roslyn resolved member reference '_mediator' to 'Sample.AspNetCoreFlow.OrdersController._mediator'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 26,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.CreateOrderCommand' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController._mediator",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 19,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+        "reason": "Roslyn resolved member reference '_mediator' to 'Sample.AspNetCoreFlow.OrdersController._mediator'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery",
+      "relation": "sends",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 19,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+        "reason": "Roslyn resolved mediator Send call to 'Sample.AspNetCoreFlow.GetOrderQuery' from inline object creation."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 5,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderCommand",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.CreateOrderCommand.OrderId' in 'Sample.AspNetCoreFlow.CreateOrderCommand'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommand",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 20,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+        "reason": "Roslyn resolved mediator handler interface 'Mediator.ICommandHandler<Sample.AspNetCoreFlow.CreateOrderCommand, Sample.AspNetCoreFlow.OrderResult>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 22,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderCommandHandler",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.CreateOrderCommandHandler.Handle(Sample.AspNetCoreFlow.CreateOrderCommand command, System.Threading.CancellationToken cancellationToken)' in type 'Sample.AspNetCoreFlow.CreateOrderCommandHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 8,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+        "reason": "Roslyn declared field 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint._mediator' in 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 15,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint.Configure()' in type 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 20,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderFastEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint.ExecuteAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.AspNetCoreFlow.CreateOrderFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 15,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.AddRoute(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app)' in type 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 23,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint.HandleAsync(Sample.AspNetCoreFlow.CreateOrderRequest request, Sample.AspNetCoreFlow.IOrderRepository repository)' in type 'Sample.AspNetCoreFlow.CreateOrderMinimalApiEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.Route",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 13,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderRequest",
+        "reason": "Roslyn declared field 'Sample.AspNetCoreFlow.CreateOrderRequest.Route' in 'Sample.AspNetCoreFlow.CreateOrderRequest'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.CreateOrderRequest.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 11,
+        "symbol": "Sample.AspNetCoreFlow.CreateOrderRequest",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.CreateOrderRequest.OrderId' in 'Sample.AspNetCoreFlow.CreateOrderRequest'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeController",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeController.Read(System.Int32 id)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 21,
+        "symbol": "Sample.AspNetCoreFlow.FakeController",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.FakeController.Read(System.Int32 id)' in type 'Sample.AspNetCoreFlow.FakeController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Configure()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 35,
+        "symbol": "Sample.AspNetCoreFlow.FakeEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.FakeEndpoint.Configure()' in type 'Sample.AspNetCoreFlow.FakeEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 40,
+        "symbol": "Sample.AspNetCoreFlow.FakeEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.FakeEndpoint.Get(System.String route)' in type 'Sample.AspNetCoreFlow.FakeEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeMapper",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 28,
+        "symbol": "Sample.AspNetCoreFlow.FakeMapper",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.FakeMapper.MapGet(System.String route, System.Delegate handler)' in type 'Sample.AspNetCoreFlow.FakeMapper'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 7,
+        "symbol": "Sample.AspNetCoreFlow.GetOrderQuery",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.GetOrderQuery.OrderId' in 'Sample.AspNetCoreFlow.GetOrderQuery'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQuery",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 28,
+        "symbol": "Sample.AspNetCoreFlow.GetOrderQueryHandler",
+        "reason": "Roslyn resolved mediator handler interface 'Mediator.IQueryHandler<Sample.AspNetCoreFlow.GetOrderQuery, Sample.AspNetCoreFlow.OrderResult>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 30,
+        "symbol": "Sample.AspNetCoreFlow.GetOrderQueryHandler",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.GetOrderQueryHandler.Handle(Sample.AspNetCoreFlow.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)' in type 'Sample.AspNetCoreFlow.GetOrderQueryHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.IOrderRepository",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApiEndpoint.cs",
+        "line": 10,
+        "symbol": "Sample.AspNetCoreFlow.IOrderRepository",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.IOrderRepository.AddAsync(Sample.AspNetCoreFlow.CreateOrderCommand command)' in type 'Sample.AspNetCoreFlow.IOrderRepository'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 28,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+        "reason": "Roslyn declared field 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint._mediator' in 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.Configure()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 35,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint.Configure()' in type 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "FastEndpoints.cs",
+        "line": 40,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersFastEndpoint",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint.HandleAsync(Sample.AspNetCoreFlow.ListOrdersRequest request, System.Threading.CancellationToken cancellationToken)' in type 'Sample.AspNetCoreFlow.ListOrdersFastEndpoint'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersRequest",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.ListOrdersRequest.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 16,
+        "symbol": "Sample.AspNetCoreFlow.ListOrdersRequest",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.ListOrdersRequest.OrderId' in 'Sample.AspNetCoreFlow.ListOrdersRequest'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.OrdersRoute",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 10,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis",
+        "reason": "Roslyn declared field 'Sample.AspNetCoreFlow.MinimalApis.OrdersRoute' in 'Sample.AspNetCoreFlow.MinimalApis'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 26,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.MinimalApis.CreateOrder(Sample.AspNetCoreFlow.CreateOrderCommand command, Mediator.IMediator mediator)' in type 'Sample.AspNetCoreFlow.MinimalApis'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 32,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.MinimalApis.GetOrder(System.Int32 orderId, Mediator.IMediator mediator)' in type 'Sample.AspNetCoreFlow.MinimalApis'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MinimalApis.cs",
+        "line": 12,
+        "symbol": "Sample.AspNetCoreFlow.MinimalApis",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.MinimalApis.MapRoutes(Microsoft.AspNetCore.Routing.IEndpointRouteBuilder app, Mediator.IMediator mediator)' in type 'Sample.AspNetCoreFlow.MinimalApis'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.NonAspNetPatterns",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "NonAspNetPatterns.cs",
+        "line": 47,
+        "symbol": "Sample.AspNetCoreFlow.NonAspNetPatterns",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.NonAspNetPatterns.MapRoutes()' in type 'Sample.AspNetCoreFlow.NonAspNetPatterns'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderResult",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderResult.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 18,
+        "symbol": "Sample.AspNetCoreFlow.OrderResult",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.OrderResult.OrderId' in 'Sample.AspNetCoreFlow.OrderResult'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification",
+      "target": "property:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification.OrderId",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 9,
+        "symbol": "Sample.AspNetCoreFlow.OrderViewedNotification",
+        "reason": "Roslyn declared property 'Sample.AspNetCoreFlow.OrderViewedNotification.OrderId' in 'Sample.AspNetCoreFlow.OrderViewedNotification'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotification",
+      "target": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+      "relation": "handled_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 36,
+        "symbol": "Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+        "reason": "Roslyn resolved mediator handler interface 'Mediator.INotificationHandler<Sample.AspNetCoreFlow.OrderViewedNotification>'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrderViewedNotificationHandler.Handle(Sample.AspNetCoreFlow.OrderViewedNotification notification, System.Threading.CancellationToken cancellationToken)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MessagesAndHandlers.cs",
+        "line": 38,
+        "symbol": "Sample.AspNetCoreFlow.OrderViewedNotificationHandler",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.OrderViewedNotificationHandler.Handle(Sample.AspNetCoreFlow.OrderViewedNotification notification, System.Threading.CancellationToken cancellationToken)' in type 'Sample.AspNetCoreFlow.OrderViewedNotificationHandler'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "target": "field:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController._mediator",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 9,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController",
+        "reason": "Roslyn declared field 'Sample.AspNetCoreFlow.OrdersController._mediator' in 'Sample.AspNetCoreFlow.OrdersController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 24,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.OrdersController.Create(System.String orderId)' in type 'Sample.AspNetCoreFlow.OrdersController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 17,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.OrdersController.Detail(System.Int32 orderId)' in type 'Sample.AspNetCoreFlow.OrdersController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.Health()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 31,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.OrdersController.Health()' in type 'Sample.AspNetCoreFlow.OrdersController'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController",
+      "target": "method:Sample.AspNetCoreFlow:Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "Controllers.cs",
+        "line": 37,
+        "symbol": "Sample.AspNetCoreFlow.OrdersController",
+        "reason": "Roslyn declared method 'Sample.AspNetCoreFlow.OrdersController.RegexRoute(System.Int32 id)' in type 'Sample.AspNetCoreFlow.OrdersController'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

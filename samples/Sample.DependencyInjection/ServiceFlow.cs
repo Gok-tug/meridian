@@ -28,6 +28,30 @@ public sealed class SystemClock : IClock
     }
 }
 
+public interface INotificationSender
+{
+}
+
+public sealed class EmailNotificationSender : INotificationSender
+{
+}
+
+public interface IAuditSink
+{
+}
+
+public sealed class FileAuditSink : IAuditSink
+{
+}
+
+public interface IUnsupportedNotificationSender
+{
+}
+
+public sealed class UnsupportedNotificationSender : IUnsupportedNotificationSender
+{
+}
+
 public sealed class ClockFactory
 {
     public ClockFactory(DateTimeOffset createdAt)
@@ -64,6 +88,17 @@ public static class ServiceRegistration
             var createdAt = DateTimeOffset.UtcNow;
             return new ClockFactory(createdAt);
         });
+        services.AddSingleton<EmailNotificationSender>();
+        services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<EmailNotificationSender>());
+        services.AddSingleton<FileAuditSink>();
+        services.AddScoped<IAuditSink>(sp =>
+        {
+            return sp.GetRequiredService<FileAuditSink>();
+        });
+        services.AddSingleton<UnsupportedNotificationSender>();
+        services.AddSingleton<IUnsupportedNotificationSender>(sp => sp.GetService<UnsupportedNotificationSender>()!);
+        services.AddSingleton<IUnsupportedNotificationSender>(sp => sp.GetRequiredService<Func<UnsupportedNotificationSender>>()());
+        services.AddSingleton<IUnsupportedNotificationSender>(sp => (DateTimeOffset.UtcNow.Ticks > 0 ? sp : sp).GetRequiredService<UnsupportedNotificationSender>());
         services.AddTransient<OrderService>();
     }
 }

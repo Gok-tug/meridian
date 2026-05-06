@@ -177,6 +177,41 @@ internal sealed class RoslynGraphFactory
         };
     }
 
+    public GraphNode CreateEndpointNode(
+        string assemblyName,
+        string httpMethod,
+        string routeTemplate,
+        string endpointSource,
+        Location location,
+        string? handlerSymbol = null)
+    {
+        var normalizedHttpMethod = AspNetCoreRouteResolver.NormalizeHttpMethod(httpMethod);
+        var normalizedRoute = AspNetCoreRouteResolver.NormalizeRouteTemplate(routeTemplate);
+        var label = $"{normalizedHttpMethod} {normalizedRoute}";
+        var metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["endpoint_source"] = endpointSource,
+            ["http_method"] = normalizedHttpMethod,
+            ["route_template"] = normalizedRoute
+        };
+
+        if (!string.IsNullOrWhiteSpace(handlerSymbol))
+        {
+            metadata["handler_symbol"] = handlerSymbol;
+        }
+
+        return new GraphNode
+        {
+            Id = $"endpoint:{assemblyName}:{normalizedHttpMethod}:{normalizedRoute}",
+            Label = label,
+            Kind = GraphNodeKinds.Endpoint,
+            Symbol = label,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = metadata
+        };
+    }
+
     private static string BoolString(bool value)
     {
         return value ? "true" : "false";

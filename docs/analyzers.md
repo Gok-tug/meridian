@@ -61,40 +61,55 @@ Member references are intentionally limited to ordinary methods and conservative
 
 ## ASP.NET Core analyzer
 
-Planned for a later alpha milestone.
+Current preview support exists in `0.4.0-alpha.4` for source-resolved endpoint entrypoints.
 
 Responsibilities:
 
-- discover MVC controllers,
-- discover controller actions,
-- read HTTP method attributes,
-- discover Minimal API route mappings,
-- create endpoint nodes,
-- connect endpoints to action delegates or methods.
+- discover MVC controller route/action attributes,
+- replace common `[controller]` and `[action]` route tokens,
+- discover Minimal API route mappings for `MapGet`, `MapPost`, `MapPut`, `MapDelete`, and `MapPatch`,
+- track simple local `MapGroup` prefixes in the same block before route mapping calls,
+- discover FastEndpoints `Get(...)` and `Post(...)` calls in `Configure()`,
+- discover MinimalApi.Endpoint-style `AddRoute` methods that map routes and delegate to source `HandleAsync`,
+- create synthetic endpoint nodes,
+- connect endpoints to source action, method group, `ExecuteAsync`, or `HandleAsync` methods,
+- connect inline endpoint lambdas directly to mediator messages when the lambda performs a supported `Send` or `Publish` call.
 
 Supported patterns:
 
 ```csharp
-[HttpGet("/orders/{id}")]
-public Task<OrderDto> GetById(Guid id) { ... }
+[Route("[controller]/[action]")]
+public sealed class OrdersController : Controller
+{
+    [HttpGet("{id}")]
+    public Task<IActionResult> Detail(Guid id) { ... }
+}
 ```
 
 ```csharp
-app.MapGet("/orders/{id}", async (Guid id, ISender sender) =>
-    await sender.Send(new GetOrderQuery(id)));
+app.MapPost("/orders", CreateOrder);
+var api = app.MapGroup("/api");
+api.MapGet("/orders/{id}", GetOrder);
+```
+
+```csharp
+public override void Configure()
+{
+    Post(CreateOrderRequest.Route);
+}
 ```
 
 Relations:
 
 ```text
-endpoint --calls--> action
+endpoint --calls--> action_or_handler
 endpoint --sends--> mediatr_request
-endpoint --uses--> injected_service
+endpoint --publishes--> mediatr_notification
 ```
 
 ## Dependency Injection analyzer
 
-Current prototype support exists for direct generic registrations, narrow direct-`new` factory registrations, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
+Current prototype support exists for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
 
 Responsibilities:
 
@@ -116,9 +131,10 @@ services.AddSingleton<ClockFactory>(sp =>
     var createdAt = DateTimeOffset.UtcNow;
     return new ClockFactory(createdAt);
 });
+services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<EmailNotificationSender>());
 ```
 
-Factory support is intentionally narrow: expression-bodied lambdas must directly create the implementation, and block-bodied lambdas must end with one top-level direct `return new Implementation(...);` statement. Earlier top-level local declarations or expression statements are allowed; branching and nested control flow are skipped.
+Factory support is intentionally narrow: expression-bodied lambdas must directly create the implementation or directly return `GetRequiredService<TImplementation>()`, and block-bodied lambdas must end with one top-level direct `return new Implementation(...);` or `return sp.GetRequiredService<TImplementation>();` statement. Earlier top-level local declarations or expression statements are allowed; branching, nested delegate invocation, `GetService<T>()`, `Func<T>` factories, and runtime resolver dictionaries are skipped.
 
 Relations:
 
@@ -130,26 +146,26 @@ IOrderRepository --implemented_by--> EfOrderRepository
 
 Confidence:
 
-- `EXTRACTED` for direct generic registrations and direct object creation factory registrations.
+- `EXTRACTED` for direct generic registrations, direct object creation factory registrations, and direct `GetRequiredService<TImplementation>()` factory aliases.
 - `INFERRED` for convention-based registration.
 - `AMBIGUOUS` for assembly scanning with multiple candidates.
 
 ## MediatR analyzer
 
-Declaration support exists in `0.2.0-alpha.1`; method-level `Send` and `Publish` call-site support exists in `0.2.0-alpha.2`.
+Declaration support exists in `0.2.0-alpha.1`; method-level `Send` and `Publish` call-site support exists in `0.2.0-alpha.2`; `0.4.0-alpha.4` extends the same graph contract to `Mediator.SourceGenerator`-style `Mediator` namespace interfaces.
 
 Current responsibilities:
 
-- discover source request, stream request, and notification types,
+- discover source request, command, query, stream request, and notification types,
 - discover source handlers,
-- connect request, stream request, and notification types to handlers,
+- connect request, command, query, stream request, and notification types to handlers,
 - keep `handled_by` edges when a source handler handles a message type from generated or referenced code without an analyzable source location,
-- detect supported `Send` and `Publish` calls on `IMediator`, `ISender`, and `IPublisher`,
+- detect supported `Send` and `Publish` calls on `IMediator`, `ISender`, and `IPublisher` in either `MediatR` or `Mediator` namespaces,
 - connect enclosing source methods to resolved request or notification types.
 
 Planned responsibilities:
 
-- endpoint-to-MediatR bridging,
+- broader endpoint delegate and mediator dataflow beyond direct source-resolved cases,
 - `CreateStream` call-site detection,
 - interprocedural request tracking,
 - diagnostics for ambiguous runtime-created messages.

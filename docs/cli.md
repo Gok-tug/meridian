@@ -49,6 +49,8 @@ meridian-out/
 
 `agent-summary` is a current derived view over `graph.json`. Planned human-readable outputs such as `tree` and `report` are not emitted by the current scan command.
 
+Current ASP.NET Core support emits endpoint nodes for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` calls, simple local `MapGroup` prefixes, FastEndpoints route verbs, and MinimalApi.Endpoint-style `AddRoute` methods when source patterns are statically visible.
+
 Current EF Core support is static graph extraction for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, and `_context.Set<TEntity>()` patterns. Meridian emits entity access edges but does not reconstruct SQL, model provider behavior, migrations, or full LINQ expression semantics.
 
 Current reflection support covers static `typeof(T)` and `Activator.CreateInstance` targets. Runtime strings, runtime `Type` variables, Scrutor-style scanning, and assembly-load/type-scan inference are reported as limitations or diagnostics rather than guessed edges.
@@ -99,7 +101,7 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including direct `calls`, `contains`, initial DI relations, MediatR `sends`, `publishes`, and `handled_by`, EF Core `queries` and `writes`, and reflection `reflects` edges when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including endpoint `calls`, direct `calls`, `contains`, initial DI relations, mediator `sends`, `publishes`, and `handled_by`, EF Core `queries` and `writes`, and reflection `reflects` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"
@@ -111,7 +113,7 @@ Current MediatR method-level paths can already traverse dispatch and handler edg
 meridian path "DispatchInlineRequest" "GetOrderQueryHandler"
 ```
 
-Framework-aware expected output once planned endpoint analyzers exist:
+Endpoint-aware output can traverse emitted endpoint, mediator, DI, and persistence edges:
 
 ```text
 GET /orders/{id}
@@ -203,7 +205,7 @@ Options:
 
 Text output includes graph metadata, counts, central nodes, likely extension points, conservative graph clusters when structure supports them, limitations, and suggested MCP queries. JSON output serializes the deterministic summary result directly.
 
-Budget modes control deterministic item caps, not exact tokenizer accounting. Graph clusters are structure-only hints; verify source ownership before treating a cluster as an architectural subsystem. If source code changes, rerun `meridian scan` before trusting a derived summary.
+Budget modes control deterministic item caps, not exact tokenizer accounting. Central-node, extension-point, and cluster ranking uses distinct structural non-containment edges, while graph metadata and statistics still report raw edge counts from the loaded graph. Graph clusters are structure-only hints; verify source ownership before treating a cluster as an architectural subsystem. If source code changes, rerun `meridian scan` before trusting a derived summary.
 
 ## `meridian mcp`
 

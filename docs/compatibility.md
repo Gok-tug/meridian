@@ -40,10 +40,11 @@ Later:
 | Framework/pattern | Current status |
 | --- | --- |
 | Direct C# calls | Current prototype |
-| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, narrow direct-`new` factory registrations, constructor injection, and source interface implementations; broader coverage planned for later alpha work |
-| ASP.NET Core MVC | Planned for a later alpha milestone |
-| ASP.NET Core Minimal APIs | Planned for a later alpha milestone |
-| MediatR | Current preview for source request/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
+| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations; broader coverage planned for later alpha work |
+| ASP.NET Core MVC | Current preview for controller route/action attributes, common route tokens, and endpoint-to-action `calls` edges |
+| ASP.NET Core Minimal APIs | Current preview for `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple local `MapGroup` prefixes, and endpoint-to-handler or direct mediator edges |
+| FastEndpoints / MinimalApi.Endpoint | Current preview for `Configure()` HTTP verbs and `AddRoute` methods that delegate to source handlers |
+| MediatR / Mediator | Current preview for source request/command/query/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
 | MCP server | Current preview over generated `graph.json` files; no live Roslyn scan during MCP calls; `0.3.0-alpha.2` adds `reload_graph` for refreshing the configured graph file in a running server |
 | EF Core | Current static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges |
 | Reflection/assembly scanning | Current static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |

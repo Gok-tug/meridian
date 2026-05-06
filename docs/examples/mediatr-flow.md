@@ -1,8 +1,8 @@
 # Example: MediatR Flow
 
-MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`. Method-level `Send` and `Publish` call-site analysis is available as a preview in `0.2.0-alpha.2`.
+MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`. Method-level `Send` and `Publish` call-site analysis is available as a preview in `0.2.0-alpha.2`. `Mediator.SourceGenerator`-style `Mediator` namespace support is available as a preview in `0.4.0-alpha.4`.
 
-The current prototype connects source request, stream request, and notification types to source handler types through generic MediatR interfaces. It also connects supported source methods that dispatch MediatR messages to the resolved request or notification type. Handled message nodes can come from generated or referenced code, though their graph nodes may not have source metadata.
+The current prototype connects source request, command, query, stream request, and notification types to source handler types through generic MediatR or `Mediator` interfaces. It also connects supported source methods and endpoints that dispatch mediator messages to the resolved request, command, query, or notification type. Handled message nodes can come from generated or referenced code, though their graph nodes may not have source metadata.
 
 ## Source pattern
 
@@ -100,8 +100,8 @@ Supported call-site resolution is intentionally conservative:
 
 Not yet supported:
 
-- ASP.NET Core endpoint-to-request bridging,
-- MediatR `CreateStream`,
+- arbitrary ASP.NET Core endpoint delegate dataflow,
+- mediator `CreateStream`,
 - interprocedural request tracking,
 - runtime-created request or notification objects,
 - direct method-to-handler shortcut edges.

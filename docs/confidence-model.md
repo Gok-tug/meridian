@@ -24,6 +24,7 @@ Examples:
 - An in-scope local `var query = new GetOrderQuery(...); await sender.Send(query);` resolves to one request type before reassignment.
 - `services.AddScoped<IOrderRepository, EfOrderRepository>()` directly maps an abstraction to an implementation.
 - `services.AddSingleton<IClock>(_ => new SystemClock())` directly creates a source-resolved implementation in a factory lambda.
+- `services.AddSingleton<INotificationSender>(sp => sp.GetRequiredService<EmailNotificationSender>())` directly aliases a source-resolved implementation through Microsoft DI.
 - A controller action has `[HttpGet("/orders/{id}")]`.
 - A property is declared as `DbSet<Order>`.
 - Code references `typeof(OrderService)`.
@@ -111,7 +112,7 @@ Example:
 | --- | --- | --- | --- |
 | Roslyn direct calls | resolved invocation symbol | constrained static type inference | dynamic target |
 | ASP.NET Core | route attributes and Map methods | route conventions | runtime route construction |
-| Dependency Injection | direct generic registration; direct object creation factory registration | convention/scanning registration | broad runtime scanning or complex factories |
+| Dependency Injection | direct generic registration; direct object creation factory registration; direct `GetRequiredService<TImplementation>()` factory alias | convention/scanning registration | broad runtime scanning or complex factories |
 | MediatR | generic request/handler match; inline or in-scope local object creation dispatch | concrete parameter type dispatch fallback | runtime-created request |
 | EF Core | DbSet and DbContext symbols | repository/entity naming patterns | dynamic Set(Type) |
 | Reflection | typeof/nameof constant target | constrained scan | runtime string/type |

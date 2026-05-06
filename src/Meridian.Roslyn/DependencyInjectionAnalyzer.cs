@@ -177,17 +177,19 @@ internal sealed class DependencyInjectionAnalyzer
             return null;
         }
 
+        var serviceProviderParameter = ResolveSingleLambdaParameter(lambda, semanticModel, cancellationToken);
         return lambda.Body switch
         {
-            ExpressionSyntax bodyExpression => TryResolveObjectCreationType(bodyExpression, semanticModel, cancellationToken),
-            BlockSyntax block => ResolveSingleReturnObjectCreationType(block, semanticModel, cancellationToken),
+            ExpressionSyntax bodyExpression => TryResolveFactoryResultType(bodyExpression, semanticModel, serviceProviderParameter, cancellationToken),
+            BlockSyntax block => ResolveSingleReturnFactoryResultType(block, semanticModel, serviceProviderParameter, cancellationToken),
             _ => null
         };
     }
 
-    private static INamedTypeSymbol? ResolveSingleReturnObjectCreationType(
+    private static INamedTypeSymbol? ResolveSingleReturnFactoryResultType(
         BlockSyntax block,
         SemanticModel semanticModel,
+        IParameterSymbol? serviceProviderParameter,
         CancellationToken cancellationToken)
     {
         if (block.Statements.Count == 0 ||
@@ -202,7 +204,17 @@ internal sealed class DependencyInjectionAnalyzer
             return null;
         }
 
-        return TryResolveObjectCreationType(returnExpression, semanticModel, cancellationToken);
+        return TryResolveFactoryResultType(returnExpression, semanticModel, serviceProviderParameter, cancellationToken);
+    }
+
+    private static INamedTypeSymbol? TryResolveFactoryResultType(
+        ExpressionSyntax expression,
+        SemanticModel semanticModel,
+        IParameterSymbol? serviceProviderParameter,
+        CancellationToken cancellationToken)
+    {
+        return TryResolveObjectCreationType(expression, semanticModel, cancellationToken) ??
+            TryResolveGetRequiredServiceType(expression, semanticModel, serviceProviderParameter, cancellationToken);
     }
 
     private static INamedTypeSymbol? TryResolveObjectCreationType(
@@ -217,6 +229,80 @@ internal sealed class DependencyInjectionAnalyzer
 
         var typeInfo = semanticModel.GetTypeInfo(expression, cancellationToken);
         return TryNormalizeRegistrationType(typeInfo.Type ?? typeInfo.ConvertedType);
+    }
+
+    private static INamedTypeSymbol? TryResolveGetRequiredServiceType(
+        ExpressionSyntax expression,
+        SemanticModel semanticModel,
+        IParameterSymbol? serviceProviderParameter,
+        CancellationToken cancellationToken)
+    {
+        if (expression is not InvocationExpressionSyntax invocation || serviceProviderParameter is null)
+        {
+            return null;
+        }
+
+        var methodSymbol = InvocationSymbolResolver.ResolveTargetMethod(semanticModel, invocation, cancellationToken);
+        if (methodSymbol is null ||
+            !IsGetRequiredServiceMethod(methodSymbol) ||
+            !UsesLambdaServiceProviderParameter(invocation, semanticModel, serviceProviderParameter, cancellationToken))
+        {
+            return null;
+        }
+
+        var typeArguments = InvocationSymbolResolver.ResolveGenericTypeArguments(methodSymbol, semanticModel, invocation, cancellationToken);
+        if (typeArguments.Count != 1)
+        {
+            return null;
+        }
+
+        var implementationType = TryNormalizeRegistrationType(typeArguments[0]);
+        return implementationType is { TypeKind: TypeKind.Class, IsAbstract: false }
+            ? implementationType
+            : null;
+    }
+
+    private static bool UsesLambdaServiceProviderParameter(
+        InvocationExpressionSyntax invocation,
+        SemanticModel semanticModel,
+        IParameterSymbol serviceProviderParameter,
+        CancellationToken cancellationToken)
+    {
+        if (invocation.Expression is MemberAccessExpressionSyntax memberAccess &&
+            ResolvesToParameter(memberAccess.Expression, semanticModel, serviceProviderParameter, cancellationToken))
+        {
+            return true;
+        }
+
+        return invocation.ArgumentList.Arguments.Count > 0 &&
+            ResolvesToParameter(invocation.ArgumentList.Arguments[0].Expression, semanticModel, serviceProviderParameter, cancellationToken);
+    }
+
+    private static bool ResolvesToParameter(
+        ExpressionSyntax expression,
+        SemanticModel semanticModel,
+        IParameterSymbol parameterSymbol,
+        CancellationToken cancellationToken)
+    {
+        return semanticModel.GetSymbolInfo(expression, cancellationToken).Symbol is IParameterSymbol symbol &&
+            SymbolEqualityComparer.Default.Equals(symbol, parameterSymbol);
+    }
+
+    private static IParameterSymbol? ResolveSingleLambdaParameter(
+        LambdaExpressionSyntax lambda,
+        SemanticModel semanticModel,
+        CancellationToken cancellationToken)
+    {
+        var parameter = lambda switch
+        {
+            SimpleLambdaExpressionSyntax simpleLambda => simpleLambda.Parameter,
+            ParenthesizedLambdaExpressionSyntax parenthesizedLambda when parenthesizedLambda.ParameterList.Parameters.Count == 1 => parenthesizedLambda.ParameterList.Parameters[0],
+            _ => null
+        };
+
+        return parameter is null
+            ? null
+            : semanticModel.GetDeclaredSymbol(parameter, cancellationToken) as IParameterSymbol;
     }
 
     private static INamedTypeSymbol? TryNormalizeRegistrationType(ITypeSymbol? typeSymbol)
@@ -253,6 +339,13 @@ internal sealed class DependencyInjectionAnalyzer
         return constructor.GetAttributes().Any(static attribute =>
             attribute.AttributeClass?.Name == "ActivatorUtilitiesConstructorAttribute" &&
             attribute.AttributeClass.ContainingNamespace.ToDisplayString().Equals("Microsoft.Extensions.DependencyInjection", StringComparison.Ordinal));
+    }
+
+    private static bool IsGetRequiredServiceMethod(IMethodSymbol methodSymbol)
+    {
+        return methodSymbol.Name.Equals("GetRequiredService", StringComparison.Ordinal) &&
+            methodSymbol.ContainingType.Name.Equals("ServiceProviderServiceExtensions", StringComparison.Ordinal) &&
+            methodSymbol.ContainingNamespace.ToDisplayString().Equals("Microsoft.Extensions.DependencyInjection", StringComparison.Ordinal);
     }
 
     private static string RegistrationLifetime(string methodName)

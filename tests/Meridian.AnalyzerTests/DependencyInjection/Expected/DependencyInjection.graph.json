@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.3",
+  "generator_version": "0.4.0-alpha.4",
   "root": ".",
   "nodes": [
     {
@@ -10,7 +10,7 @@
       "kind": "field",
       "symbol": "Sample.DependencyInjection.OrderService._repository",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L43",
+      "source_location": "L67",
       "metadata": {
         "accessibility": "private",
         "containing_type": "Sample.DependencyInjection.OrderService",
@@ -44,7 +44,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.OrderService.Load()",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L50",
+      "source_location": "L74",
       "metadata": {}
     },
     {
@@ -53,7 +53,7 @@
       "kind": "method",
       "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L58",
+      "source_location": "L82",
       "metadata": {}
     },
     {
@@ -80,7 +80,7 @@
       "kind": "property",
       "symbol": "Sample.DependencyInjection.ClockFactory.CreatedAt",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L38",
+      "source_location": "L62",
       "metadata": {
         "accessibility": "public",
         "containing_type": "Sample.DependencyInjection.ClockFactory",
@@ -96,9 +96,42 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.ClockFactory",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L31",
+      "source_location": "L55",
       "metadata": {
         "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.EmailNotificationSender",
+      "label": "EmailNotificationSender",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.EmailNotificationSender",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L35",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.FileAuditSink",
+      "label": "FileAuditSink",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.FileAuditSink",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L43",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.IAuditSink",
+      "label": "IAuditSink",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.IAuditSink",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L39",
+      "metadata": {
+        "type_kind": "interface"
       }
     },
     {
@@ -108,6 +141,17 @@
       "symbol": "Sample.DependencyInjection.IClock",
       "source_file": "ServiceFlow.cs",
       "source_location": "L18",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.INotificationSender",
+      "label": "INotificationSender",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.INotificationSender",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L31",
       "metadata": {
         "type_kind": "interface"
       }
@@ -124,12 +168,23 @@
       }
     },
     {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.IUnsupportedNotificationSender",
+      "label": "IUnsupportedNotificationSender",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.IUnsupportedNotificationSender",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L47",
+      "metadata": {
+        "type_kind": "interface"
+      }
+    },
+    {
       "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
       "label": "OrderService",
       "kind": "type",
       "symbol": "Sample.DependencyInjection.OrderService",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L41",
+      "source_location": "L65",
       "metadata": {
         "type_kind": "class"
       }
@@ -140,7 +195,7 @@
       "kind": "type",
       "symbol": "Sample.DependencyInjection.ServiceRegistration",
       "source_file": "ServiceFlow.cs",
-      "source_location": "L56",
+      "source_location": "L80",
       "metadata": {
         "type_kind": "class"
       }
@@ -166,6 +221,17 @@
       "metadata": {
         "type_kind": "class"
       }
+    },
+    {
+      "id": "type:Sample.DependencyInjection:Sample.DependencyInjection.UnsupportedNotificationSender",
+      "label": "UnsupportedNotificationSender",
+      "kind": "type",
+      "symbol": "Sample.DependencyInjection.UnsupportedNotificationSender",
+      "source_file": "ServiceFlow.cs",
+      "source_location": "L51",
+      "metadata": {
+        "type_kind": "class"
+      }
     }
   ],
   "edges": [
@@ -177,7 +243,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 52,
+        "line": 76,
         "symbol": "Sample.DependencyInjection.OrderService.Load()",
         "reason": "Roslyn resolved member reference '_repository' to 'Sample.DependencyInjection.OrderService._repository'."
       },
@@ -191,7 +257,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 52,
+        "line": 76,
         "symbol": "Sample.DependencyInjection.OrderService.Load()",
         "reason": "Roslyn resolved invocation '_repository.Load' to 'Sample.DependencyInjection.IOrderRepository.Load()'."
       },
@@ -205,7 +271,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 38,
+        "line": 62,
         "symbol": "Sample.DependencyInjection.ClockFactory",
         "reason": "Roslyn declared property 'Sample.DependencyInjection.ClockFactory.CreatedAt' in 'Sample.DependencyInjection.ClockFactory'."
       },
@@ -219,12 +285,74 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 62,
+        "line": 86,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.ClockFactory' to 'Sample.DependencyInjection.ClockFactory'."
       },
       "metadata": {
         "lifetime": "singleton"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.EmailNotificationSender",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.EmailNotificationSender",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 91,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.EmailNotificationSender' to 'Sample.DependencyInjection.EmailNotificationSender'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.FileAuditSink",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.FileAuditSink",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 93,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.FileAuditSink' to 'Sample.DependencyInjection.FileAuditSink'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IAuditSink",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.FileAuditSink",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 43,
+        "symbol": "Sample.DependencyInjection.FileAuditSink",
+        "reason": "Roslyn resolved 'Sample.DependencyInjection.FileAuditSink' as an implementation of 'Sample.DependencyInjection.IAuditSink'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IAuditSink",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.FileAuditSink",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 94,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddScoped' from 'Sample.DependencyInjection.IAuditSink' to 'Sample.DependencyInjection.FileAuditSink'."
+      },
+      "metadata": {
+        "lifetime": "scoped"
       }
     },
     {
@@ -263,9 +391,39 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 61,
+        "line": 85,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.IClock' to 'Sample.DependencyInjection.SystemClock'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.INotificationSender",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.EmailNotificationSender",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 35,
+        "symbol": "Sample.DependencyInjection.EmailNotificationSender",
+        "reason": "Roslyn resolved 'Sample.DependencyInjection.EmailNotificationSender' as an implementation of 'Sample.DependencyInjection.INotificationSender'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.INotificationSender",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.EmailNotificationSender",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 92,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.INotificationSender' to 'Sample.DependencyInjection.EmailNotificationSender'."
       },
       "metadata": {
         "lifetime": "singleton"
@@ -307,13 +465,27 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 60,
+        "line": 84,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddScoped' from 'Sample.DependencyInjection.IOrderRepository' to 'Sample.DependencyInjection.SqlOrderRepository'."
       },
       "metadata": {
         "lifetime": "scoped"
       }
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.IUnsupportedNotificationSender",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.UnsupportedNotificationSender",
+      "relation": "implemented_by",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 51,
+        "symbol": "Sample.DependencyInjection.UnsupportedNotificationSender",
+        "reason": "Roslyn resolved 'Sample.DependencyInjection.UnsupportedNotificationSender' as an implementation of 'Sample.DependencyInjection.IUnsupportedNotificationSender'."
+      },
+      "metadata": {}
     },
     {
       "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.OrderService",
@@ -323,7 +495,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 43,
+        "line": 67,
         "symbol": "Sample.DependencyInjection.OrderService",
         "reason": "Roslyn declared field 'Sample.DependencyInjection.OrderService._repository' in 'Sample.DependencyInjection.OrderService'."
       },
@@ -337,7 +509,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 50,
+        "line": 74,
         "symbol": "Sample.DependencyInjection.OrderService",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.OrderService.Load()' in type 'Sample.DependencyInjection.OrderService'."
       },
@@ -351,7 +523,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 45,
+        "line": 69,
         "symbol": "Sample.DependencyInjection.OrderService.OrderService(Sample.DependencyInjection.IOrderRepository repository)",
         "reason": "Constructor parameter 'repository' injects 'Sample.DependencyInjection.IOrderRepository'."
       },
@@ -365,7 +537,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 67,
+        "line": 102,
         "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
         "reason": "Roslyn resolved DI registration 'AddTransient' from 'Sample.DependencyInjection.OrderService' to 'Sample.DependencyInjection.OrderService'."
       },
@@ -381,7 +553,7 @@
       "confidence_score": 1,
       "evidence": {
         "file": "ServiceFlow.cs",
-        "line": 58,
+        "line": 82,
         "symbol": "Sample.DependencyInjection.ServiceRegistration",
         "reason": "Roslyn declared method 'Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)' in type 'Sample.DependencyInjection.ServiceRegistration'."
       },
@@ -414,6 +586,22 @@
         "reason": "Roslyn declared method 'Sample.DependencyInjection.SystemClock.Now()' in type 'Sample.DependencyInjection.SystemClock'."
       },
       "metadata": {}
+    },
+    {
+      "source": "type:Sample.DependencyInjection:Sample.DependencyInjection.UnsupportedNotificationSender",
+      "target": "type:Sample.DependencyInjection:Sample.DependencyInjection.UnsupportedNotificationSender",
+      "relation": "registered_as",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ServiceFlow.cs",
+        "line": 98,
+        "symbol": "Sample.DependencyInjection.ServiceRegistration.Configure(Microsoft.Extensions.DependencyInjection.IServiceCollection services)",
+        "reason": "Roslyn resolved DI registration 'AddSingleton' from 'Sample.DependencyInjection.UnsupportedNotificationSender' to 'Sample.DependencyInjection.UnsupportedNotificationSender'."
+      },
+      "metadata": {
+        "lifetime": "singleton"
+      }
     }
   ],
   "diagnostics": []

@@ -428,6 +428,14 @@ internal sealed class EfCoreAnalyzer
         CancellationToken cancellationToken)
     {
         var sourceMethod = semanticModel.GetEnclosingSymbol(node.SpanStart, cancellationToken) as IMethodSymbol;
+        if (sourceMethod?.MethodKind == MethodKind.AnonymousFunction)
+        {
+            sourceMethod = node.Ancestors()
+                .OfType<BaseMethodDeclarationSyntax>()
+                .Select(declaration => semanticModel.GetDeclaredSymbol(declaration, cancellationToken) as IMethodSymbol)
+                .FirstOrDefault(symbol => symbol is not null);
+        }
+
         return sourceMethod is not null && _sourceFilter.HasAnalyzableSourceLocation(sourceMethod)
             ? sourceMethod
             : null;

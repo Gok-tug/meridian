@@ -6,12 +6,19 @@ namespace Meridian.Roslyn;
 internal sealed class MediatRSymbolClassifier
 {
     private const string MediatRNamespace = "MediatR";
+    private const string MediatorNamespace = "Mediator";
     private const string RequestInterface = "IRequest";
     private const string GenericRequestInterface = "IRequest`1";
+    private const string CommandInterface = "ICommand";
+    private const string GenericCommandInterface = "ICommand`1";
+    private const string GenericQueryInterface = "IQuery`1";
     private const string NotificationInterface = "INotification";
     private const string StreamRequestInterface = "IStreamRequest`1";
     private const string RequestHandlerInterface = "IRequestHandler`1";
     private const string GenericRequestHandlerInterface = "IRequestHandler`2";
+    private const string CommandHandlerInterface = "ICommandHandler`1";
+    private const string GenericCommandHandlerInterface = "ICommandHandler`2";
+    private const string GenericQueryHandlerInterface = "IQueryHandler`2";
     private const string NotificationHandlerInterface = "INotificationHandler`1";
     private const string StreamRequestHandlerInterface = "IStreamRequestHandler`2";
 
@@ -38,7 +45,10 @@ internal sealed class MediatRSymbolClassifier
     public bool IsRequestType(INamedTypeSymbol typeSymbol)
     {
         return ImplementsMediatRInterface(typeSymbol, RequestInterface) ||
-            ImplementsMediatRInterface(typeSymbol, GenericRequestInterface);
+            ImplementsMediatRInterface(typeSymbol, GenericRequestInterface) ||
+            ImplementsMediatRInterface(typeSymbol, CommandInterface) ||
+            ImplementsMediatRInterface(typeSymbol, GenericCommandInterface) ||
+            ImplementsMediatRInterface(typeSymbol, GenericQueryInterface);
     }
 
     public bool IsStreamRequestType(INamedTypeSymbol typeSymbol)
@@ -84,6 +94,21 @@ internal sealed class MediatRSymbolClassifier
                     yield return new MediatRHandledMessage(requestSymbol, interfaceSymbol);
                     break;
 
+                case CommandHandlerInterface when interfaceSymbol.TypeArguments.Length == 1 &&
+                    interfaceSymbol.TypeArguments[0] is INamedTypeSymbol commandSymbol:
+                    yield return new MediatRHandledMessage(commandSymbol, interfaceSymbol);
+                    break;
+
+                case GenericCommandHandlerInterface when interfaceSymbol.TypeArguments.Length == 2 &&
+                    interfaceSymbol.TypeArguments[0] is INamedTypeSymbol commandSymbol:
+                    yield return new MediatRHandledMessage(commandSymbol, interfaceSymbol);
+                    break;
+
+                case GenericQueryHandlerInterface when interfaceSymbol.TypeArguments.Length == 2 &&
+                    interfaceSymbol.TypeArguments[0] is INamedTypeSymbol querySymbol:
+                    yield return new MediatRHandledMessage(querySymbol, interfaceSymbol);
+                    break;
+
                 case NotificationHandlerInterface when interfaceSymbol.TypeArguments.Length == 1 &&
                     interfaceSymbol.TypeArguments[0] is INamedTypeSymbol notificationSymbol:
                     yield return new MediatRHandledMessage(notificationSymbol, interfaceSymbol);
@@ -109,9 +134,16 @@ internal sealed class MediatRSymbolClassifier
             interfaceSymbol.OriginalDefinition.MetadataName.Equals(metadataName, StringComparison.Ordinal));
     }
 
+    internal static bool IsSupportedMediatorNamespace(INamespaceSymbol namespaceSymbol)
+    {
+        var namespaceName = namespaceSymbol.ToDisplayString();
+        return namespaceName.Equals(MediatRNamespace, StringComparison.Ordinal) ||
+            namespaceName.Equals(MediatorNamespace, StringComparison.Ordinal);
+    }
+
     private static bool IsMediatRInterface(INamedTypeSymbol interfaceSymbol)
     {
-        return interfaceSymbol.ContainingNamespace.ToDisplayString().Equals(MediatRNamespace, StringComparison.Ordinal);
+        return IsSupportedMediatorNamespace(interfaceSymbol.ContainingNamespace);
     }
 }
 

@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.3",
+  "generator_version": "0.4.0-alpha.4",
   "root": ".",
   "nodes": [
     {
@@ -406,7 +406,7 @@
         "file": "Dispatchers.cs",
         "line": 35,
         "symbol": "Sample.MediatR.OrderDispatchSamples.CreateLambdaDispatch(MediatR.ISender sender, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
       },
       "metadata": {}
     },
@@ -420,7 +420,7 @@
         "file": "Dispatchers.cs",
         "line": 47,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchExternalRequest(MediatR.IMediator mediator, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.Contracts.ExternalOrderQuery' from in-scope local object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.Contracts.ExternalOrderQuery' from in-scope local object creation."
       },
       "metadata": {}
     },
@@ -434,7 +434,7 @@
         "file": "Dispatchers.cs",
         "line": 10,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchInlineRequest(MediatR.IMediator mediator, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.GetOrderQuery' from inline object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.GetOrderQuery' from inline object creation."
       },
       "metadata": {}
     },
@@ -448,7 +448,7 @@
         "file": "Dispatchers.cs",
         "line": 41,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchLocalCommand(MediatR.IMediator mediator, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.RefreshCacheCommand' from in-scope local object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.RefreshCacheCommand' from in-scope local object creation."
       },
       "metadata": {}
     },
@@ -462,7 +462,7 @@
         "file": "Dispatchers.cs",
         "line": 16,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchLocalRequest(MediatR.ISender sender, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
       },
       "metadata": {}
     },
@@ -476,7 +476,7 @@
         "file": "Dispatchers.cs",
         "line": 24,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchNestedLocalRequest(MediatR.ISender sender, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.GetOrderQuery' from in-scope local object creation."
       },
       "metadata": {}
     },
@@ -490,7 +490,7 @@
         "file": "Dispatchers.cs",
         "line": 62,
         "symbol": "Sample.MediatR.OrderDispatchSamples.DispatchParameterRequest(MediatR.ISender sender, Sample.MediatR.GetOrderQuery query, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Send call to 'Sample.MediatR.GetOrderQuery' from static parameter type."
+        "reason": "Roslyn resolved mediator Send call to 'Sample.MediatR.GetOrderQuery' from static parameter type."
       },
       "metadata": {}
     },
@@ -504,7 +504,7 @@
         "file": "Dispatchers.cs",
         "line": 52,
         "symbol": "Sample.MediatR.OrderDispatchSamples.PublishInlineNotification(MediatR.IMediator mediator, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Publish call to 'Sample.MediatR.OrderUpdatedNotification' from inline object creation."
+        "reason": "Roslyn resolved mediator Publish call to 'Sample.MediatR.OrderUpdatedNotification' from inline object creation."
       },
       "metadata": {}
     },
@@ -518,7 +518,7 @@
         "file": "Dispatchers.cs",
         "line": 67,
         "symbol": "Sample.MediatR.OrderDispatchSamples.PublishParameterNotification(MediatR.IPublisher publisher, Sample.MediatR.OrderUpdatedNotification notification, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Publish call to 'Sample.MediatR.OrderUpdatedNotification' from static parameter type."
+        "reason": "Roslyn resolved mediator Publish call to 'Sample.MediatR.OrderUpdatedNotification' from static parameter type."
       },
       "metadata": {}
     },
@@ -532,7 +532,7 @@
         "file": "Dispatchers.cs",
         "line": 57,
         "symbol": "Sample.MediatR.OrderDispatchSamples.PublishWithPublisher(MediatR.IPublisher publisher, System.Threading.CancellationToken cancellationToken)",
-        "reason": "Roslyn resolved MediatR Publish call to 'Sample.MediatR.OrderUpdatedNotification' from inline object creation."
+        "reason": "Roslyn resolved mediator Publish call to 'Sample.MediatR.OrderUpdatedNotification' from inline object creation."
       },
       "metadata": {}
     },
@@ -574,7 +574,7 @@
         "file": "Handlers.cs",
         "line": 50,
         "symbol": "Sample.MediatR.ExternalOrderQueryHandler",
-        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.Contracts.ExternalOrderQuery, Sample.MediatR.OrderDto>'."
+        "reason": "Roslyn resolved mediator handler interface 'MediatR.IRequestHandler<Sample.MediatR.Contracts.ExternalOrderQuery, Sample.MediatR.OrderDto>'."
       },
       "metadata": {}
     },
@@ -616,7 +616,7 @@
         "file": "Handlers.cs",
         "line": 16,
         "symbol": "Sample.MediatR.GetOrderQueryHandler",
-        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.GetOrderQuery, Sample.MediatR.OrderDto>'."
+        "reason": "Roslyn resolved mediator handler interface 'MediatR.IRequestHandler<Sample.MediatR.GetOrderQuery, Sample.MediatR.OrderDto>'."
       },
       "metadata": {}
     },
@@ -826,7 +826,7 @@
         "file": "Handlers.cs",
         "line": 32,
         "symbol": "Sample.MediatR.OrderUpdatedNotificationHandler",
-        "reason": "Roslyn resolved MediatR handler interface 'MediatR.INotificationHandler<Sample.MediatR.OrderUpdatedNotification>'."
+        "reason": "Roslyn resolved mediator handler interface 'MediatR.INotificationHandler<Sample.MediatR.OrderUpdatedNotification>'."
       },
       "metadata": {}
     },
@@ -854,7 +854,7 @@
         "file": "Handlers.cs",
         "line": 24,
         "symbol": "Sample.MediatR.RefreshCacheCommandHandler",
-        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IRequestHandler<Sample.MediatR.RefreshCacheCommand>'."
+        "reason": "Roslyn resolved mediator handler interface 'MediatR.IRequestHandler<Sample.MediatR.RefreshCacheCommand>'."
       },
       "metadata": {}
     },
@@ -896,7 +896,7 @@
         "file": "Handlers.cs",
         "line": 40,
         "symbol": "Sample.MediatR.WatchOrderStreamHandler",
-        "reason": "Roslyn resolved MediatR handler interface 'MediatR.IStreamRequestHandler<Sample.MediatR.WatchOrderStream, Sample.MediatR.OrderDto>'."
+        "reason": "Roslyn resolved mediator handler interface 'MediatR.IStreamRequestHandler<Sample.MediatR.WatchOrderStream, Sample.MediatR.OrderDto>'."
       },
       "metadata": {}
     },

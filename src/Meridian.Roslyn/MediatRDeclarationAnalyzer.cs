@@ -40,12 +40,12 @@ internal sealed class MediatRDeclarationAnalyzer
                 var evidence = _graphFactory.CreateEvidence(
                     handlerInterfaceLocation,
                     handlerNode.Symbol,
-                    $"Roslyn could not resolve MediatR message type '{handledMessage.MessageSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.");
+                    $"Roslyn could not resolve mediator message type '{handledMessage.MessageSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.");
                 graph.AddDiagnostic(new GraphDiagnostic
                 {
                     Id = "MERIDIAN_MEDIATR_UNRESOLVED_MESSAGE",
                     Severity = "warning",
-                    Message = $"MediatR handler '{handlerNode.Symbol}' references an unresolved message type.",
+                    Message = $"Mediator handler '{handlerNode.Symbol}' references an unresolved message type.",
                     SourceFile = evidence.File,
                     SourceLocation = evidence.Line is null ? null : $"L{evidence.Line}"
                 });
@@ -71,7 +71,7 @@ internal sealed class MediatRDeclarationAnalyzer
                 Evidence = _graphFactory.CreateEvidence(
                     edgeLocation,
                     handlerNode.Symbol,
-                    $"Roslyn resolved MediatR handler interface '{handledMessage.HandlerInterfaceSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.")
+                    $"Roslyn resolved mediator handler interface '{handledMessage.HandlerInterfaceSymbol.ToDisplayString(SymbolDisplay.TypeFormat)}'.")
             });
         }
     }

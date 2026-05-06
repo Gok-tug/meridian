@@ -592,7 +592,7 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
-    public void ListEntrypoints_returns_limitation_when_endpoint_analyzer_has_not_emitted_nodes()
+    public void ListEntrypoints_returns_limitation_when_graph_has_no_endpoint_nodes()
     {
         var service = CreateService(CreateGraph());
 
@@ -603,7 +603,7 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
-    public void FindFlowsToSymbol_returns_upstream_nodes_with_endpoint_limitation()
+    public void FindFlowsToSymbol_returns_upstream_nodes_with_endpoint_coverage_note()
     {
         var service = CreateService(CreateGraph());
 
@@ -639,7 +639,7 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
-    public void FindFlowsToSymbol_does_not_claim_endpoint_analyzer_limit_when_graph_has_entrypoints()
+    public void FindFlowsToSymbol_does_not_claim_endpoint_coverage_limit_when_graph_has_entrypoints()
     {
         var service = CreateService(CreateGraphWithUnrelatedEndpoint());
 
