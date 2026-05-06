@@ -10,7 +10,7 @@ Meridian is not intended to be a generic C# call graph visualizer. The goal is t
 
 Meridian is in early alpha design/prototype stage.
 
-The package name has been reserved on NuGet, but the analyzer implementation is not stable yet. Public releases should use prerelease SemVer versions such as:
+The NuGet package is published as prerelease alpha builds, but the analyzer implementation is not stable yet. Public releases should use prerelease SemVer versions such as:
 
 ```text
 0.1.0-alpha.1
@@ -22,6 +22,7 @@ The package name has been reserved on NuGet, but the analyzer implementation is 
 0.3.0-alpha.2
 0.4.0-alpha.1
 0.4.0-alpha.2
+0.4.0-alpha.3
 ```
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
@@ -60,6 +61,7 @@ GET /orders/{id}
 meridian scan MyApp.sln
 meridian explain "GetOrderQuery"
 meridian path "GET /orders/{id}" "OrderDbContext"
+meridian agent-summary --graph meridian-out/graph.json
 meridian mcp --graph meridian-out/graph.json
 ```
 
@@ -99,8 +101,8 @@ Current prototype support:
 - EF Core preview for source `DbContext`, `DbSet<TEntity>` containment, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges
 - Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
-- `scan`, `explain`, `path`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
+- `scan`, `explain`, `path`, `agent-summary`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact graph statistics, agent summaries, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and endpoint limitation reporting
 - Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up work:
@@ -110,11 +112,11 @@ Planned follow-up work:
 - Additional MediatR dispatch patterns such as `CreateStream`, interprocedural request tracking, and runtime object construction diagnostics
 - Broader EF Core query semantics beyond static DbContext/DbSet entity access
 - Reflection assembly scanning patterns such as Scrutor, `Assembly.Load`, `GetTypes`, and `IsAssignableFrom`
-- Planned human-readable graph views such as `summary`, `tree`, and `report`
+- Additional human-readable graph views such as `tree` and `report`
 - Incremental analysis and caching
 - Rust/native interop boundary detection
 
-Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `summary`/`tree`/`report` views, and incremental/cached analysis.
+Not currently implemented: ASP.NET Core endpoint flow, MediatR endpoint bridging, MediatR `CreateStream`, interprocedural/runtime MediatR dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, automatic watch/hot-reload, planned `tree`/`report` views, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -126,7 +128,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.2",
+  "generator_version": "0.4.0-alpha.3",
   "nodes": [],
   "edges": []
 }

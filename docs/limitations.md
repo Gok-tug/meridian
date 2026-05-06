@@ -30,6 +30,14 @@ Analysis can be incomplete when:
 - projects require environment-specific properties,
 - the loaded target framework differs from the production target.
 
+## Graph summary limits
+
+`agent-summary` and MCP summary tools are derived views over the loaded `graph.json`. They do not reread source code, prove architectural ownership, or prove source-code absence.
+
+Central-node and extension-point rankings are deterministic heuristics based on graph structure, node names, node kinds, and known relation types. They are navigation hints for agents, not a replacement for source review.
+
+Graph clusters use non-containment graph components only when the loaded graph has enough separated structure. A cluster means "these nodes are connected in the graph," not "this is a real subsystem boundary." Budget modes cap returned items deterministically; they are not exact token counts.
+
 ## Member graph limits
 
 Member graph analysis is conservative. Meridian emits source enum, enum member, property, and field declaration nodes, plus ordinary-method references when Roslyn directly resolves the symbol.

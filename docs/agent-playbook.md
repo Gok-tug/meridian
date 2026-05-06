@@ -20,19 +20,21 @@ Meridian answers from a precomputed `graph.json`. It does not analyze source cod
 
 3. Call `get_schema` before using graph tools.
 
-4. Use typed tools. Do not send custom query languages or broad natural-language questions to `query_graph`.
+4. For broad orientation, call `get_agent_summary` or `get_graph_statistics` before reading source or traversing neighbors.
 
-5. Resolve nodes before traversal. If you do not know the exact node ID, use `query_graph` or `get_node` first.
+5. Use typed tools. Do not send custom query languages or broad natural-language questions to `query_graph`.
 
-6. Use `get_symbol_summary` before broad neighbor traversal when you need compact context for one symbol.
+6. Resolve nodes before traversal. If you do not know the exact node ID, use `query_graph` or `get_node` first.
 
-7. Use exact returned node IDs for `get_neighbors`, `shortest_path`, and `explain_path` when possible.
+7. Use `get_symbol_summary` before broad neighbor traversal when you need compact context for one symbol.
 
-8. If a response is truncated, narrow the query instead of asking for a larger graph dump.
+8. Use exact returned node IDs for `get_neighbors`, `shortest_path`, and `explain_path` when possible.
 
-9. Cite confidence and evidence when making claims about code flow.
+9. If a response is truncated, narrow the query instead of asking for a larger graph dump.
 
-10. State unsupported analyzer limitations honestly.
+10. Cite confidence and evidence when making claims about code flow.
+
+11. State unsupported analyzer limitations honestly.
 
 ## Freshness workflow after edits
 
@@ -83,6 +85,16 @@ If `get_node` returns `ambiguous`, retry with a more precise symbol, label, or e
 ### `get_schema`
 
 Use first. It tells you which tools, node kinds, and relations are available in the current graph.
+
+### `get_graph_statistics`
+
+Use after `get_schema` when you need compact counts, confidence breakdowns, diagnostics, limitations, and suggested next tools without edge payloads.
+
+### `get_agent_summary`
+
+Use before broad source reading or neighbor traversal. Start with `budget: "compact"` for orientation, then follow suggested `get_symbol_summary`, `plan_feature`, or exact node queries.
+
+Treat central nodes and clusters as graph-derived navigation hints, not proof of architectural ownership or source-code absence.
 
 ### `query_graph`
 

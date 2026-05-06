@@ -63,6 +63,29 @@ public sealed record ReloadGraphResponse(
     bool PreviousGraphPreserved = false,
     string? Message = null);
 
+public sealed record GraphStatisticsResponse(
+    string Status,
+    string StaleGraphNote,
+    GraphStatistics? Statistics = null,
+    IReadOnlyList<string>? Limitations = null,
+    IReadOnlyList<string>? SuggestedQueries = null,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
+public sealed record AgentSummaryResponse(
+    string Status,
+    string StaleGraphNote,
+    GraphStatistics? Statistics = null,
+    IReadOnlyList<RankedGraphNodeSummary>? CentralNodes = null,
+    IReadOnlyList<RankedGraphNodeSummary>? ExtensionPoints = null,
+    IReadOnlyList<GraphClusterSummary>? Clusters = null,
+    IReadOnlyList<string>? Limitations = null,
+    IReadOnlyList<string>? SuggestedQueries = null,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
 public sealed record SymbolSummaryResponse(
     string Status,
     string StaleGraphNote,

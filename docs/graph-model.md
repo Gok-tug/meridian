@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.4.0-alpha.2",
+  "generator_version": "0.4.0-alpha.3",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -202,4 +202,5 @@ Non-breaking changes:
 - adding optional metadata,
 - adding a new node kind,
 - adding a new relation with docs,
-- adding diagnostics.
+- adding diagnostics,
+- adding derived CLI or MCP summary responses that do not alter persisted `graph.json`.

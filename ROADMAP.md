@@ -288,7 +288,7 @@ Not in scope:
 
 ## 0.4.0-alpha.3 — Agent summaries and graph-guided workflow
 
-Goal: reduce agent context use by producing deterministic summaries and ranked navigation surfaces over `graph.json`, inspired by Graphify-style reports without giving up Roslyn semantic precision.
+Goal: reduce agent context use by producing deterministic summaries and ranked navigation surfaces over `graph.json` without giving up Roslyn semantic precision.
 
 Scope:
 

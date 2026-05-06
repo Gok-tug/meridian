@@ -10,6 +10,7 @@ Commands should be deterministic, scriptable, and able to return either human-re
 meridian scan <solution-or-project>
 meridian explain <node-or-symbol>
 meridian path <source> <target>
+meridian agent-summary [--graph <graph.json>]
 meridian mcp --graph <graph.json>
 ```
 
@@ -46,7 +47,7 @@ meridian-out/
   graph.json
 ```
 
-Planned human-readable outputs such as `report.md`, `summary`, and `tree` are derived views over `graph.json`; they are not emitted by the current scan command.
+`agent-summary` is a current derived view over `graph.json`. Planned human-readable outputs such as `tree` and `report` are not emitted by the current scan command.
 
 Current EF Core support is static graph extraction for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, and `_context.Set<TEntity>()` patterns. Meridian emits entity access edges but does not reconstruct SQL, model provider behavior, migrations, or full LINQ expression semantics.
 
@@ -183,6 +184,27 @@ If either endpoint query is ambiguous, Meridian reports the source or target amb
 No path found from "GET /orders/{id}" to "OrderDbContext".
 ```
 
+## `meridian agent-summary`
+
+Summarizes an existing generated graph for graph-guided agent orientation.
+
+```bash
+meridian agent-summary --graph meridian-out/graph.json
+meridian agent-summary --graph meridian-out/graph.json --budget compact
+meridian agent-summary --graph meridian-out/graph.json --format json --max-items 3
+```
+
+Options:
+
+- `--graph`, `-g`: input graph path. Defaults to `meridian-out/graph.json`.
+- `--budget`: approximate response budget: `compact`, `standard`, or `detailed`.
+- `--max-items`: maximum items per summary section.
+- `--format`: `text` or `json`.
+
+Text output includes graph metadata, counts, central nodes, likely extension points, conservative graph clusters when structure supports them, limitations, and suggested MCP queries. JSON output serializes the deterministic summary result directly.
+
+Budget modes control deterministic item caps, not exact tokenizer accounting. Graph clusters are structure-only hints; verify source ownership before treating a cluster as an architectural subsystem. If source code changes, rerun `meridian scan` before trusting a derived summary.
+
 ## `meridian mcp`
 
 Starts a local MCP server over an existing generated graph file.
@@ -191,21 +213,22 @@ Starts a local MCP server over an existing generated graph file.
 meridian mcp --graph meridian-out/graph.json
 ```
 
-The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `get_symbol_summary`, `plan_feature`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
+The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `get_graph_statistics`, `get_agent_summary`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `get_symbol_summary`, `plan_feature`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
 
 The graph is not updated live by `scan` alone. If source code changes, rerun `meridian scan`, then call `reload_graph` on the running MCP server or restart the MCP server before relying on tool results for the changed code.
 
 See [mcp.md](mcp.md) for tool contracts, truncation behavior, schema discovery, and limitations.
 
-## Planned human-readable views
+## Human-readable views
 
-Future CLI work may add graph views derived from an existing `graph.json`:
+`agent-summary` is implemented as a deterministic orientation view derived from an existing `graph.json`.
 
-- `summary`: node and edge counts, diagnostics, top node kinds, and relation counts
+Future CLI work may add additional graph views:
+
 - `tree`: bounded hierarchical view from a node, type, namespace, or entrypoint
 - `report`: Markdown overview for humans and agents
 
-These views should not expand the graph schema or imply analyzer support that has not emitted facts.
+Derived views should not expand the graph schema or imply analyzer support that has not emitted facts.
 
 ## Exit codes
 

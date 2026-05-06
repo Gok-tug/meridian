@@ -24,9 +24,13 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(GraphRelations.Reads, result.KnownRelations);
         Assert.Contains("get_schema", result.Tools);
         Assert.Contains("reload_graph", result.Tools);
+        Assert.Contains("get_graph_statistics", result.Tools);
+        Assert.Contains("get_agent_summary", result.Tools);
         Assert.Contains("get_symbol_summary", result.Tools);
         Assert.Contains("plan_feature", result.Tools);
         Assert.Contains(result.UsageHints, hint => hint.Contains("includeEvidence defaults to false", StringComparison.Ordinal));
+        Assert.Contains(result.UsageHints, hint => hint.Contains("get_agent_summary", StringComparison.Ordinal));
+        Assert.Contains(result.UsageHints, hint => hint.Contains("get_graph_statistics", StringComparison.Ordinal));
         Assert.Contains(result.UsageHints, hint => hint.Contains("excludeRelations", StringComparison.Ordinal));
         Assert.Contains(result.UsageHints, hint => hint.Contains("not proof of absence in source code", StringComparison.Ordinal));
         Assert.Equal(7, result.Graph.NodeCount);
@@ -661,6 +665,17 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetSymbolSummary_counts_implemented_by_as_important_relation()
+    {
+        var service = CreateService(CreateImplementedByGraph());
+
+        var result = service.GetSymbolSummary("IPlugin", maxResults: 5);
+
+        Assert.Equal("ok", result.Status);
+        Assert.Equal(1, result.ImportantRelationCounts?[GraphRelations.ImplementedBy]);
+    }
+
+    [Fact]
     public void PlanFeature_ranks_existing_extension_points_for_absent_new_concept()
     {
         var service = CreateService(CreateMemberPlanningGraph());
@@ -678,6 +693,54 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains("flashbot", result.Limitation, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("not present in the loaded Meridian graph", result.Limitation);
         Assert.Contains(result.EditPoints[0].SuggestedQueries, query => query.Contains("get_symbol_summary", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void GetGraphStatistics_returns_compact_counts_limitations_and_suggestions()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.GetGraphStatistics(maxDiagnostics: 2);
+
+        Assert.Equal("ok", result.Status);
+        Assert.Contains(MeridianMcpMessages.StaleGraphNote, result.StaleGraphNote);
+        Assert.Equal(9, result.Statistics?.Graph.NodeCount);
+        Assert.Equal(6, result.Statistics?.NodeKindCounts.Count);
+        Assert.Equal(5, result.Statistics?.RelationCounts[GraphRelations.Contains]);
+        Assert.Contains(result.Limitations ?? [], limitation => limitation.Contains("loaded Meridian graph", StringComparison.Ordinal));
+        Assert.Contains(result.SuggestedQueries ?? [], query => query.Contains("get_agent_summary", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void GetAgentSummary_returns_ranked_orientation_without_edge_evidence()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.GetAgentSummary("compact", maxItemsPerSection: 2);
+
+        Assert.Equal("ok", result.Status);
+        Assert.NotNull(result.Statistics);
+        Assert.NotEmpty(result.CentralNodes ?? []);
+        Assert.NotEmpty(result.ExtensionPoints ?? []);
+        Assert.True(result.Truncated);
+        Assert.Contains("capped", result.TruncationNote, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(result.ExtensionPoints ?? [], point => point.Node.Label == "ModuleExecutionStrategy");
+        Assert.Contains(result.Limitations ?? [], limitation => limitation.Contains("not proof of absence", StringComparison.Ordinal));
+        Assert.Contains(result.SuggestedQueries ?? [], query => query.Contains("get_symbol_summary", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("huge")]
+    [InlineData("2")]
+    [InlineData("999")]
+    public void GetAgentSummary_rejects_unknown_budget(string budget)
+    {
+        var service = CreateService(CreateGraph());
+
+        var result = service.GetAgentSummary(budget);
+
+        Assert.Equal("invalid_input", result.Status);
+        Assert.Contains("compact, standard, or detailed", result.Message);
     }
 
     [Fact]
@@ -792,6 +855,18 @@ public sealed class MeridianGraphToolServiceTests
         AddNode(builder, "method:Sample:Middle.Run()", "Middle.Run", "Sample.Middle.Run()");
         AddNode(builder, "method:Sample:End.Run()", "End.Run", "Sample.End.Run()");
         AddEdge(builder, "method:Sample:Middle.Run()", "method:Sample:End.Run()", GraphRelations.Calls, 20, "Middle calls End.");
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateImplementedByGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:Sample.IPlugin", "IPlugin", "Sample.IPlugin", GraphNodeKinds.Type, new SortedDictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["type_kind"] = "interface"
+        });
+        AddNode(builder, "type:Sample:Sample.EmailPlugin", "EmailPlugin", "Sample.EmailPlugin", GraphNodeKinds.Type);
+        AddEdge(builder, "type:Sample:Sample.IPlugin", "type:Sample:Sample.EmailPlugin", GraphRelations.ImplementedBy, 1, "EmailPlugin implements IPlugin.");
         return builder.Build(".");
     }
 

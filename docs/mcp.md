@@ -2,7 +2,7 @@
 
 MCP support is a core Meridian use case.
 
-The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. `0.4.0-alpha.2` adds compact symbol summaries and deterministic feature-planning navigation over the loaded graph. MCP does not load or analyze the solution live.
+The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. `0.4.0-alpha.2` adds compact symbol summaries and deterministic feature-planning navigation over the loaded graph. `0.4.0-alpha.3` adds compact graph statistics and agent summaries for broad orientation. MCP does not load or analyze the solution live.
 
 ## Purpose
 
@@ -13,6 +13,7 @@ The MCP server is optimized for agent use:
 - answers over precomputed JSON graph data,
 - uses strongly typed tool parameters instead of a custom query DSL,
 - exposes schema discovery so agents can see available node kinds and relations,
+- provides compact graph statistics and agent summaries before broad traversal,
 - caps broad result sets and marks truncation explicitly,
 - preserves ambiguity handling instead of silently picking a node,
 - reminds callers that graph data is stale until `meridian scan` is rerun and the running MCP server is reloaded or restarted.
@@ -64,8 +65,37 @@ Output includes:
 - known Meridian node-kind constants,
 - known Meridian relation constants,
 - node-kind and relation counts,
-- usage hints for compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
+- usage hints for `get_agent_summary`, compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
 - stale graph note.
+
+### `get_graph_statistics`
+
+Returns compact graph metadata, node-kind counts, relation counts, confidence counts, diagnostic summaries, limitations, and suggested next tools without edge evidence.
+
+Input:
+
+```json
+{
+  "maxDiagnostics": 5
+}
+```
+
+Use this after `get_schema` when an agent needs the loaded graph's size, shape, confidence breakdown, and diagnostic surface without traversing nodes.
+
+### `get_agent_summary`
+
+Returns compact graph orientation over the loaded graph: central nodes, likely extension points, conservative graph clusters, limitations, and follow-up MCP queries.
+
+Input:
+
+```json
+{
+  "budget": "compact",
+  "maxItemsPerSection": 3
+}
+```
+
+`budget` can be `compact`, `standard`, or `detailed`. It controls deterministic item caps, not exact tokenizer accounting. Clusters are graph-structure hints only; they are not proof of architectural ownership. Use `get_agent_summary` before broad grep/read or broad `get_neighbors` traversal, then narrow with `plan_feature`, `get_symbol_summary`, or exact node queries.
 
 ### `reload_graph`
 
@@ -274,7 +304,9 @@ If endpoint nodes exist, agents can use them as application entrypoints. If not,
 
 Tools that return node or edge arrays are capped by default. The preview uses conservative limits to avoid poisoning the agent context window with huge JSON payloads.
 
-Agents should respond to truncation by narrowing filters, lowering depth, or querying exact node IDs.
+Summary tools use approximate budget modes and deterministic item caps. They do not perform exact token counting.
+
+Agents should respond to truncation by narrowing filters, lowering depth, switching to compact summaries, or querying exact node IDs.
 
 ## Interpreting absence
 

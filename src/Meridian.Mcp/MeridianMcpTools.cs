@@ -68,6 +68,23 @@ public sealed class MeridianMcpTools
         return _service.GetNeighborsWithOptions(idOrLabel, direction, depth, relation, maxResults, includeEvidence, excludeRelations);
     }
 
+    [McpServerTool(Name = "get_graph_statistics", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
+    [Description("Return compact graph counts, confidence breakdowns, diagnostics, limitations, and suggested next tools without edge evidence. " + SeeSchemaNote)]
+    public GraphStatisticsResponse GetGraphStatistics(
+        [Description("Maximum returned diagnostic summaries. The server caps this to protect the agent context window.")] int? maxDiagnostics = null)
+    {
+        return _service.GetGraphStatistics(maxDiagnostics);
+    }
+
+    [McpServerTool(Name = "get_agent_summary", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
+    [Description("Return compact graph orientation: central nodes, likely extension points, conservative clusters, limitations, and follow-up queries. " + SeeSchemaNote)]
+    public AgentSummaryResponse GetAgentSummary(
+        [Description("Approximate response budget: compact, standard, or detailed. This controls deterministic item caps, not exact token counts.")] string? budget = null,
+        [Description("Maximum returned items per summary section. The server caps this to protect the agent context window.")] int? maxItemsPerSection = null)
+    {
+        return _service.GetAgentSummary(budget, maxItemsPerSection);
+    }
+
     [McpServerTool(Name = "get_symbol_summary", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
     [Description("Return compact context for one symbol: relation counts, contained members, interface/DI links, and follow-up queries without bulk edge evidence. " + SeeSchemaNote)]
     public SymbolSummaryResponse GetSymbolSummary(

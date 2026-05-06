@@ -51,6 +51,9 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `Sample.MemberGraph` with golden-file analyzer coverage for member declarations, member access, enum usage, and feature-planning naming patterns.
 - MCP `get_symbol_summary` for compact symbol context with relation counts, contained members, interface/DI links, and follow-up queries.
 - MCP `plan_feature` for deterministic graph-guided feature-planning navigation when a requested new concept may be absent from the graph.
+- Core graph statistics and agent summary services for deterministic graph metadata, counts, central nodes, extension points, clusters, limitations, and suggested queries.
+- MCP `get_graph_statistics` and `get_agent_summary` tools for compact graph orientation before broad traversal or source reading.
+- `meridian agent-summary` CLI command with text and JSON output over an existing `graph.json`.
 
 ### Changed
 
@@ -62,6 +65,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `meridian scan` now makes the MSBuild project-evaluation trust boundary explicit and supports `--trust-project` to suppress the warning for trusted repositories.
 - MCP bulk graph tools now omit edge evidence by default to reduce agent context usage while keeping evidence available through `includeEvidence: true`.
 - Updated the prototype generator/package version to `0.4.0-alpha.2` for member graph and feature-planning MCP preview output.
+- Updated the prototype generator/package version to `0.4.0-alpha.3` for agent summaries and graph-guided workflow output.
 
 ## 0.1.0-alpha.1 — Planned
 

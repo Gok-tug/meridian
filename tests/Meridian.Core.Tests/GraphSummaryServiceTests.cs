@@ -1,0 +1,174 @@
+using Meridian.Abstractions;
+using Meridian.Core;
+
+namespace Meridian.Core.Tests;
+
+public sealed class GraphSummaryServiceTests
+{
+    [Fact]
+    public void Statistics_counts_are_deterministic()
+    {
+        var graph = CreatePlanningGraph();
+
+        var statistics = GraphStatisticsBuilder.Build(graph);
+
+        Assert.Equal(6, statistics.Graph.NodeCount);
+        Assert.Equal(6, statistics.Graph.EdgeCount);
+        Assert.Equal(1, statistics.Graph.DiagnosticCount);
+        Assert.Equal(2, statistics.NodeKindCounts[GraphNodeKinds.Method]);
+        Assert.Equal(1, statistics.RelationCounts[GraphRelations.Calls]);
+        Assert.Equal(6, statistics.ConfidenceCounts[ConfidenceLevels.Extracted]);
+        Assert.Equal(1, statistics.DiagnosticSeverityCounts["warning"]);
+        Assert.Equal("MERIDIAN_SAMPLE", statistics.TopDiagnostics.Single().Id);
+    }
+
+    [Fact]
+    public void Agent_summary_ranks_central_nodes_deterministically()
+    {
+        var graph = CreatePlanningGraph();
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 3 });
+
+        Assert.Equal("TaskExecutionOrchestrator", summary.CentralNodes[0].Node.Label);
+        Assert.Contains(summary.CentralNodes[0].Reasons, reason => reason.Contains("central abstraction", StringComparison.Ordinal));
+        Assert.Contains(summary.CentralNodes[0].SuggestedQueries, query => query.Contains("get_symbol_summary", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Agent_summary_uses_shared_extension_point_terms()
+    {
+        var graph = CreatePlanningGraph();
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 5 });
+
+        Assert.Contains(summary.ExtensionPoints, point => GraphSummaryHeuristics.TryGetExtensionPointTerm(point.NodeToGraphNode()) == "Strategy");
+        Assert.Contains(summary.ExtensionPoints, point => point.Node.Label == "ExecutionMode");
+    }
+
+    [Fact]
+    public void Weak_graph_suppresses_clusters_with_loaded_graph_limitation()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:A", "A", GraphNodeKinds.Type),
+                Node("method:A.Run", "A.Run", GraphNodeKinds.Method)
+            ],
+            Edges =
+            [
+                Edge("type:A", "method:A.Run", GraphRelations.Contains)
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph);
+
+        Assert.Empty(summary.Clusters);
+        Assert.Contains(summary.Limitations, limitation => limitation.Contains("loaded graph", StringComparison.OrdinalIgnoreCase));
+        Assert.DoesNotContain(summary.Limitations, limitation => limitation.Contains("source does not", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Separated_components_produce_conservative_clusters()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:A", "AService", GraphNodeKinds.Type),
+                Node("method:A.One", "A.One", GraphNodeKinds.Method),
+                Node("method:A.Two", "A.Two", GraphNodeKinds.Method),
+                Node("type:B", "BService", GraphNodeKinds.Type),
+                Node("method:B.One", "B.One", GraphNodeKinds.Method),
+                Node("method:B.Two", "B.Two", GraphNodeKinds.Method)
+            ],
+            Edges =
+            [
+                Edge("type:A", "method:A.One", GraphRelations.Calls),
+                Edge("method:A.One", "method:A.Two", GraphRelations.Calls),
+                Edge("type:B", "method:B.One", GraphRelations.Uses),
+                Edge("method:B.One", "method:B.Two", GraphRelations.Calls)
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 5 });
+
+        Assert.Equal(2, summary.Clusters.Count);
+        Assert.All(summary.Clusters, cluster => Assert.Contains("Graph cluster only", cluster.Limitation));
+    }
+
+    private static GraphDocument CreatePlanningGraph()
+    {
+        return new GraphDocument
+        {
+            Nodes =
+            [
+                Node("method:Sample:TaskExecutionOrchestrator.ResolveExecutionStrategy()", "TaskExecutionOrchestrator.ResolveExecutionStrategy", GraphNodeKinds.Method),
+                Node("enum:Sample:ExecutionMode", "ExecutionMode", GraphNodeKinds.Enum),
+                Node("type:Sample:IExecutionStrategy", "IExecutionStrategy", GraphNodeKinds.Type, metadata: new() { ["type_kind"] = "interface" }),
+                Node("field:Sample:TaskExecutionOrchestrator._registry", "TaskExecutionOrchestrator._registry", GraphNodeKinds.Field),
+                Node("method:Sample:TaskExecutionOrchestrator.Execute()", "TaskExecutionOrchestrator.Execute", GraphNodeKinds.Method),
+                Node("type:Sample:TaskExecutionOrchestrator", "TaskExecutionOrchestrator", GraphNodeKinds.Type)
+            ],
+            Edges =
+            [
+                Edge("type:Sample:TaskExecutionOrchestrator", "method:Sample:TaskExecutionOrchestrator.Execute()", GraphRelations.Contains),
+                Edge("type:Sample:IExecutionStrategy", "type:Sample:TaskExecutionOrchestrator", GraphRelations.ImplementedBy),
+                Edge("type:Sample:TaskExecutionOrchestrator", "field:Sample:TaskExecutionOrchestrator._registry", GraphRelations.Injects),
+                Edge("method:Sample:TaskExecutionOrchestrator.Execute()", "method:Sample:TaskExecutionOrchestrator.ResolveExecutionStrategy()", GraphRelations.Calls),
+                Edge("method:Sample:TaskExecutionOrchestrator.Execute()", "enum:Sample:ExecutionMode", GraphRelations.Uses),
+                Edge("method:Sample:TaskExecutionOrchestrator.ResolveExecutionStrategy()", "field:Sample:TaskExecutionOrchestrator._registry", GraphRelations.Reads)
+            ],
+            Diagnostics =
+            [
+                new GraphDiagnostic
+                {
+                    Id = "MERIDIAN_SAMPLE",
+                    Severity = "warning",
+                    Message = "sample diagnostic"
+                }
+            ]
+        };
+    }
+
+    private static GraphNode Node(string id, string label, string kind, SortedDictionary<string, string>? metadata = null)
+    {
+        return new GraphNode
+        {
+            Id = id,
+            Label = label,
+            Kind = kind,
+            Symbol = label,
+            SourceFile = "Sample.cs",
+            SourceLocation = "1",
+            Metadata = metadata ?? []
+        };
+    }
+
+    private static GraphEdge Edge(string source, string target, string relation)
+    {
+        return new GraphEdge
+        {
+            Source = source,
+            Target = target,
+            Relation = relation,
+            Confidence = ConfidenceLevels.Extracted
+        };
+    }
+}
+
+internal static class RankedGraphNodeSummaryTestExtensions
+{
+    public static GraphNode NodeToGraphNode(this RankedGraphNodeSummary summary)
+    {
+        return new GraphNode
+        {
+            Id = summary.Node.Id,
+            Label = summary.Node.Label,
+            Kind = summary.Node.Kind,
+            Symbol = summary.Node.Symbol,
+            SourceFile = summary.Node.SourceFile,
+            SourceLocation = summary.Node.SourceLocation
+        };
+    }
+}

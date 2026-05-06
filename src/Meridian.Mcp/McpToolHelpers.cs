@@ -12,7 +12,7 @@ internal static class McpToolHelpers
 
     public static string EscapeSuggestionValue(string value)
     {
-        return value.Replace("\\", "\\\\", StringComparison.Ordinal).Replace("\"", "\\\"", StringComparison.Ordinal);
+        return GraphSummaryHeuristics.EscapeSuggestionValue(value);
     }
 
     public static GraphNodeResolution ResolveNodeForMcp(McpGraphContext context, string query)

@@ -16,6 +16,7 @@ Use SemVer prerelease versions:
 0.3.0-alpha.2
 0.4.0-alpha.1
 0.4.0-alpha.2
+0.4.0-alpha.3
 ```
 
 Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.

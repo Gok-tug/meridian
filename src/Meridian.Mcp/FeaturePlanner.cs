@@ -8,7 +8,6 @@ namespace Meridian.Mcp;
 internal sealed class FeaturePlanner
 {
     private const int MaximumMatchedTerms = 5;
-    private const int MinimumTermLength = 2;
     private const int MaximumSeedDistance = 2;
     private const int TermMatchScore = 12;
     private const int ExtensionPointScore = 16;
@@ -17,53 +16,6 @@ internal sealed class FeaturePlanner
     private const int ExactSeedScore = 35;
     private const int DirectSeedNeighborScore = 25;
     private const int NearSeedScore = 12;
-    private const int EnumKindScore = 24;
-    private const int MemberKindScore = 14;
-    private const int InterfaceKindScore = 18;
-    private const int TypeKindScore = 8;
-    private const int MethodKindScore = 4;
-
-    private static readonly string[] ExtensionPointTerms =
-    [
-        "Mode",
-        "Strategy",
-        "Policy",
-        "Factory",
-        "Registry",
-        "Resolver",
-        "Selector",
-        "Executor",
-        "Orchestrator",
-        "Dispatcher",
-        "Handler"
-    ];
-
-    private static readonly HashSet<string> StopWords = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "a",
-        "an",
-        "and",
-        "add",
-        "create",
-        "for",
-        "feature",
-        "implement",
-        "implementation",
-        "in",
-        "new",
-        "of",
-        "on",
-        "or",
-        "should",
-        "support",
-        "the",
-        "to",
-        "use",
-        "using",
-        "where",
-        "with",
-        "without"
-    };
 
     public FeaturePlanResponse Plan(McpGraphContext context, string? goal, string[]? seedSymbols, string[]? terms, int? maxResults)
     {
@@ -83,7 +35,7 @@ internal sealed class FeaturePlanner
         }
 
         var limit = context.ClampMaxResults(maxResults);
-        var planTerms = TokenizeFeatureTerms(goal!, terms).ToArray();
+        var planTerms = GraphSummaryHeuristics.TokenizeFeatureTerms(goal!, terms).ToArray();
         var seedResolutions = ResolveSeeds(context, seedSymbols).ToArray();
         var foundSeeds = seedResolutions
             .Where(seed => seed.Node is not null)
@@ -123,7 +75,7 @@ internal sealed class FeaturePlanner
 
     private static IReadOnlyList<string> SuggestedQueries(GraphNode node)
     {
-        var id = EscapeSuggestionValue(node.Id);
+        var id = GraphSummaryHeuristics.EscapeSuggestionValue(node.Id);
         return
         [
             $"get_symbol_summary idOrLabel:\"{id}\"",
@@ -215,7 +167,7 @@ internal sealed class FeaturePlanner
         var score = 0;
         var reasons = new List<string>();
         var matchedTerms = terms
-            .Where(term => TermMatchesNode(node, term))
+            .Where(term => GraphSummaryHeuristics.TermMatchesNode(node, term))
             .Take(MaximumMatchedTerms)
             .ToArray();
         if (matchedTerms.Length > 0)
@@ -224,13 +176,13 @@ internal sealed class FeaturePlanner
             reasons.Add($"Matches term(s): {string.Join(", ", matchedTerms)}.");
         }
 
-        if (TryGetExtensionPointTerm(node) is { } extensionPointTerm)
+        if (GraphSummaryHeuristics.TryGetExtensionPointTerm(node) is { } extensionPointTerm)
         {
             score += ExtensionPointScore;
             reasons.Add($"Name suggests extension point: {extensionPointTerm}.");
         }
 
-        var kindBoost = KindBoost(node, out var kindReason);
+        var kindBoost = GraphSummaryHeuristics.FeaturePlanningKindBoost(node, out var kindReason);
         if (kindBoost > 0)
         {
             score += kindBoost;
@@ -261,141 +213,10 @@ internal sealed class FeaturePlanner
         return score == 0 ? null : new FeatureCandidate(node, score, reasons);
     }
 
-    private static int KindBoost(GraphNode node, out string? reason)
-    {
-        switch (node.Kind)
-        {
-            case GraphNodeKinds.Enum:
-                reason = "Enum nodes often define selectable modes.";
-                return EnumKindScore;
-            case GraphNodeKinds.Property:
-            case GraphNodeKinds.Field:
-                reason = "Member node can indicate persisted, routed, or domain state.";
-                return MemberKindScore;
-            case GraphNodeKinds.Type when node.Metadata.TryGetValue("type_kind", out var typeKind) && typeKind.Equals("interface", StringComparison.OrdinalIgnoreCase):
-                reason = "Interface type is a likely extension point.";
-                return InterfaceKindScore;
-            case GraphNodeKinds.Type:
-            case GraphNodeKinds.DbContext:
-            case GraphNodeKinds.MediatRHandler:
-                reason = "Type node may own extension-point behavior.";
-                return TypeKindScore;
-            case GraphNodeKinds.Method:
-                reason = "Method node may contain dispatch or orchestration logic.";
-                return MethodKindScore;
-            default:
-                reason = null;
-                return 0;
-        }
-    }
-
-    private static string? TryGetExtensionPointTerm(GraphNode node)
-    {
-        return ExtensionPointTerms.FirstOrDefault(term =>
-            node.Id.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-            node.Label.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-            node.Symbol?.Contains(term, StringComparison.OrdinalIgnoreCase) == true);
-    }
-
-    private static IReadOnlyList<string> TokenizeFeatureTerms(string goal, string[]? explicitTerms)
-    {
-        return SplitFeatureText(goal)
-            .Concat((explicitTerms ?? []).SelectMany(SplitFeatureText))
-            .Select(term => term.ToLowerInvariant())
-            .Where(term => term.Length > MinimumTermLength - 1 && !StopWords.Contains(term))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .Order(StringComparer.Ordinal)
-            .ToArray();
-    }
-
-    private static IEnumerable<string> SplitFeatureText(string text)
-    {
-        foreach (var word in SplitWords(text))
-        {
-            yield return word;
-            foreach (var part in SplitPascalCase(word))
-            {
-                yield return part;
-            }
-        }
-    }
-
-    private static IEnumerable<string> SplitWords(string text)
-    {
-        var start = -1;
-        for (var i = 0; i < text.Length; i++)
-        {
-            if (char.IsLetterOrDigit(text[i]))
-            {
-                if (start < 0)
-                {
-                    start = i;
-                }
-
-                continue;
-            }
-
-            if (start >= 0)
-            {
-                yield return text[start..i];
-                start = -1;
-            }
-        }
-
-        if (start >= 0)
-        {
-            yield return text[start..];
-        }
-    }
-
-    private static IEnumerable<string> SplitPascalCase(string value)
-    {
-        if (value.Length == 0)
-        {
-            yield break;
-        }
-
-        var start = 0;
-        for (var i = 1; i < value.Length; i++)
-        {
-            var current = value[i];
-            var previous = value[i - 1];
-            var nextStartsWord = char.IsUpper(current) &&
-                (char.IsLower(previous) || i + 1 < value.Length && char.IsLower(value[i + 1]));
-            if (!nextStartsWord)
-            {
-                continue;
-            }
-
-            if (i > start)
-            {
-                yield return value[start..i];
-            }
-
-            start = i;
-        }
-
-        if (start == 0)
-        {
-            yield break;
-        }
-
-        yield return value[start..];
-    }
-
-    private static bool TermMatchesNode(GraphNode node, string term)
-    {
-        return node.Id.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-            node.Label.Contains(term, StringComparison.OrdinalIgnoreCase) ||
-            node.Symbol?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
-            node.SourceFile?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
-            node.Metadata.Values.Any(value => value.Contains(term, StringComparison.OrdinalIgnoreCase));
-    }
-
     private static string Limitation(McpGraphContext context, IReadOnlyList<string> terms)
     {
         var absentTerms = terms
-            .Where(term => !context.Graph.Nodes.Any(node => TermMatchesNode(node, term)))
+            .Where(term => !context.Graph.Nodes.Any(node => GraphSummaryHeuristics.TermMatchesNode(node, term)))
             .ToArray();
         if (absentTerms.Length == 0)
         {

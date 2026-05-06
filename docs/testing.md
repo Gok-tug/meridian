@@ -167,7 +167,8 @@ CLI tests should verify the process-level public contract:
 - JSON parseability,
 - command errors,
 - `path` output for known fixtures,
-- `explain` output for known nodes.
+- `explain` output for known nodes,
+- `agent-summary` text sections, JSON parseability, and missing graph errors.
 
 Scan smoke tests must also validate graph contents. A successful exit code with an empty graph is a failure.
 
@@ -189,6 +190,8 @@ MCP tests should use fixture graph files and verify:
 - `reload_graph`,
 - `get_node`,
 - `get_neighbors`,
+- `get_graph_statistics`,
+- `get_agent_summary`,
 - `shortest_path`,
 - `explain_path`,
 - compact output shape for agent consumption,

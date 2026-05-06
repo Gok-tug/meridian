@@ -14,6 +14,8 @@ public sealed class MeridianGraphToolService
         "query_graph",
         "get_node",
         "get_neighbors",
+        "get_graph_statistics",
+        "get_agent_summary",
         "get_symbol_summary",
         "plan_feature",
         "shortest_path",
@@ -60,6 +62,8 @@ public sealed class MeridianGraphToolService
     [
         "Start with compact bulk calls; includeEvidence defaults to false for query_graph, get_neighbors, and find_flows_to_symbol.",
         "Use includeEvidence:true only when you need evidence file, line, symbol, and reason details.",
+        "For broad orientation, use get_agent_summary before reading source or traversing neighbors.",
+        "Use get_graph_statistics when you need compact counts, confidence breakdowns, and diagnostics.",
         "For get_neighbors on service or type nodes, use excludeRelations:[\"contains\"] to reduce declaration-containment noise.",
         "Use get_symbol_summary before broad neighbor traversal when you need compact symbol context.",
         "Use plan_feature for absent new concepts; it ranks existing extension points instead of pretending the concept exists.",
@@ -67,25 +71,11 @@ public sealed class MeridianGraphToolService
         "If source changed, run meridian scan and reload_graph before concluding."
     ];
 
-    private static readonly string[] ImportantSummaryRelations =
-    [
-        GraphRelations.Calls,
-        GraphRelations.Uses,
-        GraphRelations.Reads,
-        GraphRelations.Writes,
-        GraphRelations.Queries,
-        GraphRelations.Sends,
-        GraphRelations.Publishes,
-        GraphRelations.Reflects,
-        GraphRelations.Injects,
-        GraphRelations.RegisteredAs,
-        GraphRelations.HandledBy
-    ];
-
     private const char EdgeKeySeparator = '\u001f';
 
     private readonly McpGraphStore _store;
     private readonly FeaturePlanner _featurePlanner = new();
+    private readonly GraphSummaryService _summaryService = new();
 
     public MeridianGraphToolService(McpGraphStore store)
     {
@@ -101,12 +91,7 @@ public sealed class MeridianGraphToolService
     {
         var context = _store.Current;
         var graph = context.Graph;
-        var nodeKindCounts = graph.Nodes
-            .GroupBy(node => node.Kind, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
-        var relationCounts = graph.Edges
-            .GroupBy(edge => edge.Relation, StringComparer.OrdinalIgnoreCase)
-            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.OrdinalIgnoreCase);
+        var statistics = GraphStatisticsBuilder.Build(graph);
         return new SchemaResponse(
             "ok",
             MeridianMcpMessages.StaleGraphNote,
@@ -123,8 +108,8 @@ public sealed class MeridianGraphToolService
             context.RelationsPresent,
             KnownNodeKinds,
             KnownRelations,
-            nodeKindCounts,
-            relationCounts)
+            statistics.NodeKindCounts,
+            statistics.RelationCounts)
         {
             UsageHints = SchemaUsageHints
         };
@@ -347,6 +332,52 @@ public sealed class MeridianGraphToolService
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
     }
 
+    public GraphStatisticsResponse GetGraphStatistics(int? maxDiagnostics = null)
+    {
+        var context = _store.Current;
+        var diagnosticLimit = context.ClampMaxResults(maxDiagnostics);
+        var statistics = GraphStatisticsBuilder.Build(context.Graph, diagnosticLimit);
+        return new GraphStatisticsResponse(
+            "ok",
+            MeridianMcpMessages.StaleGraphNote,
+            statistics,
+            GraphSummaryService.BuildLimitations(statistics),
+            ["get_schema", "get_agent_summary budget:\"compact\""],
+            statistics.DiagnosticsTruncated,
+            statistics.DiagnosticsTruncated ? MeridianMcpMessages.TruncationNote(diagnosticLimit) : null);
+    }
+
+    public AgentSummaryResponse GetAgentSummary(string? budget = null, int? maxItemsPerSection = null)
+    {
+        if (!GraphSummaryBudgetParser.TryParse(budget, out var summaryBudget))
+        {
+            return new AgentSummaryResponse(
+                "invalid_input",
+                MeridianMcpMessages.StaleGraphNote,
+                Message: "Parameter 'budget' must be compact, standard, or detailed.");
+        }
+
+        var context = _store.Current;
+        int? limit = maxItemsPerSection is null ? null : context.ClampMaxResults(maxItemsPerSection);
+        var summary = _summaryService.Summarize(context.Graph, new GraphSummaryOptions
+        {
+            Budget = summaryBudget,
+            MaxItemsPerSection = limit,
+            MaxDiagnostics = limit ?? 5
+        });
+        return new AgentSummaryResponse(
+            "ok",
+            MeridianMcpMessages.StaleGraphNote,
+            summary.Statistics,
+            summary.CentralNodes,
+            summary.ExtensionPoints,
+            summary.Clusters,
+            summary.Limitations,
+            summary.SuggestedQueries,
+            summary.Truncated,
+            summary.TruncationNote);
+    }
+
     public SymbolSummaryResponse GetSymbolSummary(string? idOrLabel, int? maxResults = null)
     {
         if (IsBlank(idOrLabel))
@@ -526,7 +557,7 @@ public sealed class MeridianGraphToolService
 
     private static IReadOnlyDictionary<string, int> CountImportantRelations(IEnumerable<GraphEdge> edges)
     {
-        var importantRelations = ImportantSummaryRelations.ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var importantRelations = GraphSummaryHeuristics.ImportantRelations.ToHashSet(StringComparer.OrdinalIgnoreCase);
         return CountRelations(edges.Where(edge => importantRelations.Contains(edge.Relation)));
     }
 

@@ -15,12 +15,14 @@ internal static class CliHelp
         Console.WriteLine("  meridian scan <project-or-solution> [--output <directory>] [--include-tests] [--trust-project]");
         Console.WriteLine("  meridian explain <node-or-symbol> [--graph <graph.json>]");
         Console.WriteLine("  meridian path <source> <target> [--graph <graph.json>]");
+        Console.WriteLine("  meridian agent-summary [--graph <graph.json>] [--budget compact|standard|detailed]");
         Console.WriteLine("  meridian mcp --graph <graph.json>");
         Console.WriteLine();
         Console.WriteLine("Commands:");
         Console.WriteLine("  scan      Build meridian-out/graph.json from a .csproj, .sln, or .slnx file.");
         Console.WriteLine("  explain   Explain a graph node from graph.json.");
         Console.WriteLine("  path      Find a direct-call path between two graph nodes.");
+        Console.WriteLine("  agent-summary  Summarize graph.json for graph-guided agent orientation.");
         Console.WriteLine("  mcp       Start a local MCP server over a generated graph.json file.");
     }
 
@@ -55,6 +57,22 @@ internal static class CliHelp
         Console.WriteLine();
         Console.WriteLine("Examples:");
         Console.WriteLine("  meridian path \"OrderController.Get\" \"OrderService.Load\" --graph meridian-out/graph.json");
+    }
+
+    public static void PrintAgentSummary()
+    {
+        Console.WriteLine("Usage:");
+        Console.WriteLine("  meridian agent-summary [--graph <graph.json>] [--budget compact|standard|detailed] [--max-items <n>] [--format text|json]");
+        Console.WriteLine();
+        Console.WriteLine("Options:");
+        Console.WriteLine("  --graph, -g       Input graph.json path. Defaults to meridian-out/graph.json.");
+        Console.WriteLine("  --budget          Approximate output budget: compact, standard, or detailed.");
+        Console.WriteLine("  --max-items       Maximum items per summary section.");
+        Console.WriteLine("  --format          Output format: text or json.");
+        Console.WriteLine();
+        Console.WriteLine("Examples:");
+        Console.WriteLine("  meridian agent-summary --graph meridian-out/graph.json");
+        Console.WriteLine("  meridian agent-summary --graph meridian-out/graph.json --budget compact");
     }
 
     public static void PrintMcp()

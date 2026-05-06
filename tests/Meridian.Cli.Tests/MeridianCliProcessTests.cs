@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Text.Json;
 using Meridian.Exporters.Json;
 
 namespace Meridian.Cli.Tests;
@@ -15,6 +16,17 @@ public sealed class MeridianCliProcessTests
         Assert.Equal(0, result.ExitCode);
         Assert.Contains("Usage:", result.StandardOutput);
         Assert.Contains("meridian scan", result.StandardOutput);
+        Assert.Contains("meridian agent-summary", result.StandardOutput);
+    }
+
+    [Fact]
+    public async Task AgentSummary_help_prints_usage()
+    {
+        var result = await RunCliAsync("agent-summary", "--help");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("Usage:", result.StandardOutput);
+        Assert.Contains("meridian agent-summary", result.StandardOutput);
     }
 
     [Fact]
@@ -25,6 +37,15 @@ public sealed class MeridianCliProcessTests
         Assert.Equal(2, result.ExitCode);
         Assert.Contains("Unknown command", result.StandardError);
         Assert.Contains("Usage:", result.StandardOutput);
+    }
+
+    [Fact]
+    public async Task AgentSummary_rejects_numeric_budget()
+    {
+        var result = await RunCliAsync("agent-summary", "--budget", "2");
+
+        Assert.Equal(2, result.ExitCode);
+        Assert.Contains("Invalid budget", result.StandardError);
     }
 
     [Fact]
@@ -95,6 +116,70 @@ public sealed class MeridianCliProcessTests
         finally
         {
             Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AgentSummary_prints_text_sections_for_generated_graph()
+    {
+        var outputDirectory = CreateTempDirectory();
+        try
+        {
+            var scan = await RunCliAsync("scan", SampleProjectPath(), "--output", outputDirectory, "--trust-project");
+            var graphPath = Path.Combine(outputDirectory, "graph.json");
+
+            var result = await RunCliAsync("agent-summary", "--graph", graphPath, "--budget", "compact");
+
+            Assert.Equal(0, scan.ExitCode);
+            Assert.Equal(0, result.ExitCode);
+            Assert.Contains("Graph", result.StandardOutput);
+            Assert.Contains("Central nodes", result.StandardOutput);
+            Assert.Contains("Limitations", result.StandardOutput);
+            Assert.Contains("Suggested MCP queries", result.StandardOutput);
+        }
+        finally
+        {
+            Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AgentSummary_json_output_is_parseable()
+    {
+        var outputDirectory = CreateTempDirectory();
+        try
+        {
+            var scan = await RunCliAsync("scan", SampleProjectPath(), "--output", outputDirectory, "--trust-project");
+            var graphPath = Path.Combine(outputDirectory, "graph.json");
+
+            var result = await RunCliAsync("agent-summary", "--graph", graphPath, "--format", "json", "--max-items", "2");
+
+            Assert.Equal(0, scan.ExitCode);
+            Assert.Equal(0, result.ExitCode);
+            using var document = JsonDocument.Parse(result.StandardOutput);
+            Assert.True(document.RootElement.TryGetProperty("statistics", out _));
+            Assert.True(document.RootElement.TryGetProperty("centralNodes", out _));
+        }
+        finally
+        {
+            Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task AgentSummary_missing_graph_returns_failure()
+    {
+        var missingGraph = Path.Combine(CreateTempDirectory(), "missing.json");
+        try
+        {
+            var result = await RunCliAsync("agent-summary", "--graph", missingGraph);
+
+            Assert.Equal(1, result.ExitCode);
+            Assert.Contains("Meridian agent-summary failed", result.StandardError);
+        }
+        finally
+        {
+            Directory.Delete(Path.GetDirectoryName(missingGraph)!, recursive: true);
         }
     }
 
