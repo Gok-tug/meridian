@@ -70,6 +70,9 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - MCP payload report generation under `artifacts/benchmarks/mcp-payloads.json`.
 - Manual/scheduled benchmark workflow with optional dogfood artifact capture outside normal PR CI.
 - `Meridian.CI.slnf` solution filter for fast CI/release validation without BenchmarkDotNet.
+- Deterministic graph builder guard tests for edge ordering, edge evidence de-duplication, and diagnostic ordering.
+- Repeated analyzer-output stability guard coverage over the BasicCalls fixture.
+- Cache and incremental-analysis design documentation for graph identity, conservative invalidation, and cache-readiness non-goals.
 
 ### Changed
 
@@ -85,6 +88,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Updated the prototype generator/package version to `0.4.0-alpha.4` for real ASP.NET flow coverage output.
 - Updated the prototype generator/package version to `0.5.0-alpha.1` for dogfood metrics and performance baseline output.
 - Updated the prototype generator/package version to `0.5.0-alpha.2` for benchmark, payload measurement, and CI hardening output.
+- Updated the prototype generator/package version to `0.5.0-alpha.3` for cache-readiness and graph stability design output.
 - Updated normal CI and release validation to use `Meridian.CI.slnf`, validate packed CLI artifacts, run local tool smoke tests, and fail on generated non-ignored files.
 - Updated MCP and summary endpoint-absence wording to describe stale, old, non-web, or unsupported graphs instead of implying endpoint analyzers are absent.
 - Updated agent-summary central-node, extension-point, and cluster ranking to score distinct structural non-containment edges while preserving raw graph evidence edges and statistics.

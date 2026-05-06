@@ -74,6 +74,17 @@ Normalize:
 
 Do not remove meaningful evidence just to make tests easier.
 
+## Graph stability and cache-readiness tests
+
+Before Meridian reuses analyzer output from cache, graph output must be stable enough to diff. Small deterministic guard tests should verify:
+
+- `GraphBuilder` orders nodes, edges, and diagnostics deterministically,
+- identical edge evidence is de-duplicated while distinct evidence is preserved,
+- running the same analyzer fixture twice produces identical serialized graph JSON after line-ending normalization,
+- cache design treats unknown or changed inputs as invalid instead of reusing stale facts.
+
+Cache and incremental-analysis tests should eventually cover project file changes, source file changes, package/compiler option changes, analyzer version changes, graph schema changes, partial project invalidation, graph delta merge validation, and stale-cache prevention. Until cache exists, these remain design targets rather than required PR checks.
+
 ## What golden files should assert
 
 A useful golden file should include:

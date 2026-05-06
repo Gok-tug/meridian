@@ -78,7 +78,7 @@ internal static class McpPayloadReport
             AgentSummaryResponse response => CountAgentSummaryNodes(response),
             SymbolSummaryResponse response => response.Node is null ? 0 : 1,
             GraphSearchResponse response => response.Nodes.Count,
-            PathResponse response => response.Path?.Segments.Count + 1 ?? 0,
+            PathResponse response => (response.Path?.Segments.Count + 1) ?? 0,
             _ => 0
         };
     }

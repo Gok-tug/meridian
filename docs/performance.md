@@ -50,7 +50,7 @@ Current `metrics.json` shape:
   "diagnostic_count": 0,
   "dotnet_version": "10.0.0",
   "os_description": "...",
-  "meridian_version": "0.5.0-alpha.2"
+  "meridian_version": "0.5.0-alpha.3"
 }
 ```
 
@@ -87,6 +87,22 @@ dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c R
 The benchmark workflow runs manually or weekly, uploads `artifacts/benchmarks`, and can optionally run `scripts/dogfood-baseline.ps1 -TrustProject` for external dogfood artifacts. Normal pull requests keep deterministic payload-size guard tests and benchmark harness compile/format checks, but do not run BenchmarkDotNet or network-dependent dogfood.
 
 The MCP payload report records tool name, options, status, node/edge counts, truncation state, and UTF-8 serialized byte count for representative compact and evidence-included responses. Use it for trend comparison, not as an exact public contract snapshot.
+
+## 0.5.0-alpha.3 cache-readiness design
+
+`0.5.0-alpha.3` should prepare cache and incremental-analysis work without adding runtime cache behavior yet. The design target is a graph that is safe to diff and safe to reuse only when all relevant inputs are known to be unchanged.
+
+Cache keys should include at least:
+
+- project file content and imported build files when available,
+- source file content hashes,
+- relevant package references,
+- compiler options and target framework,
+- analyzer version and enabled analyzer set,
+- graph schema version,
+- Meridian generator version.
+
+Invalidation must be conservative: if any relevant input is missing, unknown, or changed, Meridian should recompute the affected graph facts rather than reuse cached output. Planned cache hit rate and phase metrics should not be emitted in `metrics.json` until cache behavior exists and stale-graph prevention is tested.
 
 ## Planned phase metrics
 

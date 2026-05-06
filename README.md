@@ -136,7 +136,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.5.0-alpha.2",
+  "generator_version": "0.5.0-alpha.3",
   "nodes": [],
   "edges": []
 }

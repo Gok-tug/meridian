@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.5.0-alpha.2",
+  "generator_version": "0.5.0-alpha.3",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -187,6 +187,14 @@ Rules:
 - normalize path separators in tests,
 - use stable symbol IDs where possible,
 - merge duplicate edges deterministically.
+
+## Graph identity and cache readiness
+
+Node IDs are part of Meridian's graph identity. Source symbol nodes should keep canonical Roslyn-derived IDs such as `type:{assembly}:{symbol}` and `method:{assembly}:{symbol}`. Endpoint nodes are synthetic but should remain based on normalized HTTP method and route template, such as `endpoint:{assembly}:{HTTP}:{route}`.
+
+Cache reuse must depend on the inputs that can change graph identity or emitted facts: source content, project/build files, package references, compiler options, analyzer version, graph schema version, Meridian generator version, and enabled analyzer options. If an input cannot be fingerprinted confidently, future cache code should recompute rather than reuse stale graph output.
+
+Generated, `bin`, and `obj` source boundaries are also part of graph identity. Changing those filters can change emitted nodes and edges even when application source files do not change.
 
 ## Schema evolution
 

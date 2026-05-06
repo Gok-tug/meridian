@@ -398,15 +398,18 @@ Goal: de-risk future incremental analysis before implementing caching by documen
 
 Scope:
 
-- cache design with stable file fingerprints, analyzer version inputs, graph schema inputs, package/project inputs, and conservative invalidation
+- cache design with stable file fingerprints, analyzer version inputs, graph schema inputs, package/project inputs, compiler options, and conservative invalidation
 - incremental analysis design for changed projects/files and affected analyzer passes
 - graph diff stability review across repeated scans of the same inputs
+- deterministic guard tests for graph builder ordering, edge evidence de-duplication, diagnostics, and repeated analyzer output
 - stable node ID review for source symbols, endpoint nodes, synthetic nodes, and generated/filtered-source boundaries
 - cache-friendly analyzer boundary review so later caching does not require graph contract churn
+- documentation that distinguishes implemented coarse metrics from planned cache hit rate and phase metrics
 
 Not in scope:
 
 - turning cache or incremental analysis on by default before correctness and stale-graph behavior are proven
+- adding cache storage, cache lookup paths, scan flags, cache-hit metrics, or graph schema changes
 
 ## 0.6.0-alpha.1 — UI bindings, source-generator graph preview, and conditional flow research
 
