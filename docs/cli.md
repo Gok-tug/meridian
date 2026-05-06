@@ -28,6 +28,7 @@ Current options:
 meridian scan MyApp.sln --output meridian-out
 meridian scan MyApp.sln --include-tests
 meridian scan MyApp.sln --trust-project
+meridian scan MyApp.sln --metrics
 ```
 
 `scan` uses Roslyn `MSBuildWorkspace`, which evaluates project and solution files. By default Meridian prints an MSBuild trust-boundary warning and records a warning diagnostic in `graph.json`. Pass `--trust-project` only for repositories you trust, or run scans inside an external sandbox.
@@ -46,6 +47,16 @@ Current default output:
 meridian-out/
   graph.json
 ```
+
+With `--metrics`, `scan` also writes a sidecar metrics file next to the graph without changing the `graph.json` schema:
+
+```text
+meridian-out/
+  graph.json
+  metrics.json
+```
+
+`metrics.json` includes CLI-level timings, peak working set, graph counts, target path, trust/test flags, .NET/OS metadata, and the Meridian generator version.
 
 `agent-summary` is a current derived view over `graph.json`. Planned human-readable outputs such as `tree` and `report` are not emitted by the current scan command.
 

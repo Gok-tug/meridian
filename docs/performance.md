@@ -16,9 +16,49 @@ Early benchmark targets:
 
 These are targets, not guarantees for early alpha builds.
 
-## Metrics to collect
+## Current scan metrics
 
-Each scan should be able to report:
+`meridian scan` can write a sidecar metrics file without changing the graph schema:
+
+```bash
+meridian scan MyApp.sln --output meridian-out --trust-project --metrics
+```
+
+Output:
+
+```text
+meridian-out/
+  graph.json
+  metrics.json
+```
+
+Current `metrics.json` shape:
+
+```json
+{
+  "metrics_version": "0.1",
+  "target": "MyApp.sln",
+  "include_tests": false,
+  "trusted_project": true,
+  "started_utc": "2026-05-06T12:00:00.0000000+00:00",
+  "total_ms": 12345,
+  "analyze_ms": 12000,
+  "export_ms": 120,
+  "peak_working_set_mb": 512.34,
+  "node_count": 947,
+  "edge_count": 1655,
+  "diagnostic_count": 0,
+  "dotnet_version": "10.0.0",
+  "os_description": "...",
+  "meridian_version": "0.5.0-alpha.1"
+}
+```
+
+These are CLI-level baseline metrics for repeatable dogfood and release validation. They do not yet split Roslyn internals into workspace load, compilation, symbol indexing, or analyzer-specific timings.
+
+## Planned phase metrics
+
+Future scans should be able to report deeper phase timings:
 
 ```text
 workspace_load_ms

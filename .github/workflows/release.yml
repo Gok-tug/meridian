@@ -36,7 +36,7 @@ jobs:
         run: |
           $version = "${{ inputs.version }}"
           if ($version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$') {
-            Write-Error "Version '$version' must be a SemVer prerelease such as 0.4.0-alpha.4."
+            Write-Error "Version '$version' must be a SemVer prerelease such as 0.5.0-alpha.1."
             exit 1
           }
 

@@ -22,6 +22,18 @@ Environment:
 
 The scan warning about MSBuild project evaluation appeared as expected. Public repositories were not scanned with `--trust-project`, so the trust-boundary diagnostic remains visible in generated graphs.
 
+## Repeatable baseline procedure
+
+Run the pinned external-repository baseline script when preparing dogfood or performance reports:
+
+```powershell
+.\scripts\dogfood-baseline.ps1 -TrustProject
+```
+
+The script clones or fetches the audited repositories under ignored `.dogfood/`, checks out the commits listed above, restores each documented solution target, runs `meridian scan --metrics`, runs `agent-summary --budget compact`, and writes graph, metrics, stdout, stderr, and summary artifacts under ignored `artifacts/dogfood/<timestamp>/<case>/` directories.
+
+Use `-IncludeTests` only when the validation goal is test-specific analysis or stress coverage. External dogfood scans should remain manual or scheduled validation, not normal PR CI.
+
 ## Result summary
 
 Meridian is already usable as an alpha repository-orientation tool on real .NET codebases. It successfully produced graphs for both repositories, handled `.slnx`, identified classic MediatR and EF Core flows in eShopOnWeb, generated useful `agent-summary` output, and returned actionable ambiguity/no-path messages.
@@ -258,7 +270,7 @@ The CLI coverage gap is partly a measurement problem: process-level CLI tests ve
 | Add ASP.NET Core endpoint analysis | Done in `0.4.0-alpha.4` for the static patterns covered by this milestone | MVC attributes, Minimal API verb calls, simple local `MapGroup`, FastEndpoints verbs, and MinimalApi.Endpoint route registration are represented. Runtime routing semantics remain out of scope. |
 | Add `Mediator.SourceGenerator` support alongside MediatR | Done in `0.4.0-alpha.4` for source-resolved request, command, query, notification, handler, `Send`, and `Publish` patterns | Meridian reuses the existing mediator graph node kinds and relations so agents can reason across MediatR and `Mediator` packages consistently. |
 | Improve workspace diagnostic severity mapping | Done in `0.4.0-alpha.4` | NuGet advisory messages are warnings while unsupported project-load failures remain errors. |
-| Add dogfood fixtures or scripted audits to CI/manual validation | Partially done | Small in-repo fixtures now cover ASP.NET, FastEndpoints, MinimalApi.Endpoint, and mediator patterns. Full external repository scans should remain manual or scheduled, not per PR. A repeatable dogfood checklist/script is still useful for `0.5`. |
+| Add dogfood fixtures or scripted audits to CI/manual validation | Manual baseline script added for `0.5` | Small in-repo fixtures cover ASP.NET, FastEndpoints, MinimalApi.Endpoint, and mediator patterns. `scripts/dogfood-baseline.ps1` runs the pinned external repositories with `--metrics`; full external scans should remain manual or scheduled, not per PR. |
 | Improve CLI coverage measurement | Still useful | Process-level tests verify public CLI behavior, but child process execution is not attributed to command classes by the current coverage collection approach. Direct command-level tests or a child-process coverage strategy would make coverage numbers more representative. |
 
 ## Current readiness call

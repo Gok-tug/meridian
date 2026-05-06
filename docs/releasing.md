@@ -54,7 +54,7 @@ Before running the workflow:
 2. Update `CHANGELOG.md`, README/docs, and roadmap status as needed.
 3. Configure the GitHub repository secret `NUGET_API_KEY`.
 4. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
-5. Run the `Release` workflow manually with the exact version input, for example `0.4.0-alpha.4`.
+5. Run the `Release` workflow manually with the exact version input, for example `0.5.0-alpha.1`.
 
 The workflow validates that the input version matches the project file, restores, builds with warnings as errors, tests, checks formatting, checks vulnerable packages, packs the CLI tool, installs the package locally as a tool, runs `meridian --help` and `meridian mcp --help`, and then publishes the package to NuGet.
 

@@ -206,6 +206,12 @@ Reload tests should verify:
 - invalid JSON, duplicate node IDs, or dangling edge endpoints preserve the previous active graph,
 - `get_schema` advertises `reload_graph`.
 
+## External dogfood baselines
+
+External repository scans should run manually or on scheduled validation, not in normal PR CI. Use `scripts/dogfood-baseline.ps1` for the pinned dogfood repositories and keep generated clones/outputs under ignored `.dogfood/` and `artifacts/` paths.
+
+Dogfood scans should pass `--metrics` so baseline comparisons can use the same `metrics.json` fields for timings, graph counts, diagnostics, environment metadata, and Meridian version.
+
 ## Benchmark tests
 
 Benchmarks should not run on every pull request by default. They should run manually or on scheduled workflows.

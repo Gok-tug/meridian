@@ -60,6 +60,15 @@ public sealed class MeridianCliProcessTests
     }
 
     [Fact]
+    public async Task Scan_help_mentions_metrics()
+    {
+        var result = await RunCliAsync("scan", "--help");
+
+        Assert.Equal(0, result.ExitCode);
+        Assert.Contains("--metrics", result.StandardOutput);
+    }
+
+    [Fact]
     public async Task Scan_writes_parseable_non_empty_graph()
     {
         var outputDirectory = CreateTempDirectory();
@@ -73,6 +82,45 @@ public sealed class MeridianCliProcessTests
             var graph = JsonGraphExporter.Deserialize(await File.ReadAllTextAsync(graphPath));
             Assert.NotEmpty(graph.Nodes);
             Assert.NotEmpty(graph.Edges);
+        }
+        finally
+        {
+            Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task Scan_with_metrics_writes_parseable_metrics_sidecar()
+    {
+        var outputDirectory = CreateTempDirectory();
+        try
+        {
+            var result = await RunCliAsync("scan", SampleProjectPath(), "--output", outputDirectory, "--trust-project", "--metrics");
+            var graphPath = Path.Combine(outputDirectory, "graph.json");
+            var metricsPath = Path.Combine(outputDirectory, "metrics.json");
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.Contains($"Metrics: {metricsPath}", result.StandardOutput);
+            Assert.True(File.Exists(metricsPath));
+            var graph = JsonGraphExporter.Deserialize(await File.ReadAllTextAsync(graphPath));
+            using var metrics = JsonDocument.Parse(await File.ReadAllTextAsync(metricsPath));
+            var root = metrics.RootElement;
+
+            Assert.Equal("0.1", root.GetProperty("metrics_version").GetString());
+            Assert.Equal(SampleProjectPath(), root.GetProperty("target").GetString());
+            Assert.False(root.GetProperty("include_tests").GetBoolean());
+            Assert.True(root.GetProperty("trusted_project").GetBoolean());
+            Assert.False(string.IsNullOrWhiteSpace(root.GetProperty("started_utc").GetString()));
+            Assert.True(root.GetProperty("total_ms").GetInt64() >= 0);
+            Assert.True(root.GetProperty("analyze_ms").GetInt64() >= 0);
+            Assert.True(root.GetProperty("export_ms").GetInt64() >= 0);
+            Assert.True(root.GetProperty("peak_working_set_mb").GetDouble() >= 0);
+            Assert.Equal(graph.Nodes.Count, root.GetProperty("node_count").GetInt32());
+            Assert.Equal(graph.Edges.Count, root.GetProperty("edge_count").GetInt32());
+            Assert.Equal(graph.Diagnostics.Count, root.GetProperty("diagnostic_count").GetInt32());
+            Assert.False(string.IsNullOrWhiteSpace(root.GetProperty("dotnet_version").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(root.GetProperty("os_description").GetString()));
+            Assert.False(string.IsNullOrWhiteSpace(root.GetProperty("meridian_version").GetString()));
         }
         finally
         {

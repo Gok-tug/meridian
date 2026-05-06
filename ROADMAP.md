@@ -359,6 +359,8 @@ Goal: prepare Meridian for large real-world solutions.
 
 Scope:
 
+- CLI `scan --metrics` sidecar output for repeatable baseline timings, graph counts, diagnostics, and environment metadata
+- repeatable dogfood baseline script for pinned CleanArchitecture, eShopOnWeb, and CrossMacro scans
 - benchmark suite
 - large solution benchmark report
 - repeatable dogfood accuracy audit checklist/scripts for CrossMacro-class repositories

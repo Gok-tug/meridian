@@ -62,6 +62,8 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Direct Microsoft DI `GetRequiredService<TImplementation>()` factory alias support for source-resolved registrations.
 - CrossMacro dogfood accuracy findings covering graph precision, recall gaps, and agent-summary context size.
 - Agent quickstart, portable `AGENTS.md` guidance, and a minimal Claude Code skill preview for MCP-first Meridian workflows.
+- `meridian scan --metrics` sidecar output for repeatable scan timings, graph counts, diagnostics, and environment metadata.
+- `scripts/dogfood-baseline.ps1` for pinned external repository dogfood baselines with metrics and compact agent summaries.
 
 ### Changed
 
@@ -75,6 +77,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Updated the prototype generator/package version to `0.4.0-alpha.2` for member graph and feature-planning MCP preview output.
 - Updated the prototype generator/package version to `0.4.0-alpha.3` for agent summaries and graph-guided workflow output.
 - Updated the prototype generator/package version to `0.4.0-alpha.4` for real ASP.NET flow coverage output.
+- Updated the prototype generator/package version to `0.5.0-alpha.1` for dogfood metrics and performance baseline output.
 - Updated MCP and summary endpoint-absence wording to describe stale, old, non-web, or unsupported graphs instead of implying endpoint analyzers are absent.
 - Updated agent-summary central-node, extension-point, and cluster ranking to score distinct structural non-containment edges while preserving raw graph evidence edges and statistics.
 
