@@ -88,7 +88,7 @@ GET /orders/{id}
   --uses--> OrderDbContext
 ```
 
-See [docs/cli.md](docs/cli.md) for the command contract.
+See [docs/cli.md](docs/cli.md) for the command contract. See [docs/agent-quickstart.md](docs/agent-quickstart.md) for connecting Meridian to MCP-enabled coding agents.
 
 ## Initial analyzer scope
 
@@ -185,6 +185,7 @@ See [docs/performance.md](docs/performance.md).
 - [docs/testing.md](docs/testing.md)
 - [docs/performance.md](docs/performance.md)
 - [docs/mcp.md](docs/mcp.md)
+- [docs/agent-quickstart.md](docs/agent-quickstart.md)
 - [docs/agent-playbook.md](docs/agent-playbook.md)
 - [docs/rust-interop.md](docs/rust-interop.md)
 - [docs/limitations.md](docs/limitations.md)

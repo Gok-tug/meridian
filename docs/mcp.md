@@ -43,7 +43,7 @@ Freshness workflow after source edits:
 edit source -> meridian scan -> reload_graph -> query again
 ```
 
-See [agent-playbook.md](agent-playbook.md) for agent workflow guidance.
+See [agent-quickstart.md](agent-quickstart.md) for setup and [agent-playbook.md](agent-playbook.md) for agent workflow guidance.
 
 ## Initial tools
 

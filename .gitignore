@@ -6,7 +6,9 @@ obj/
 TestResults/
 coverage/
 artifacts/
-.claude/
+.claude/*
+!.claude/skills/
+!.claude/skills/**
 *.user
 *.suo
 *.nupkg

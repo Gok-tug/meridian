@@ -61,6 +61,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - `Sample.AspNetCoreFlow` plus analyzer golden coverage and CLI smoke coverage for endpoint and mediator flow.
 - Direct Microsoft DI `GetRequiredService<TImplementation>()` factory alias support for source-resolved registrations.
 - CrossMacro dogfood accuracy findings covering graph precision, recall gaps, and agent-summary context size.
+- Agent quickstart, portable `AGENTS.md` guidance, and a minimal Claude Code skill preview for MCP-first Meridian workflows.
 
 ### Changed
 

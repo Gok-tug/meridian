@@ -86,7 +86,7 @@ Before publishing:
 - graph schema version documented,
 - golden tests pass,
 - CLI smoke tests validate exit codes and generated graph contents when CLI smoke coverage exists,
-- MCP freshness workflow and agent playbook are reviewed,
+- MCP freshness workflow, agent quickstart, skill preview, and agent playbook are reviewed,
 - package installs locally as a global tool,
 - `meridian --help` works,
 - generated package does not include build artifacts or secrets.

@@ -4,6 +4,28 @@ This playbook describes how MCP-enabled agents should use Meridian safely.
 
 Meridian answers from a precomputed `graph.json`. It does not analyze source code live during MCP tool calls.
 
+## When to use Meridian MCP first
+
+Use Meridian MCP first when a task needs graph-shaped .NET orientation rather than a precise single-file edit:
+
+- broad codebase analysis in an unfamiliar repository
+- feature placement or impact analysis
+- endpoint-to-handler, DI, MediatR/Mediator, EF Core, reflection, or dynamic-wiring flow tracing
+- shortest-path or dependency questions between symbols, routes, services, handlers, and persistence types
+- questions like “where should this change go?” or “what code path owns this behavior?”
+
+Use source tools first when the user gives an exact file and small edit, such as fixing a typo, changing one known method, or making a syntax-level adjustment. Also use source tools directly when MCP is unavailable, the graph is stale or missing, or the domain is outside current analyzer coverage.
+
+The intended loop is:
+
+```text
+MCP orient -> resolve exact node IDs -> source verify -> edit -> user-initiated rescan -> reload_graph -> re-query if needed
+```
+
+Do not silently run `meridian scan` just because fresher graph context would be useful. If the graph is stale or missing, tell the user and ask before rescanning unless the user already requested a verification workflow. After a user-initiated rescan, call `reload_graph` or restart MCP before trusting graph results for changed code.
+
+Meridian guides where to look; it does not replace source verification before edits.
+
 ## Standard workflow
 
 1. Generate or refresh the graph:

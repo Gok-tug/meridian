@@ -219,7 +219,7 @@ The MCP server reads precomputed graph JSON and exposes typed tools such as `get
 
 The graph is not updated live by `scan` alone. If source code changes, rerun `meridian scan`, then call `reload_graph` on the running MCP server or restart the MCP server before relying on tool results for the changed code.
 
-See [mcp.md](mcp.md) for tool contracts, truncation behavior, schema discovery, and limitations.
+See [agent-quickstart.md](agent-quickstart.md) for agent setup and [mcp.md](mcp.md) for tool contracts, truncation behavior, schema discovery, and limitations.
 
 ## Human-readable views
 
