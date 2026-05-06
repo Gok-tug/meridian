@@ -151,6 +151,44 @@ public sealed class GraphSummaryServiceTests
     }
 
     [Fact]
+    public void Agent_summary_compact_budget_caps_sections_and_reports_truncation()
+    {
+        var graph = CreateLargeSummaryGraph();
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions
+        {
+            Budget = GraphSummaryBudget.Compact,
+            MaxDiagnostics = 3
+        });
+
+        Assert.True(summary.CentralNodes.Count <= 3);
+        Assert.True(summary.ExtensionPoints.Count <= 3);
+        Assert.True(summary.Clusters.Count <= 3);
+        Assert.Equal(3, summary.Statistics.TopDiagnostics.Count);
+        Assert.True(summary.Truncated);
+        Assert.Contains("capped", summary.TruncationNote, StringComparison.OrdinalIgnoreCase);
+        Assert.True(summary.Statistics.DiagnosticsTruncated);
+    }
+
+    [Fact]
+    public void Agent_summary_large_duplicate_edge_graph_keeps_structural_counts_bounded()
+    {
+        var graph = CreateLargeSummaryGraph(duplicateEdges: true);
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 10 });
+        var service0 = Assert.Single(summary.CentralNodes, node => node.Node.Id == "type:Service0");
+        var service0Cluster = Assert.Single(summary.Clusters, cluster => cluster.RepresentativeNodes.Any(node => node.Id == "type:Service0"));
+
+        Assert.True(summary.Statistics.Graph.EdgeCount > service0.NonContainmentDegree);
+        Assert.Equal(2, service0.NonContainmentDegree);
+        Assert.Equal(1, service0.RelationCounts[GraphRelations.ImplementedBy]);
+        Assert.Equal(1, service0.RelationCounts[GraphRelations.Uses]);
+        Assert.Equal(2, service0Cluster.EdgeCount);
+        Assert.Equal(1, service0Cluster.TopRelations[GraphRelations.ImplementedBy]);
+        Assert.Equal(1, service0Cluster.TopRelations[GraphRelations.Uses]);
+    }
+
+    [Fact]
     public void Agent_summary_scores_duplicate_structural_edges_once_for_clusters()
     {
         var graph = new GraphDocument
@@ -183,6 +221,62 @@ public sealed class GraphSummaryServiceTests
         Assert.Equal(2, aCluster.EdgeCount);
         Assert.Equal(1, aCluster.TopRelations[GraphRelations.Calls]);
         Assert.Equal(1, aCluster.TopRelations[GraphRelations.Uses]);
+    }
+
+    private static GraphDocument CreateLargeSummaryGraph(bool duplicateEdges = false)
+    {
+        var nodes = new List<GraphNode>();
+        var edges = new List<GraphEdge>();
+        var diagnostics = new List<GraphDiagnostic>();
+
+        for (var component = 0; component < 4; component++)
+        {
+            var interfaceId = $"type:IService{component}";
+            var serviceId = $"type:Service{component}";
+            nodes.Add(Node(interfaceId, $"IService{component}", GraphNodeKinds.Type, new() { ["type_kind"] = "interface" }));
+            nodes.Add(Node(serviceId, $"Service{component}", GraphNodeKinds.Type));
+            edges.Add(Edge(interfaceId, serviceId, GraphRelations.ImplementedBy));
+
+            for (var method = 0; method < 4; method++)
+            {
+                var methodId = $"method:Service{component}.Operation{method}";
+                nodes.Add(Node(methodId, $"Service{component}.Operation{method}", GraphNodeKinds.Method));
+                edges.Add(Edge(serviceId, methodId, GraphRelations.Contains));
+                if (method > 0)
+                {
+                    edges.Add(Edge($"method:Service{component}.Operation{method - 1}", methodId, GraphRelations.Calls));
+                    if (duplicateEdges)
+                    {
+                        edges.Add(Edge($"method:Service{component}.Operation{method - 1}", methodId, GraphRelations.Calls, new() { ["evidence_line"] = $"{method}" }));
+                    }
+                }
+            }
+
+            var dependencyId = $"type:Dependency{component}";
+            nodes.Add(Node(dependencyId, $"Dependency{component}", GraphNodeKinds.Type));
+            edges.Add(Edge(serviceId, dependencyId, GraphRelations.Uses));
+            if (duplicateEdges)
+            {
+                edges.Add(Edge(serviceId, dependencyId, GraphRelations.Uses, new() { ["evidence_line"] = "99" }));
+            }
+        }
+
+        for (var i = 0; i < 6; i++)
+        {
+            diagnostics.Add(new GraphDiagnostic
+            {
+                Id = $"MERIDIAN_SAMPLE_{i}",
+                Severity = "warning",
+                Message = $"sample diagnostic {i}"
+            });
+        }
+
+        return new GraphDocument
+        {
+            Nodes = nodes,
+            Edges = edges,
+            Diagnostics = diagnostics
+        };
     }
 
     private static GraphDocument CreatePlanningGraph()

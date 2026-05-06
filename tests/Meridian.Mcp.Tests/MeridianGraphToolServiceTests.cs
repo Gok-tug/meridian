@@ -1,5 +1,8 @@
 using System.ComponentModel;
 using System.Reflection;
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Meridian.Abstractions;
 using Meridian.Core;
 using Meridian.Exporters.Json;
@@ -398,6 +401,30 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void QueryGraph_compact_payload_is_smaller_than_evidence_payload()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.QueryGraphWithOptions(relation: GraphRelations.Calls, source: "Start.Run");
+        var explained = service.QueryGraphWithOptions(relation: GraphRelations.Calls, source: "Start.Run", includeEvidence: true);
+
+        Assert.True(SerializedByteCount(compact) < SerializedByteCount(explained));
+        AssertPayloadUnder(compact, 10_000);
+    }
+
+    [Fact]
+    public void QueryGraph_excluding_contains_reduces_noisy_payload_size()
+    {
+        var service = CreateService(CreateContainsNoiseGraph());
+
+        var noisy = service.QueryGraphWithOptions(source: "Service", direction: GraphDirection.Outgoing, maxResults: 10);
+        var filtered = service.QueryGraphWithOptions(source: "Service", direction: GraphDirection.Outgoing, maxResults: 10, excludeRelations: [GraphRelations.Contains]);
+
+        Assert.True(filtered.Edges.Count < noisy.Edges.Count);
+        Assert.True(SerializedByteCount(filtered) < SerializedByteCount(noisy));
+    }
+
+    [Fact]
     public void QueryGraph_excludes_relations_before_capping()
     {
         var service = CreateService(CreateContainsNoiseGraph());
@@ -533,6 +560,35 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetNeighbors_compact_payload_is_smaller_than_evidence_payload()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.GetNeighbors("Start.Run", GraphDirection.Outgoing, depth: 1);
+        var explained = service.GetNeighborsWithOptions("Start.Run", GraphDirection.Outgoing, depth: 1, includeEvidence: true);
+
+        Assert.True(SerializedByteCount(compact) < SerializedByteCount(explained));
+        AssertPayloadUnder(compact, 10_000);
+    }
+
+    [Fact]
+    public void GetNeighbors_truncated_payload_stays_bounded_with_explicit_note()
+    {
+        var service = CreateService(CreateHighDegreeGraph(), new MeridianMcpServerOptions
+        {
+            GraphPath = "fixture.graph.json",
+            DefaultMaxResults = 3,
+            MaxResultsLimit = 3
+        });
+
+        var result = service.GetNeighbors("Hub.Run", GraphDirection.Outgoing, depth: 1, maxResults: 3);
+
+        Assert.True(result.Truncated);
+        Assert.Contains("TRUNCATED", result.TruncationNote);
+        AssertPayloadUnder(result, 12_000);
+    }
+
+    [Fact]
     public void GetNeighbors_excludes_relations_before_capping()
     {
         var service = CreateService(CreateContainsNoiseGraph());
@@ -624,6 +680,18 @@ public sealed class MeridianGraphToolServiceTests
 
         Assert.All(compact.Edges, edge => Assert.Null(edge.Evidence));
         Assert.Contains(explained.Edges, edge => edge.Evidence?.Reason == "Middle calls End.");
+    }
+
+    [Fact]
+    public void FindFlowsToSymbol_compact_payload_is_smaller_than_evidence_payload()
+    {
+        var service = CreateService(CreateGraph());
+
+        var compact = service.FindFlowsToSymbol("End.Run", maxDepth: 4);
+        var explained = service.FindFlowsToSymbolWithOptions("End.Run", maxDepth: 4, includeEvidence: true);
+
+        Assert.True(SerializedByteCount(compact) < SerializedByteCount(explained));
+        AssertPayloadUnder(compact, 12_000);
     }
 
     [Fact]
@@ -729,6 +797,27 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(result.SuggestedQueries ?? [], query => query.Contains("get_symbol_summary", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void Agent_and_symbol_summary_payloads_stay_bounded_by_caps()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var agentSummary = service.GetAgentSummary("compact", maxItemsPerSection: 2);
+        var symbolSummary = service.GetSymbolSummary("MintTask", maxResults: 3);
+
+        Assert.Equal("ok", agentSummary.Status);
+        Assert.Equal("ok", symbolSummary.Status);
+        Assert.NotNull(agentSummary.CentralNodes);
+        Assert.NotNull(agentSummary.ExtensionPoints);
+        Assert.NotNull(symbolSummary.Node);
+        Assert.NotNull(symbolSummary.ContainedProperties);
+        Assert.True((agentSummary.CentralNodes?.Count ?? 0) <= 2);
+        Assert.True((agentSummary.ExtensionPoints?.Count ?? 0) <= 2);
+        Assert.True((symbolSummary.ContainedProperties?.Count ?? 0) <= 3);
+        AssertPayloadUnder(agentSummary, 35_000);
+        AssertPayloadUnder(symbolSummary, 20_000);
+    }
+
     [Theory]
     [InlineData("huge")]
     [InlineData("2")]
@@ -765,6 +854,26 @@ public sealed class MeridianGraphToolServiceTests
     {
         var serverOptions = options ?? new MeridianMcpServerOptions { GraphPath = "fixture.graph.json" };
         return new MeridianGraphToolService(new McpGraphContext(graph, serverOptions));
+    }
+
+    private static void AssertPayloadUnder<T>(T payload, int maxUtf8Bytes)
+    {
+        var byteCount = SerializedByteCount(payload);
+        Assert.True(byteCount < maxUtf8Bytes, $"Expected payload under {maxUtf8Bytes} bytes, actual {byteCount} bytes.");
+    }
+
+    private static int SerializedByteCount<T>(T payload)
+    {
+        return Encoding.UTF8.GetByteCount(JsonSerializer.Serialize(payload, McpPayloadJsonOptions));
+    }
+
+    private static readonly JsonSerializerOptions McpPayloadJsonOptions = CreateMcpPayloadJsonOptions();
+
+    private static JsonSerializerOptions CreateMcpPayloadJsonOptions()
+    {
+        var options = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        options.Converters.Add(new JsonStringEnumConverter());
+        return options;
     }
 
     private static async Task<MeridianGraphToolService> CreateReloadableService(string graphPath, MeridianMcpServerOptions? options = null)

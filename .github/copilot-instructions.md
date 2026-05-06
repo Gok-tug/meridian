@@ -18,10 +18,18 @@ When validating unreleased CLI behavior in this repo, run from source:
 dotnet run --project "src\Meridian.Cli\Meridian.Cli.csproj" -c Release -- <command>
 ```
 
-Standard checks:
+Standard PR/release checks:
 
 ```powershell
-dotnet format "Meridian.sln" --verify-no-changes
-dotnet build "Meridian.sln" -c Release
-dotnet test "Meridian.sln" -c Release
+dotnet restore "Meridian.CI.slnf"
+dotnet build "Meridian.CI.slnf" -c Release -warnaserror
+dotnet test "Meridian.CI.slnf" -c Release --no-build
+dotnet format "Meridian.CI.slnf" --verify-no-changes --no-restore
+```
+
+BenchmarkDotNet checks are intentionally separate from normal PR CI:
+
+```powershell
+dotnet build "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release
+dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release -- benchmarks --quick
 ```

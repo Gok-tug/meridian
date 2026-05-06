@@ -50,11 +50,11 @@ Current `metrics.json` shape:
   "diagnostic_count": 0,
   "dotnet_version": "10.0.0",
   "os_description": "...",
-  "meridian_version": "0.5.0-alpha.1"
+  "meridian_version": "0.5.0-alpha.2"
 }
 ```
 
-These are CLI-level baseline metrics for repeatable dogfood and release validation. They do not yet split Roslyn internals into workspace load, compilation, symbol indexing, or analyzer-specific timings.
+These are CLI-level baseline metrics for repeatable dogfood and release validation. `peak_working_set_mb` is a best-effort process-level value from the current runtime/OS; compare it as trend data within the same runner family rather than as a cross-platform absolute. Metrics do not yet split Roslyn internals into workspace load, compilation, symbol indexing, or analyzer-specific timings.
 
 ## 0.5.0-alpha.1 dogfood baseline
 
@@ -71,6 +71,22 @@ The first repeatable baseline was generated on 2026-05-06 with:
 | CrossMacro solution | 20.21s | 19.96s | 0.25s | 461.30 MB | 6,721 | 22,149 | 0 |
 
 This baseline is a snapshot from one Windows machine and should be treated as trend data, not a formal benchmark guarantee.
+
+## 0.5.0-alpha.2 benchmark and payload reports
+
+`tests/Meridian.Benchmarks` contains an isolated BenchmarkDotNet harness for deterministic in-memory graph fixtures. It is included in `Meridian.sln` for local discovery but excluded from `Meridian.CI.slnf`; normal PR CI still builds and formats the benchmark project separately without executing benchmarks.
+
+Run local benchmark smoke checks with:
+
+```powershell
+dotnet build "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release
+dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release -- benchmarks --quick
+dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release -- payload-report --output "artifacts\benchmarks\mcp-payloads.json"
+```
+
+The benchmark workflow runs manually or weekly, uploads `artifacts/benchmarks`, and can optionally run `scripts/dogfood-baseline.ps1 -TrustProject` for external dogfood artifacts. Normal pull requests keep deterministic payload-size guard tests and benchmark harness compile/format checks, but do not run BenchmarkDotNet or network-dependent dogfood.
+
+The MCP payload report records tool name, options, status, node/edge counts, truncation state, and UTF-8 serialized byte count for representative compact and evidence-included responses. Use it for trend comparison, not as an exact public contract snapshot.
 
 ## Planned phase metrics
 

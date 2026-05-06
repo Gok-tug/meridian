@@ -21,21 +21,27 @@ jobs:
           dotnet-version: 10.0.x
 
       - name: Restore
-        run: dotnet restore Meridian.sln
+        run: dotnet restore Meridian.CI.slnf
 
       - name: Build
-        run: dotnet build Meridian.sln --configuration Release --no-restore -warnaserror
+        run: dotnet build Meridian.CI.slnf --configuration Release --no-restore -warnaserror
 
       - name: Test
-        run: dotnet test Meridian.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test Meridian.CI.slnf --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
 
       - name: Format check
-        run: dotnet format Meridian.sln --verify-no-changes --no-restore
+        run: dotnet format Meridian.CI.slnf --verify-no-changes --no-restore
+
+      - name: Build benchmark harness
+        run: dotnet build tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj --configuration Release
+
+      - name: Format benchmark harness
+        run: dotnet format tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj --verify-no-changes --no-restore
 
       - name: Vulnerability check
         shell: pwsh
         run: |
-          $json = dotnet list Meridian.sln package --vulnerable --include-transitive --format json
+          $json = dotnet list Meridian.CI.slnf package --vulnerable --include-transitive --format json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $report = $json | ConvertFrom-Json
           $vulnerablePackages = @()
@@ -56,3 +62,59 @@ jobs:
 
       - name: Pack CLI tool
         run: dotnet pack src/Meridian.Cli/Meridian.Cli.csproj --configuration Release --no-build --output artifacts/package
+
+      - name: Validate package artifact
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content "src/Meridian.Cli/Meridian.Cli.csproj"
+          $version = $project.Project.PropertyGroup.Version
+          $packagePath = "artifacts/package/meridian.$version.nupkg"
+          if (-not (Test-Path $packagePath)) {
+            Write-Error "Expected package '$packagePath' was not created."
+            Get-ChildItem "artifacts/package" | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
+          $packages = @(Get-ChildItem "artifacts/package" -Filter "*.nupkg")
+          if ($packages.Count -ne 1) {
+            Write-Error "Expected exactly one .nupkg artifact, found $($packages.Count)."
+            $packages | ForEach-Object { Write-Host $_.FullName }
+            exit 1
+          }
+          Write-Host "Validated package artifact $packagePath."
+
+      - name: Local tool smoke test
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content "src/Meridian.Cli/Meridian.Cli.csproj"
+          $version = $project.Project.PropertyGroup.Version
+          $toolSmokePath = "artifacts/tool-smoke"
+          New-Item -ItemType Directory -Force -Path $toolSmokePath | Out-Null
+          $localPackageSource = (Resolve-Path "artifacts/package").Path
+          $nugetConfigPath = Join-Path $toolSmokePath "NuGet.config"
+          @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="local" value="$localPackageSource" />
+            </packageSources>
+          </configuration>
+          "@ | Set-Content $nugetConfigPath -Encoding utf8
+          dotnet tool install meridian --tool-path $toolSmokePath --configfile $nugetConfigPath --version "$version"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $meridian = Join-Path $toolSmokePath "meridian"
+          & $meridian --help
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          & $meridian mcp --help
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Generated artifact hygiene check
+        shell: pwsh
+        run: |
+          $status = git status --short
+          if (-not [string]::IsNullOrWhiteSpace($status)) {
+            Write-Error "Generated files changed the working tree:"
+            $status | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
+          Write-Host "Working tree stayed clean."

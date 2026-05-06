@@ -214,6 +214,16 @@ Dogfood scans should pass `--metrics` so baseline comparisons can use the same `
 
 ## Benchmark tests
 
-Benchmarks should not run on every pull request by default. They should run manually or on scheduled workflows.
+Benchmarks should not run on every pull request by default. They should run manually or on scheduled workflows through `.github/workflows/benchmarks.yml`.
+
+Run the isolated benchmark harness locally with:
+
+```powershell
+dotnet build "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release
+dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release -- benchmarks --quick
+dotnet run --project "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj" -c Release -- payload-report --output "artifacts\benchmarks\mcp-payloads.json"
+```
+
+BenchmarkDotNet output and MCP payload reports are written under ignored `artifacts/benchmarks/` paths. Normal PR CI uses `Meridian.CI.slnf` for product/test validation and separately builds/formats `tests/Meridian.Benchmarks` without running benchmarks, while PR-safe payload-size guard tests remain in `Meridian.Mcp.Tests` because they use deterministic in-memory graphs.
 
 Benchmark output should be published in `docs/performance.md` or a linked benchmark report before stable release.

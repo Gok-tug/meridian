@@ -36,7 +36,7 @@ jobs:
         run: |
           $version = "${{ inputs.version }}"
           if ($version -notmatch '^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)-[0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*$') {
-            Write-Error "Version '$version' must be a SemVer prerelease such as 0.5.0-alpha.1."
+            Write-Error "Version '$version' must be a SemVer prerelease such as 0.5.0-alpha.2."
             exit 1
           }
 
@@ -53,21 +53,21 @@ jobs:
           Write-Host "Validated package version $projectVersion."
 
       - name: Restore
-        run: dotnet restore Meridian.sln
+        run: dotnet restore Meridian.CI.slnf
 
       - name: Build
-        run: dotnet build Meridian.sln --configuration Release --no-restore -warnaserror
+        run: dotnet build Meridian.CI.slnf --configuration Release --no-restore -warnaserror
 
       - name: Test
-        run: dotnet test Meridian.sln --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
+        run: dotnet test Meridian.CI.slnf --configuration Release --no-build --logger "trx;LogFileName=test-results.trx"
 
       - name: Format check
-        run: dotnet format Meridian.sln --verify-no-changes --no-restore
+        run: dotnet format Meridian.CI.slnf --verify-no-changes --no-restore
 
       - name: Vulnerability check
         shell: pwsh
         run: |
-          $json = dotnet list Meridian.sln package --vulnerable --include-transitive --format json
+          $json = dotnet list Meridian.CI.slnf package --vulnerable --include-transitive --format json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           $report = $json | ConvertFrom-Json
           $vulnerablePackages = @()
@@ -109,12 +109,37 @@ jobs:
       - name: Local tool smoke test
         shell: pwsh
         run: |
-          dotnet tool install meridian --tool-path "artifacts/tool-smoke" --add-source "artifacts/package" --version "${{ inputs.version }}"
+          $toolSmokePath = "artifacts/tool-smoke"
+          New-Item -ItemType Directory -Force -Path $toolSmokePath | Out-Null
+          $localPackageSource = (Resolve-Path "artifacts/package").Path
+          $nugetConfigPath = Join-Path $toolSmokePath "NuGet.config"
+          @"
+          <?xml version="1.0" encoding="utf-8"?>
+          <configuration>
+            <packageSources>
+              <clear />
+              <add key="local" value="$localPackageSource" />
+            </packageSources>
+          </configuration>
+          "@ | Set-Content $nugetConfigPath -Encoding utf8
+          dotnet tool install meridian --tool-path $toolSmokePath --configfile $nugetConfigPath --version "${{ inputs.version }}"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & "artifacts/tool-smoke/meridian" --help
+          $meridian = Join-Path $toolSmokePath "meridian"
+          & $meridian --help
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          & "artifacts/tool-smoke/meridian" mcp --help
+          & $meridian mcp --help
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Generated artifact hygiene check
+        shell: pwsh
+        run: |
+          $status = git status --short
+          if (-not [string]::IsNullOrWhiteSpace($status)) {
+            Write-Error "Generated files changed the working tree:"
+            $status | ForEach-Object { Write-Error $_ }
+            exit 1
+          }
+          Write-Host "Working tree stayed clean."
 
       - name: Publish to NuGet
         run: dotnet nuget push "artifacts/package/meridian.${{ inputs.version }}.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"

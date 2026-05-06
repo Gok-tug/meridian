@@ -1,0 +1,58 @@
+name: Benchmarks
+
+on:
+  workflow_dispatch:
+    inputs:
+      run_dogfood:
+        description: "Run external dogfood baseline after benchmarks"
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    - cron: "17 3 * * 1"
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Restore benchmark project
+        run: dotnet restore tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj
+
+      - name: Build benchmark project
+        run: dotnet build tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj --configuration Release --no-restore
+
+      - name: Run quick benchmarks
+        run: dotnet run --project tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj --configuration Release --no-build -- benchmarks --quick
+
+      - name: Write MCP payload report
+        run: dotnet run --project tests/Meridian.Benchmarks/Meridian.Benchmarks.csproj --configuration Release --no-build -- payload-report --output artifacts/benchmarks/mcp-payloads.json
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-artifacts
+          path: artifacts/benchmarks
+          if-no-files-found: error
+
+      - name: Run dogfood baseline
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.run_dogfood }}
+        shell: pwsh
+        run: ./scripts/dogfood-baseline.ps1 -TrustProject
+
+      - name: Upload dogfood artifacts
+        if: ${{ always() && github.event_name == 'workflow_dispatch' && inputs.run_dogfood }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dogfood-artifacts
+          path: artifacts/dogfood
+          if-no-files-found: warn

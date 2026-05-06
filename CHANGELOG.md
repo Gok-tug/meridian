@@ -64,6 +64,12 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Agent quickstart, portable `AGENTS.md` guidance, and a minimal Claude Code skill preview for MCP-first Meridian workflows.
 - `meridian scan --metrics` sidecar output for repeatable scan timings, graph counts, diagnostics, and environment metadata.
 - `scripts/dogfood-baseline.ps1` for pinned external repository dogfood baselines with metrics and compact agent summaries.
+- PR-safe MCP payload-size guard tests for compact versus evidence-included responses, relation exclusion, truncation notes, and summary caps.
+- Graph summary growth sanity tests for compact caps, duplicate structural edge deduplication, and truncation metadata.
+- Isolated `tests/Meridian.Benchmarks` BenchmarkDotNet harness for graph summaries and representative MCP payload serialization.
+- MCP payload report generation under `artifacts/benchmarks/mcp-payloads.json`.
+- Manual/scheduled benchmark workflow with optional dogfood artifact capture outside normal PR CI.
+- `Meridian.CI.slnf` solution filter for fast CI/release validation without BenchmarkDotNet.
 
 ### Changed
 
@@ -78,6 +84,8 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Updated the prototype generator/package version to `0.4.0-alpha.3` for agent summaries and graph-guided workflow output.
 - Updated the prototype generator/package version to `0.4.0-alpha.4` for real ASP.NET flow coverage output.
 - Updated the prototype generator/package version to `0.5.0-alpha.1` for dogfood metrics and performance baseline output.
+- Updated the prototype generator/package version to `0.5.0-alpha.2` for benchmark, payload measurement, and CI hardening output.
+- Updated normal CI and release validation to use `Meridian.CI.slnf`, validate packed CLI artifacts, run local tool smoke tests, and fail on generated non-ignored files.
 - Updated MCP and summary endpoint-absence wording to describe stale, old, non-web, or unsupported graphs instead of implying endpoint analyzers are absent.
 - Updated agent-summary central-node, extension-point, and cluster ranking to score distinct structural non-containment edges while preserving raw graph evidence edges and statistics.
 

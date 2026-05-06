@@ -56,7 +56,7 @@ meridian-out/
   metrics.json
 ```
 
-`metrics.json` includes CLI-level timings, peak working set, graph counts, target path, trust/test flags, .NET/OS metadata, and the Meridian generator version.
+`metrics.json` includes CLI-level timings, best-effort peak working set, graph counts, target path, trust/test flags, .NET/OS metadata, and the Meridian generator version. Treat memory values as same-runner trend data, not cross-platform absolutes.
 
 `agent-summary` is a current derived view over `graph.json`. Planned human-readable outputs such as `tree` and `report` are not emitted by the current scan command.
 

@@ -379,7 +379,7 @@ Goal: turn the dogfood baseline into repeatable engineering signals without maki
 Scope:
 
 - benchmark suite for representative small and medium local fixtures
-- large-solution benchmark report using dogfood or explicitly documented external targets
+- manual/scheduled path for large-solution dogfood artifacts, with published large-solution trend reports continuing before stable release
 - MCP payload-size benchmarks for realistic agent workflows such as `get_agent_summary`, `get_symbol_summary`, bounded `query_graph`, and path tools
 - manual or scheduled dogfood/benchmark workflow that stores artifacts outside normal PR CI
 - CI/release hardening for CLI smoke coverage, package validation, vulnerable package checks, and generated artifact hygiene

@@ -41,6 +41,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.DynamicWiring", "sam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.AspNetCoreFlow", "samples\Sample.AspNetCoreFlow\Sample.AspNetCoreFlow.csproj", "{6ED7E41E-318F-49B1-B567-A5D045DFCB87}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meridian.Benchmarks", "tests\Meridian.Benchmarks\Meridian.Benchmarks.csproj", "{F579A917-B883-4348-BE51-30536C4FD884}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -243,6 +245,18 @@ Global
 		{6ED7E41E-318F-49B1-B567-A5D045DFCB87}.Release|x64.Build.0 = Release|Any CPU
 		{6ED7E41E-318F-49B1-B567-A5D045DFCB87}.Release|x86.ActiveCfg = Release|Any CPU
 		{6ED7E41E-318F-49B1-B567-A5D045DFCB87}.Release|x86.Build.0 = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|x64.Build.0 = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Debug|x86.Build.0 = Debug|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|x64.ActiveCfg = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|x64.Build.0 = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|x86.ActiveCfg = Release|Any CPU
+		{F579A917-B883-4348-BE51-30536C4FD884}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -264,5 +278,6 @@ Global
 		{8207CA52-60D3-4744-9BFC-57BAD8D29A14} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{CB20A383-8EB0-43AB-8FBD-0F2F4AD04E3A} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
 		{6ED7E41E-318F-49B1-B567-A5D045DFCB87} = {5D20AA90-6969-D8BD-9DCD-8634F4692FDA}
+		{F579A917-B883-4348-BE51-30536C4FD884} = {0AB3BF05-4346-4AA6-1389-037BE0695223}
 	EndGlobalSection
 EndGlobal

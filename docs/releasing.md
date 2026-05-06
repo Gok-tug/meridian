@@ -56,9 +56,9 @@ Before running the workflow:
 2. Update `CHANGELOG.md`, README/docs, and roadmap status as needed.
 3. Configure the GitHub repository secret `NUGET_API_KEY`.
 4. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
-5. Run the `Release` workflow manually with the exact version input, for example `0.5.0-alpha.1`.
+5. Run the `Release` workflow manually with the exact version input, for example `0.5.0-alpha.2`.
 
-The workflow validates that the input version matches the project file, restores, builds with warnings as errors, tests, checks formatting, checks vulnerable packages, packs the CLI tool, installs the package locally as a tool, runs `meridian --help` and `meridian mcp --help`, and then publishes the package to NuGet.
+The workflow validates that the input version matches the project file, restores/builds/tests the PR-safe `Meridian.CI.slnf` filter with warnings as errors, checks formatting, checks vulnerable packages, packs the CLI tool, validates the package artifact, installs it locally as a tool, runs `meridian --help` and `meridian mcp --help`, checks that generated artifacts did not dirty the working tree, and then publishes the package to NuGet. BenchmarkDotNet and dogfood evidence are produced by the separate manual/scheduled `Benchmarks` workflow, not by release publish.
 
 The workflow intentionally does not use `--skip-duplicate`; rerunning a published version should fail visibly.
 
@@ -76,10 +76,10 @@ The workflow has an optional `create_github_release` input. Leave it false unles
 Use the local flow only as a fallback when GitHub Actions is unavailable.
 
 ```bash
-dotnet restore Meridian.sln
-dotnet build Meridian.sln --configuration Release -warnaserror
-dotnet test Meridian.sln --configuration Release
-dotnet format Meridian.sln --verify-no-changes
+dotnet restore Meridian.CI.slnf
+dotnet build Meridian.CI.slnf --configuration Release -warnaserror
+dotnet test Meridian.CI.slnf --configuration Release
+dotnet format Meridian.CI.slnf --verify-no-changes
 dotnet pack src/Meridian.Cli/Meridian.Cli.csproj --configuration Release --output artifacts/package
 ```
 

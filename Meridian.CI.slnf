@@ -1,0 +1,23 @@
+{
+  "solution": {
+    "path": "Meridian.sln",
+    "projects": [
+      "samples\\Sample.AspNetCoreFlow\\Sample.AspNetCoreFlow.csproj",
+      "samples\\Sample.BasicCalls\\Sample.BasicCalls.csproj",
+      "samples\\Sample.DependencyInjection\\Sample.DependencyInjection.csproj",
+      "samples\\Sample.DynamicWiring\\Sample.DynamicWiring.csproj",
+      "samples\\Sample.EfCore\\Sample.EfCore.csproj",
+      "samples\\Sample.MediatR\\Sample.MediatR.csproj",
+      "src\\Meridian.Abstractions\\Meridian.Abstractions.csproj",
+      "src\\Meridian.Cli\\Meridian.Cli.csproj",
+      "src\\Meridian.Core\\Meridian.Core.csproj",
+      "src\\Meridian.Exporters.Json\\Meridian.Exporters.Json.csproj",
+      "src\\Meridian.Mcp\\Meridian.Mcp.csproj",
+      "src\\Meridian.Roslyn\\Meridian.Roslyn.csproj",
+      "tests\\Meridian.AnalyzerTests\\Meridian.AnalyzerTests.csproj",
+      "tests\\Meridian.Cli.Tests\\Meridian.Cli.Tests.csproj",
+      "tests\\Meridian.Core.Tests\\Meridian.Core.Tests.csproj",
+      "tests\\Meridian.Mcp.Tests\\Meridian.Mcp.Tests.csproj"
+    ]
+  }
+}
