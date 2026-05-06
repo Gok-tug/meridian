@@ -16,11 +16,11 @@ Repositories were cloned shallowly under `.dogfood/` and scanned with the curren
 
 Environment:
 
-- .NET SDK: `10.0.103`
-- Meridian generator: initial audit `0.4.0-alpha.3`; follow-up validation `0.4.0-alpha.4`
+- .NET SDK: initial audit `10.0.103`; repeatable baseline `10.0.3`
+- Meridian generator: initial audit `0.4.0-alpha.3`; follow-up validation `0.4.0-alpha.4`; repeatable baseline `0.5.0-alpha.1`
 - CLI build: `dotnet build src/Meridian.Cli/Meridian.Cli.csproj -c Release`
 
-The scan warning about MSBuild project evaluation appeared as expected. Public repositories were not scanned with `--trust-project`, so the trust-boundary diagnostic remains visible in generated graphs.
+The initial scan warning about MSBuild project evaluation appeared as expected. The `0.5.0-alpha.1` repeatable baseline was run with `-TrustProject`, so trust-boundary diagnostics are intentionally suppressed in that run.
 
 ## Repeatable baseline procedure
 
@@ -51,11 +51,21 @@ The eShopOnWeb diagnostics are now more accurately classified: NuGet advisory me
 
 ## Restore and scan metrics
 
+Initial manual timing snapshot before the repeatable metrics sidecar:
+
 | Case | Restore | Scan | Exit | Nodes | Edges | Diagnostics | Graph size |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | CleanArchitecture `.slnx` | 6.83s | 9.00s | 0 | 228 | 304 | 1 | 403,966 bytes |
 | CleanArchitecture Web project | 7.17s | 7.70s | 0 | 104 | 120 | 1 | 156,398 bytes |
 | eShopOnWeb solution | 11.95s | 14.75s | 0 | 913 | 1,621 | 6 | 1,819,232 bytes |
+
+Repeatable `0.5.0-alpha.1` baseline from `scripts/dogfood-baseline.ps1 -TrustProject` on 2026-05-06:
+
+| Case | Total | Analyze | Export | Peak working set | Nodes | Edges | Diagnostics | Metrics |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| CleanArchitecture `.slnx` | 8.52s | 8.49s | 0.03s | 288.98 MB | 232 | 322 | 0 | `artifacts/dogfood/20260506-221335/CleanArchitecture/metrics.json` |
+| eShopOnWeb solution | 11.29s | 11.23s | 0.06s | 324.07 MB | 943 | 1,652 | 5 | `artifacts/dogfood/20260506-221335/eShopOnWeb/metrics.json` |
+| CrossMacro solution | 20.21s | 19.96s | 0.25s | 461.30 MB | 6,721 | 22,149 | 0 | `artifacts/dogfood/20260506-221335/CrossMacro/metrics.json` |
 
 CleanArchitecture `.slnx` initially produced one AspireHost workspace diagnostic before a full solution restore. After `dotnet restore .dogfood/CleanArchitecture/Clean.Architecture.slnx`, the rescan produced only the expected trust-boundary warning.
 

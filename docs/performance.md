@@ -56,6 +56,22 @@ Current `metrics.json` shape:
 
 These are CLI-level baseline metrics for repeatable dogfood and release validation. They do not yet split Roslyn internals into workspace load, compilation, symbol indexing, or analyzer-specific timings.
 
+## 0.5.0-alpha.1 dogfood baseline
+
+The first repeatable baseline was generated on 2026-05-06 with:
+
+```powershell
+.\scripts\dogfood-baseline.ps1 -TrustProject
+```
+
+| Case | Total | Analyze | Export | Peak working set | Nodes | Edges | Diagnostics |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| CleanArchitecture `.slnx` | 8.52s | 8.49s | 0.03s | 288.98 MB | 232 | 322 | 0 |
+| eShopOnWeb solution | 11.29s | 11.23s | 0.06s | 324.07 MB | 943 | 1,652 | 5 |
+| CrossMacro solution | 20.21s | 19.96s | 0.25s | 461.30 MB | 6,721 | 22,149 | 0 |
+
+This baseline is a snapshot from one Windows machine and should be treated as trend data, not a formal benchmark guarantee.
+
 ## Planned phase metrics
 
 Future scans should be able to report deeper phase timings:
