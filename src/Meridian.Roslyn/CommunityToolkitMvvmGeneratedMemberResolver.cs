@@ -43,25 +43,51 @@ internal static class CommunityToolkitMvvmGeneratedMemberResolver
 
     public static IFieldSymbol? FindObservablePropertyBackingField(INamedTypeSymbol typeSymbol, string propertyName, RoslynSourceFilter sourceFilter)
     {
-        return typeSymbol.GetMembers()
-            .OfType<IFieldSymbol>()
-            .Where(field => !field.IsImplicitlyDeclared &&
-                sourceFilter.HasAnalyzableSourceLocation(field) &&
-                HasObservablePropertyAttribute(field))
-            .OrderBy(field => field.ToDisplayString(SymbolDisplay.MemberFormat), StringComparer.Ordinal)
-            .FirstOrDefault(field => GeneratedPropertyName(field.Name)?.Equals(propertyName, StringComparison.Ordinal) == true);
+        foreach (var type in SelfAndBaseTypes(typeSymbol))
+        {
+            var field = type.GetMembers()
+                .OfType<IFieldSymbol>()
+                .Where(field => !field.IsImplicitlyDeclared &&
+                    sourceFilter.HasAnalyzableSourceLocation(field) &&
+                    HasObservablePropertyAttribute(field))
+                .OrderBy(field => field.ToDisplayString(SymbolDisplay.MemberFormat), StringComparer.Ordinal)
+                .FirstOrDefault(field => GeneratedPropertyName(field.Name)?.Equals(propertyName, StringComparison.Ordinal) == true);
+            if (field is not null)
+            {
+                return field;
+            }
+        }
+
+        return null;
     }
 
     public static IMethodSymbol? FindRelayCommandMethod(INamedTypeSymbol typeSymbol, string commandName, RoslynSourceFilter sourceFilter)
     {
-        return typeSymbol.GetMembers()
-            .OfType<IMethodSymbol>()
-            .Where(method => method.MethodKind == MethodKind.Ordinary &&
-                !method.IsImplicitlyDeclared &&
-                sourceFilter.HasAnalyzableSourceLocation(method) &&
-                HasRelayCommandAttribute(method))
-            .OrderBy(method => method.ToDisplayString(SymbolDisplay.MethodFormat), StringComparer.Ordinal)
-            .FirstOrDefault(method => GeneratedCommandName(method.Name).Equals(commandName, StringComparison.Ordinal));
+        foreach (var type in SelfAndBaseTypes(typeSymbol))
+        {
+            var method = type.GetMembers()
+                .OfType<IMethodSymbol>()
+                .Where(method => method.MethodKind == MethodKind.Ordinary &&
+                    !method.IsImplicitlyDeclared &&
+                    sourceFilter.HasAnalyzableSourceLocation(method) &&
+                    HasRelayCommandAttribute(method))
+                .OrderBy(method => method.ToDisplayString(SymbolDisplay.MethodFormat), StringComparer.Ordinal)
+                .FirstOrDefault(method => GeneratedCommandName(method.Name).Equals(commandName, StringComparison.Ordinal));
+            if (method is not null)
+            {
+                return method;
+            }
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<INamedTypeSymbol> SelfAndBaseTypes(INamedTypeSymbol typeSymbol)
+    {
+        for (var current = typeSymbol; current is not null; current = current.BaseType)
+        {
+            yield return current;
+        }
     }
 
     private static bool HasAttribute(ISymbol symbol, string metadataName, string namespaceName)

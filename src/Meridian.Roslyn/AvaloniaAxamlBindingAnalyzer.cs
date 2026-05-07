@@ -11,6 +11,13 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
     private const string XamlNamespace = "http://schemas.microsoft.com/winfx/2006/xaml";
     private const int MaxDiagnosticsPerFile = 25;
 
+    private static readonly EnumerationOptions AxamlEnumerationOptions = new()
+    {
+        RecurseSubdirectories = true,
+        IgnoreInaccessible = true,
+        AttributesToSkip = FileAttributes.Hidden | FileAttributes.System | FileAttributes.ReparsePoint
+    };
+
     private readonly RoslynSourceFilter _sourceFilter;
     private readonly RoslynGraphFactory _graphFactory;
 
@@ -29,9 +36,26 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
             return;
         }
 
-        foreach (var filePath in Directory.EnumerateFiles(projectDirectory, "*.axaml", SearchOption.AllDirectories)
-            .Where(_sourceFilter.IsAnalyzableFilePath)
-            .OrderBy(SourcePath.Normalize, StringComparer.Ordinal))
+        IReadOnlyList<string> axamlFiles;
+        try
+        {
+            axamlFiles = Directory.EnumerateFiles(projectDirectory, "*.axaml", AxamlEnumerationOptions)
+                .Where(_sourceFilter.IsAnalyzableFilePath)
+                .OrderBy(SourcePath.Normalize, StringComparer.Ordinal)
+                .ToArray();
+        }
+        catch (Exception exception) when (exception is IOException or UnauthorizedAccessException)
+        {
+            graph.AddDiagnostic(_graphFactory.CreateDiagnostic(
+                project.FilePath,
+                null,
+                "MERIDIAN_AXAML_ENUMERATION",
+                "warning",
+                $"AXAML files under project directory could not be enumerated: {exception.Message}"));
+            return;
+        }
+
+        foreach (var filePath in axamlFiles)
         {
             cancellationToken.ThrowIfCancellationRequested();
             AnalyzeFile(filePath, compilation, graph, cancellationToken);
@@ -238,25 +262,17 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
 
     private GraphNode? ResolveTargetNode(INamedTypeSymbol scopeType, string segment, bool commandPreferred)
     {
-        if (commandPreferred)
-        {
-            if (ResolveSourceProperty(scopeType, segment) is { } commandProperty)
-            {
-                return _graphFactory.CreatePropertyNode(commandProperty);
-            }
-
-            if (CommunityToolkitMvvmGeneratedMemberResolver.FindRelayCommandMethod(scopeType, segment, _sourceFilter) is { } commandMethod)
-            {
-                return _graphFactory.CreateMvvmCommandNode(
-                    commandMethod,
-                    segment,
-                    CommunityToolkitMvvmGeneratedMemberResolver.IsAsyncCommand(commandMethod));
-            }
-        }
-
         if (ResolveSourceProperty(scopeType, segment) is { } property)
         {
             return _graphFactory.CreatePropertyNode(property);
+        }
+
+        if (commandPreferred && CommunityToolkitMvvmGeneratedMemberResolver.FindRelayCommandMethod(scopeType, segment, _sourceFilter) is { } commandMethod)
+        {
+            return _graphFactory.CreateMvvmCommandNode(
+                commandMethod,
+                segment,
+                CommunityToolkitMvvmGeneratedMemberResolver.IsAsyncCommand(commandMethod));
         }
 
         if (CommunityToolkitMvvmGeneratedMemberResolver.FindObservablePropertyBackingField(scopeType, segment, _sourceFilter) is { } backingField)
@@ -277,15 +293,32 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
 
     private IPropertySymbol? ResolveSourceProperty(INamedTypeSymbol scopeType, string propertyName)
     {
-        return scopeType.GetMembers(propertyName)
-            .OfType<IPropertySymbol>()
-            .Where(property => !property.IsImplicitlyDeclared &&
-                !property.IsStatic &&
-                property.DeclaredAccessibility == Accessibility.Public &&
-                property.GetMethod?.DeclaredAccessibility == Accessibility.Public &&
-                _sourceFilter.HasAnalyzableSourceLocation(property))
-            .OrderBy(property => property.ToDisplayString(SymbolDisplay.MemberFormat), StringComparer.Ordinal)
-            .FirstOrDefault();
+        foreach (var type in SelfAndBaseTypes(scopeType))
+        {
+            var property = type.GetMembers(propertyName)
+                .OfType<IPropertySymbol>()
+                .Where(property => !property.IsImplicitlyDeclared &&
+                    !property.IsStatic &&
+                    property.DeclaredAccessibility == Accessibility.Public &&
+                    property.GetMethod?.DeclaredAccessibility == Accessibility.Public &&
+                    _sourceFilter.HasAnalyzableSourceLocation(property))
+                .OrderBy(property => property.ToDisplayString(SymbolDisplay.MemberFormat), StringComparer.Ordinal)
+                .FirstOrDefault();
+            if (property is not null)
+            {
+                return property;
+            }
+        }
+
+        return null;
+    }
+
+    private static IEnumerable<INamedTypeSymbol> SelfAndBaseTypes(INamedTypeSymbol typeSymbol)
+    {
+        for (var current = typeSymbol; current is not null; current = current.BaseType)
+        {
+            yield return current;
+        }
     }
 
     private void AddTypeBindingEdge(INamedTypeSymbol viewType, INamedTypeSymbol targetType, XObject evidenceObject, string filePath, string scopeKind, GraphBuilder graph)

@@ -3,7 +3,21 @@ using CommunityToolkit.Mvvm.Input;
 
 namespace Sample.AvaloniaBindings.ViewModels;
 
-public sealed partial class MainWindowViewModel
+public abstract partial class ViewModelBase
+{
+    [ObservableProperty]
+    private string? _statusMessage;
+
+    public string Header { get; } = "Shared header";
+
+    [RelayCommand]
+    private void Cancel()
+    {
+        _statusMessage = Header;
+    }
+}
+
+public sealed partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty]
     private string? _searchText;

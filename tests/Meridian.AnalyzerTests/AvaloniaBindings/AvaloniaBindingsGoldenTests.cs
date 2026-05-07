@@ -25,8 +25,11 @@ public sealed class AvaloniaBindingsGoldenTests
         var graph = await AnalyzeAvaloniaBindingsAsync();
 
         Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "Title", GraphNodeKinds.Property));
+        Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "Header", GraphNodeKinds.Property));
+        Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "StatusMessage", GraphNodeKinds.Property));
         Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "SearchText", GraphNodeKinds.Property) && edge.Metadata["has_converter"] == "true");
         Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "SaveCommand", GraphNodeKinds.MvvmCommand));
+        Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "CancelCommand", GraphNodeKinds.MvvmCommand));
         Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "Name", GraphNodeKinds.Property) && edge.Metadata["binding_kind"] == "compiled_binding");
         Assert.Contains(graph.Edges, edge => IsBindingTo(edge, "RemoveExpansionCommand", GraphNodeKinds.MvvmCommand) && edge.Metadata["binding_scope"] == "typed_datacontext_cast");
         Assert.Contains(graph.Edges, edge => edge.Relation == GraphRelations.BindsTo && edge.Source.Contains("TextExpansionView", StringComparison.Ordinal) && edge.Target.Contains("MainWindowViewModel", StringComparison.Ordinal));

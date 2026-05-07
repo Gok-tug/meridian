@@ -5,8 +5,11 @@
         x:DataType="vm:MainWindowViewModel">
   <StackPanel>
     <TextBlock Text="{Binding Title}" />
+    <TextBlock Text="{Binding Header}" />
+    <TextBlock Text="{Binding StatusMessage}" />
     <TextBox Text="{Binding SearchText, Converter={StaticResource TrimConverter}}" />
     <Button Command="{Binding SaveCommand}" />
+    <Button Command="{Binding CancelCommand}" />
     <ItemsControl ItemsSource="{Binding Expansions}">
       <ItemsControl.ItemTemplate>
         <DataTemplate x:DataType="vm:TextExpansionItem">
