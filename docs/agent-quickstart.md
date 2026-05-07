@@ -108,9 +108,10 @@ Expected behavior:
 
 1. Call `get_schema`.
 2. Call `get_agent_summary` or `get_graph_statistics`.
-3. Resolve relevant nodes with typed MCP tools.
-4. Read exact source files to verify before editing.
-5. If source changes and the user wants graph validation, rerun `meridian scan` and call `reload_graph` or restart MCP.
+3. Use `get_diagnostics` when grouped diagnostic summaries need targeted raw detail.
+4. Resolve relevant nodes with typed MCP tools.
+5. Read exact source files to verify before editing.
+6. If source changes and the user wants graph validation, rerun `meridian scan` and call `reload_graph` or restart MCP.
 
 A narrow prompt should not need Meridian first:
 

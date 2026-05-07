@@ -20,6 +20,50 @@ public sealed class AvaloniaBindingsGoldenTests
     }
 
     [Fact]
+    public async Task Avalonia_bindings_emit_truncation_diagnostic_when_file_cap_is_exceeded()
+    {
+        var projectDirectory = Path.Combine(Path.GetTempPath(), "Meridian.Axaml.Truncation", Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(projectDirectory);
+        try
+        {
+            var projectPath = Path.Combine(projectDirectory, "TruncationSample.csproj");
+            await File.WriteAllTextAsync(projectPath, """
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+</Project>
+""");
+            await File.WriteAllTextAsync(Path.Combine(projectDirectory, "Placeholder.cs"), "namespace TruncationSample; public sealed class Placeholder { }");
+            var bindingElements = string.Join(Environment.NewLine, Enumerable.Range(0, 30).Select(index => $"    <TextBlock Text=\"{{Binding $parent[Window].Missing{index}}}\" />"));
+            await File.WriteAllTextAsync(Path.Combine(projectDirectory, "Truncated.axaml"), """
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <StackPanel>
+""" + Environment.NewLine + bindingElements + Environment.NewLine + """
+  </StackPanel>
+</UserControl>
+""");
+
+            var graph = await new RoslynFlowAnalyzer().AnalyzeAsync(projectPath, new RoslynFlowAnalysisOptions { EmitMsBuildTrustBoundaryDiagnostic = false });
+            var axamlDiagnostics = graph.Diagnostics
+                .Where(diagnostic => diagnostic.SourceFile?.EndsWith("Truncated.axaml", StringComparison.Ordinal) == true)
+                .ToArray();
+            var truncation = Assert.Single(axamlDiagnostics, diagnostic => diagnostic.Id == "MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED");
+
+            Assert.Equal(25, axamlDiagnostics.Count(diagnostic => diagnostic.Id.StartsWith("MERIDIAN_AXAML_", StringComparison.Ordinal)));
+            Assert.Equal(24, axamlDiagnostics.Count(diagnostic => diagnostic.Id == "MERIDIAN_AXAML_BINDING_UNSUPPORTED"));
+            Assert.Contains("6 additional unique AXAML diagnostic", truncation.Message, StringComparison.Ordinal);
+        }
+        finally
+        {
+            Directory.Delete(projectDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task Avalonia_bindings_resolve_typed_scopes_to_members_commands_and_view_models()
     {
         var graph = await AnalyzeAvaloniaBindingsAsync();

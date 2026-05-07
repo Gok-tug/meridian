@@ -11,10 +11,16 @@ internal static class McpPayloadReport
     {
         var service = McpPayloadBenchmarks.CreateService(GraphFixtureFactory.CreateBenchmarkPlanningGraph());
         var noiseService = McpPayloadBenchmarks.CreateService(GraphFixtureFactory.CreateBenchmarkContainsNoiseGraph());
+        var diagnosticService = McpPayloadBenchmarks.CreateService(GraphFixtureFactory.CreateBenchmarkDiagnosticHeavyGraph());
+        var uiBindingService = McpPayloadBenchmarks.CreateService(GraphFixtureFactory.CreateBenchmarkUiBindingHeavyGraph());
         var rows = new List<PayloadReportRow>
         {
             CreateRow("get_graph_statistics", "default", service.GetGraphStatistics(maxDiagnostics: 3)),
+            CreateRow("get_graph_statistics", "diagnostic-heavy,maxDiagnostics=5", diagnosticService.GetGraphStatistics(maxDiagnostics: 5)),
+            CreateRow("get_diagnostics", "diagnostic-heavy,maxResults=5,includeGroups=true", diagnosticService.GetDiagnostics(maxResults: 5)),
+            CreateRow("get_diagnostics", "diagnostic-heavy,maxResults=3,includeGroups=false", diagnosticService.GetDiagnostics(maxResults: 3, includeGroups: false)),
             CreateRow("get_agent_summary", "compact,maxItemsPerSection=3", service.GetAgentSummary("compact", maxItemsPerSection: 3)),
+            CreateRow("get_agent_summary", "compact,ui-binding-heavy,maxItemsPerSection=3", uiBindingService.GetAgentSummary("compact", maxItemsPerSection: 3)),
             CreateRow("get_agent_summary", "standard,maxItemsPerSection=5", service.GetAgentSummary("standard", maxItemsPerSection: 5)),
             CreateRow("get_symbol_summary", "Component0,maxResults=5", service.GetSymbolSummary("Component0", maxResults: 5)),
             CreateRow("query_graph", "methods,calls,maxResults=10", service.QueryGraphWithOptions(nodeKind: GraphNodeKinds.Method, relation: GraphRelations.Calls, maxResults: 10)),
@@ -62,6 +68,7 @@ internal static class McpPayloadReport
         return payload switch
         {
             GraphStatisticsResponse response => response.Status,
+            GraphDiagnosticsResponse response => response.Status,
             AgentSummaryResponse response => response.Status,
             SymbolSummaryResponse response => response.Status,
             GraphSearchResponse response => response.Status,
@@ -109,6 +116,7 @@ internal static class McpPayloadReport
         return payload switch
         {
             GraphStatisticsResponse response => response.Truncated,
+            GraphDiagnosticsResponse response => response.Truncated,
             AgentSummaryResponse response => response.Truncated,
             SymbolSummaryResponse response => response.Truncated,
             GraphSearchResponse response => response.Truncated,

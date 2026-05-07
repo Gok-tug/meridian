@@ -28,6 +28,7 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains("get_schema", result.Tools);
         Assert.Contains("reload_graph", result.Tools);
         Assert.Contains("get_graph_statistics", result.Tools);
+        Assert.Contains("get_diagnostics", result.Tools);
         Assert.Contains("get_agent_summary", result.Tools);
         Assert.Contains("get_symbol_summary", result.Tools);
         Assert.Contains("plan_feature", result.Tools);
@@ -360,6 +361,44 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void GetDiagnostics_filters_caps_and_groups_raw_diagnostics()
+    {
+        var service = CreateService(CreateDiagnosticQueryGraph(), new MeridianMcpServerOptions
+        {
+            GraphPath = "fixture.graph.json",
+            DefaultMaxResults = 2,
+            MaxResultsLimit = 2
+        });
+
+        var result = service.GetDiagnostics(id: "MERIDIAN_AXAML_BINDING_UNSUPPORTED", maxResults: 2);
+
+        Assert.Equal("ok", result.Status);
+        Assert.Equal(2, result.Diagnostics.Count);
+        Assert.True(result.Truncated);
+        Assert.Contains("TRUNCATED", result.TruncationNote);
+        var group = Assert.Single(result.Groups!);
+        Assert.Equal("MERIDIAN_AXAML_BINDING_UNSUPPORTED", group.Id);
+        Assert.Equal("AXAML", group.Area);
+        Assert.Equal(3, group.Count);
+        Assert.Equal(2, group.SourceFileCount);
+        Assert.Contains(result.SuggestedQueries!, query => query.Contains("get_graph_statistics", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void GetDiagnostics_supports_text_source_and_severity_filters_without_groups()
+    {
+        var service = CreateService(CreateDiagnosticQueryGraph());
+
+        var result = service.GetDiagnostics(severity: "info", sourceFile: "Details", text: "ElementName", includeGroups: false);
+
+        var diagnostic = Assert.Single(result.Diagnostics);
+        Assert.Equal("MERIDIAN_AXAML_BINDING_UNSUPPORTED", diagnostic.Id);
+        Assert.Equal("Views/Details.axaml", diagnostic.SourceFile);
+        Assert.Null(result.Groups);
+        Assert.False(result.Truncated);
+    }
+
+    [Fact]
     public void QueryGraph_uses_typed_filters_instead_of_custom_dsl()
     {
         var service = CreateService(CreateGraph());
@@ -374,6 +413,26 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Contains(result.Edges, edge => edge.SourceLabel == "Start.Run" && edge.TargetLabel == "Middle.Run");
         Assert.Contains(result.Nodes, node => node.Label == "Start.Run");
         Assert.Contains(result.Nodes, node => node.Label == "Middle.Run");
+    }
+
+    [Fact]
+    public void QueryGraph_returns_compact_summary_for_relation_heavy_results()
+    {
+        var service = CreateService(CreateContainsNoiseGraph());
+
+        var result = service.QueryGraphWithOptions(source: "Service", direction: GraphDirection.Outgoing, maxResults: 10);
+
+        Assert.Equal("ok", result.Status);
+        Assert.NotNull(result.Summary);
+        Assert.Equal(result.Nodes.Count, result.Summary!.ReturnedNodeCount);
+        Assert.Equal(result.Edges.Count, result.Summary.ReturnedEdgeCount);
+        Assert.Equal(10, result.Summary.EffectiveMaxResults);
+        Assert.Equal(6, result.Summary.NodeKindCounts[GraphNodeKinds.Method]);
+        Assert.Equal(2, result.Summary.NodeKindCounts[GraphNodeKinds.Type]);
+        Assert.Equal(6, result.Summary.RelationCounts[GraphRelations.Contains]);
+        Assert.Equal(1, result.Summary.RelationCounts[GraphRelations.Injects]);
+        Assert.Equal(7, result.Summary.ConfidenceCounts[ConfidenceLevels.Extracted]);
+        AssertPayloadUnder(result, 12_000);
     }
 
     [Fact]
@@ -533,6 +592,9 @@ public sealed class MeridianGraphToolServiceTests
         Assert.True(result.Truncated);
         Assert.Contains("TRUNCATED", result.TruncationNote);
         Assert.Equal(3, result.Edges.Count);
+        Assert.NotNull(result.Summary);
+        Assert.Equal(3, result.Summary!.ReturnedEdgeCount);
+        Assert.Equal(3, result.Summary.EffectiveMaxResults);
     }
 
     [Fact]
@@ -668,6 +730,9 @@ public sealed class MeridianGraphToolServiceTests
         Assert.Equal("no_entrypoint_flows", result.Status);
         Assert.Contains(result.Nodes, node => node.Label == "Middle.Run");
         Assert.Equal(MeridianMcpMessages.EndpointAnalyzerLimit, result.Limitation);
+        Assert.NotNull(result.Summary);
+        Assert.Equal(2, result.Summary!.ReturnedNodeCount);
+        Assert.Equal(2, result.Summary.ReturnedEdgeCount);
     }
 
     [Fact]
@@ -930,6 +995,21 @@ public sealed class MeridianGraphToolServiceTests
             [
                 new GraphDiagnostic { Id = "TEST_ONE", Severity = "warning", Message = "First diagnostic." },
                 new GraphDiagnostic { Id = "TEST_TWO", Severity = "warning", Message = "Second diagnostic." }
+            ]
+        };
+    }
+
+    private static GraphDocument CreateDiagnosticQueryGraph()
+    {
+        return new GraphDocument
+        {
+            Diagnostics =
+            [
+                new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED", Severity = "info", Message = "Unsupported $parent binding.", SourceFile = "Views/Main.axaml", SourceLocation = "L10" },
+                new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED", Severity = "info", Message = "Unsupported ElementName binding.", SourceFile = "Views/Details.axaml", SourceLocation = "L20" },
+                new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED", Severity = "info", Message = "Unsupported indexer binding.", SourceFile = "Views/Main.axaml", SourceLocation = "L30" },
+                new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNRESOLVED", Severity = "info", Message = "Binding could not be resolved.", SourceFile = "Views/Main.axaml", SourceLocation = "L40" },
+                new GraphDiagnostic { Id = "MERIDIAN_WORKSPACE", Severity = "warning", Message = "Workspace warning." }
             ]
         };
     }

@@ -15,6 +15,7 @@ public sealed class GraphSummaryService
     private const int MinimumClusterNodeCount = 3;
     private const int MinimumClusterEdgeCount = 2;
     private const int DominantClusterPercent = 80;
+    private const int HighVolumeBindsToEdgeCount = 20;
 
     private static readonly HashSet<string> ImportantRelations = new(GraphSummaryHeuristics.ImportantRelations, StringComparer.OrdinalIgnoreCase);
 
@@ -357,6 +358,13 @@ public sealed class GraphSummaryService
         if (statistics.Graph.DiagnosticCount > 0)
         {
             limitations.Add($"Loaded graph contains {statistics.Graph.DiagnosticCount} diagnostic(s); review diagnostics before relying on summary completeness.");
+        }
+
+        if (statistics.RelationCounts.TryGetValue(GraphRelations.BindsTo, out var bindsToCount) && bindsToCount >= HighVolumeBindsToEdgeCount)
+        {
+            limitations.Add($"Loaded graph contains {bindsToCount} binds_to edge(s); use relation:\"binds_to\" for UI binding questions.");
+            limitations.Add("For non-UI architecture traversal, prefer excludeRelations:[\"contains\",\"binds_to\"] to keep MCP responses compact.");
+            limitations.Add("AXAML binding facts are conservative static typed-scope facts, not runtime Avalonia binding coverage.");
         }
 
         if (!statistics.NodeKindCounts.ContainsKey(GraphNodeKinds.Endpoint))

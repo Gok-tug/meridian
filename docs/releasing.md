@@ -4,7 +4,7 @@ Meridian should use explicit prerelease versions until the analyzer pipeline and
 
 ## Versioning
 
-Use SemVer prerelease versions such as `0.6.0-alpha.2`.
+Use SemVer prerelease versions such as `0.7.0-alpha.1`.
 
 The intended milestone sequence is tracked in [ROADMAP.md](../ROADMAP.md). Completed release history is tracked in [CHANGELOG.md](../CHANGELOG.md). Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.
 
@@ -34,11 +34,11 @@ The preferred release path is the manually triggered `Release` workflow in `.git
 Before running the workflow:
 
 1. Update and commit the intended version in `src/Meridian.Cli/Meridian.Cli.csproj`.
-2. Move release-ready entries from `Unreleased` into a matching `CHANGELOG.md` section such as `## 0.6.0-alpha.2 — ...`.
+2. Move release-ready entries from `Unreleased` into a matching `CHANGELOG.md` section such as `## 0.7.0-alpha.1 — ...`.
 3. Update README/docs and roadmap status as needed.
 4. Configure the GitHub repository secret `NUGET_API_KEY`.
 5. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
-6. Run the `Release` workflow manually with the exact version input, for example `0.6.0-alpha.2`.
+6. Run the `Release` workflow manually with the exact version input, for example `0.7.0-alpha.1`.
 
 The workflow validates that the input version matches the project file, restores/builds/tests the PR-safe `Meridian.CI.slnf` filter with warnings as errors, checks formatting, checks vulnerable packages, packs the CLI tool, validates the package artifact, installs it locally as a tool, runs `meridian --help` and `meridian mcp --help`, checks that generated artifacts did not dirty the working tree, prepares GitHub release notes from the single matching `CHANGELOG.md` version section when requested, and then publishes the package to NuGet. BenchmarkDotNet and dogfood evidence are produced by the separate manual/scheduled `Benchmarks` workflow, not by release publish.
 

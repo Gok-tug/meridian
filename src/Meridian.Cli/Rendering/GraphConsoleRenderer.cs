@@ -91,6 +91,12 @@ internal static class GraphConsoleRenderer
         Console.WriteLine();
         PrintCounts("Relations", summary.Statistics.RelationCounts);
         Console.WriteLine();
+        if (summary.Statistics.Graph.DiagnosticCount > 0)
+        {
+            PrintDiagnosticGroups(summary.Statistics.DiagnosticGroups);
+            Console.WriteLine();
+        }
+
         PrintRankedNodes("Central nodes", summary.CentralNodes);
         Console.WriteLine();
         PrintRankedNodes("Likely extension points", summary.ExtensionPoints);
@@ -178,6 +184,30 @@ internal static class GraphConsoleRenderer
             foreach (var node in cluster.RepresentativeNodes.Take(3))
             {
                 Console.WriteLine($"     - {node.Label} ({node.Kind})");
+            }
+        }
+    }
+
+    private static void PrintDiagnosticGroups(IReadOnlyList<GraphDiagnosticGroupSummary> groups)
+    {
+        Console.WriteLine("Diagnostic groups");
+        if (groups.Count == 0)
+        {
+            Console.WriteLine("  none");
+            return;
+        }
+
+        foreach (var group in groups)
+        {
+            Console.WriteLine($"  {group.Id} [{group.Severity}] count={group.Count}, area={group.Area}, messages={group.DistinctMessageCount}, files={group.SourceFileCount}");
+            foreach (var message in group.SampleMessages.Take(2))
+            {
+                Console.WriteLine($"     - {message}");
+            }
+
+            if (group.Truncated)
+            {
+                Console.WriteLine("     ... samples truncated");
             }
         }
     }

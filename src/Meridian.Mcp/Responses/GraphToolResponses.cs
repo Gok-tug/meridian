@@ -37,7 +37,16 @@ public sealed record GraphSearchResponse(
     string? TruncationNote,
     string? Limitation = null,
     IReadOnlyList<CandidateDto>? Candidates = null,
-    string? Message = null);
+    string? Message = null,
+    GraphSearchSummary? Summary = null);
+
+public sealed record GraphSearchSummary(
+    int ReturnedNodeCount,
+    int ReturnedEdgeCount,
+    IReadOnlyDictionary<string, int> NodeKindCounts,
+    IReadOnlyDictionary<string, int> RelationCounts,
+    IReadOnlyDictionary<string, int> ConfidenceCounts,
+    int EffectiveMaxResults);
 
 public sealed record PathResponse(
     string Status,
@@ -68,6 +77,16 @@ public sealed record GraphStatisticsResponse(
     string StaleGraphNote,
     GraphStatistics? Statistics = null,
     IReadOnlyList<string>? Limitations = null,
+    IReadOnlyList<string>? SuggestedQueries = null,
+    bool Truncated = false,
+    string? TruncationNote = null,
+    string? Message = null);
+
+public sealed record GraphDiagnosticsResponse(
+    string Status,
+    string StaleGraphNote,
+    IReadOnlyList<DiagnosticDto> Diagnostics,
+    IReadOnlyList<GraphDiagnosticGroupSummary>? Groups = null,
     IReadOnlyList<string>? SuggestedQueries = null,
     bool Truncated = false,
     string? TruncationNote = null,
@@ -200,6 +219,19 @@ public sealed record EvidenceDto(string? File, int? Line, string? Symbol, string
     public static EvidenceDto From(GraphEvidence evidence)
     {
         return new EvidenceDto(evidence.File, evidence.Line, evidence.Symbol, evidence.Reason);
+    }
+}
+
+public sealed record DiagnosticDto(string Id, string Severity, string Message, string? SourceFile, string? SourceLocation)
+{
+    public static DiagnosticDto From(GraphDiagnostic diagnostic)
+    {
+        return new DiagnosticDto(
+            diagnostic.Id,
+            diagnostic.Severity,
+            diagnostic.Message,
+            diagnostic.SourceFile,
+            diagnostic.SourceLocation);
     }
 }
 

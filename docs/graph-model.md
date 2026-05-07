@@ -184,6 +184,8 @@ warning
 error
 ```
 
+Persisted graph JSON stores raw diagnostics only. Grouped diagnostic summaries, exact top diagnostic summaries, and MCP/CLI diagnostic group sections are derived response-layer views over this array; adding or changing those derived summaries does not change `schema_version`.
+
 ## Determinism rules
 
 Graph output should be stable across runs when source code has not changed.

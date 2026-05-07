@@ -93,7 +93,7 @@ Implemented preview support:
 - Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets, with diagnostics for runtime-only targets
 - JSON graph export
 - `scan`, `explain`, `path`, `agent-summary`, and `mcp` CLI commands, including ambiguity reporting when a short query matches multiple top-scoring nodes
-- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact graph statistics, agent summaries, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and graph-specific endpoint coverage notes
+- MCP server preview over generated `graph.json` files with schema discovery, typed graph queries, bounded results, compact graph statistics with grouped diagnostics, agent summaries, filtered `get_diagnostics` inspection, compact graph-search summaries, compact symbol summaries, deterministic feature-planning navigation, `reload_graph` refresh support for running MCP servers, stale-graph notes, and graph-specific endpoint coverage notes
 - Golden-file analyzer tests and MCP tool tests
 
 Planned follow-up work:

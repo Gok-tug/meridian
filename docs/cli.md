@@ -214,7 +214,7 @@ Options:
 - `--max-items`: maximum items per summary section.
 - `--format`: `text` or `json`.
 
-Text output includes graph metadata, counts, central nodes, likely extension points, conservative graph clusters when structure supports them, limitations, and suggested MCP queries. JSON output serializes the deterministic summary result directly.
+Text output includes graph metadata, counts, compact diagnostic groups when diagnostics exist, central nodes, likely extension points, conservative graph clusters when structure supports them, limitations, and suggested MCP queries. JSON output serializes the deterministic summary result directly, including grouped diagnostic statistics.
 
 Budget modes control deterministic item caps, not exact tokenizer accounting. Central-node, extension-point, and cluster ranking uses distinct structural non-containment edges, while graph metadata and statistics still report raw edge counts from the loaded graph. Graph clusters are structure-only hints; verify source ownership before treating a cluster as an architectural subsystem. If source code changes, rerun `meridian scan` before trusting a derived summary.
 
@@ -226,7 +226,7 @@ Starts a local MCP server over an existing generated graph file.
 meridian mcp --graph meridian-out/graph.json
 ```
 
-The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `get_graph_statistics`, `get_agent_summary`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `get_symbol_summary`, `plan_feature`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
+The MCP server reads precomputed graph JSON and exposes typed tools such as `get_schema`, `get_graph_statistics`, `get_diagnostics`, `get_agent_summary`, `reload_graph`, `query_graph`, `get_node`, `get_neighbors`, `get_symbol_summary`, `plan_feature`, `shortest_path`, `explain_path`, `list_entrypoints`, and `find_flows_to_symbol`.
 
 The graph is not updated live by `scan` alone. If source code changes, rerun `meridian scan`, then call `reload_graph` on the running MCP server or restart the MCP server before relying on tool results for the changed code.
 

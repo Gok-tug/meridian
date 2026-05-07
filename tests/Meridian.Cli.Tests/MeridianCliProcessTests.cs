@@ -214,6 +214,37 @@ public sealed class MeridianCliProcessTests
     }
 
     [Fact]
+    public async Task AgentSummary_prints_compact_diagnostic_groups()
+    {
+        var outputDirectory = CreateTempDirectory();
+        try
+        {
+            var graphPath = Path.Combine(outputDirectory, "graph.json");
+            await JsonGraphExporter.WriteAsync(new GraphDocument
+            {
+                Diagnostics =
+                [
+                    new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED", Severity = "info", Message = "Unsupported $parent binding.", SourceFile = "Views/Main.axaml", SourceLocation = "L10" },
+                    new GraphDiagnostic { Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED", Severity = "info", Message = "Unsupported ElementName binding.", SourceFile = "Views/Details.axaml", SourceLocation = "L20" },
+                    new GraphDiagnostic { Id = "MERIDIAN_WORKSPACE", Severity = "warning", Message = "Workspace warning." }
+                ]
+            }, graphPath);
+
+            var result = await RunCliAsync("agent-summary", "--graph", graphPath, "--budget", "compact");
+
+            Assert.Equal(0, result.ExitCode);
+            Assert.Contains("Diagnostic groups", result.StandardOutput);
+            Assert.Contains("MERIDIAN_AXAML_BINDING_UNSUPPORTED [info] count=2, area=AXAML", result.StandardOutput);
+            Assert.Contains("Unsupported $parent binding.", result.StandardOutput);
+            Assert.DoesNotContain("Views/Main.axaml", result.StandardOutput);
+        }
+        finally
+        {
+            Directory.Delete(outputDirectory, recursive: true);
+        }
+    }
+
+    [Fact]
     public async Task AgentSummary_json_output_is_parseable()
     {
         var outputDirectory = CreateTempDirectory();
@@ -227,7 +258,8 @@ public sealed class MeridianCliProcessTests
             Assert.Equal(0, scan.ExitCode);
             Assert.Equal(0, result.ExitCode);
             using var document = JsonDocument.Parse(result.StandardOutput);
-            Assert.True(document.RootElement.TryGetProperty("statistics", out _));
+            Assert.True(document.RootElement.TryGetProperty("statistics", out var statistics));
+            Assert.True(statistics.TryGetProperty("diagnosticGroups", out _));
             Assert.True(document.RootElement.TryGetProperty("centralNodes", out _));
         }
         finally

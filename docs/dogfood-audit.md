@@ -207,6 +207,7 @@ Positive signal:
 Observed recall gaps:
 
 - `0.6.0-alpha.2` adds a narrow Avalonia AXAML static binding preview for typed scopes. A 2026-05-07 local smoke scan of CrossMacro UI produced 384 `binds_to` edges with 25 diagnostics; a Quasarr smoke scan produced 634 `binds_to` edges with 234 diagnostics.
+- `0.7.0-alpha.1` keeps those UI facts queryable while adding grouped diagnostic summaries, bounded `get_diagnostics`, compact search summaries, and `binds_to` traversal guardrails so high diagnostic volume does not require dumping raw diagnostics into agent context.
 - Runtime Avalonia binding behavior remains outside graph coverage: code-behind/DI `DataContext`, ViewLocator conventions, converters, `RelativeSource`, `ElementName`, `MultiBinding`, untyped `$parent[...]`, and arbitrary control-tree paths are diagnostics or source-inspection work.
 - CLI command/router wiring through resolver dictionaries, delegates, and factories is runtime wiring and remains outside current static graph coverage.
 - Native boundaries such as `DllImport` / `LibraryImport` declarations are not first-class graph facts yet.

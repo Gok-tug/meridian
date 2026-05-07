@@ -8,6 +8,20 @@ Meridian follows prerelease SemVer while the project is in alpha.
 
 No unreleased changes.
 
+## 0.7.0-alpha.1 — Agent-quality and MCP output polish
+
+### Added
+
+- Grouped diagnostic summaries in graph statistics, agent summaries, and CLI `agent-summary` output so high-volume analyzer limitations stay compact and categorized.
+- Bounded MCP `get_diagnostics` tool with filters for id, severity, source file, and text, plus optional grouped summaries for targeted raw diagnostic inspection.
+- Compact `summary` metadata on graph search responses with returned node/edge counts, node-kind counts, relation counts, confidence counts, and effective caps.
+- MCP payload benchmark/report coverage for diagnostic-heavy and UI-binding-heavy graphs.
+
+### Changed
+
+- `binds_to` remains visible and queryable, but high-volume UI binding graphs now include guardrails that suggest `relation:"binds_to"` for UI questions and `excludeRelations:["contains","binds_to"]` for non-UI traversal.
+- AXAML per-file diagnostic caps now emit `MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED` when additional unique diagnostics are omitted from the graph.
+
 ## 0.6.0-alpha.2 — Avalonia AXAML typed binding preview
 
 ### Added

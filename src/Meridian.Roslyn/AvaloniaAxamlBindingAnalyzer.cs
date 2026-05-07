@@ -65,36 +65,43 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
     private void AnalyzeFile(string filePath, Compilation compilation, GraphBuilder graph, CancellationToken cancellationToken)
     {
         var diagnostics = new FileDiagnosticSink(filePath, _graphFactory, graph);
-        XDocument document;
         try
         {
-            document = XDocument.Load(filePath, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
-        }
-        catch (XmlException exception)
-        {
-            diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", exception.LineNumber == 0 ? null : exception.LineNumber, $"AXAML file could not be parsed: {exception.Message}");
-            return;
-        }
-        catch (IOException exception)
-        {
-            diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", null, $"AXAML file could not be read: {exception.Message}");
-            return;
-        }
-        catch (UnauthorizedAccessException exception)
-        {
-            diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", null, $"AXAML file could not be read: {exception.Message}");
-            return;
-        }
+            XDocument document;
+            try
+            {
+                document = XDocument.Load(filePath, LoadOptions.SetLineInfo | LoadOptions.PreserveWhitespace);
+            }
+            catch (XmlException exception)
+            {
+                diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", exception.LineNumber == 0 ? null : exception.LineNumber, $"AXAML file could not be parsed: {exception.Message}");
+                return;
+            }
+            catch (IOException exception)
+            {
+                diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", null, $"AXAML file could not be read: {exception.Message}");
+                return;
+            }
+            catch (UnauthorizedAccessException exception)
+            {
+                diagnostics.Add("MERIDIAN_AXAML_PARSE", "warning", null, $"AXAML file could not be read: {exception.Message}");
+                return;
+            }
 
-        if (document.Root is null)
-        {
-            return;
+            if (document.Root is null)
+            {
+                return;
+            }
+
+            var namespaces = AxamlNamespaceMap.From(document.Root);
+            var viewType = ResolveTypeFromAttribute(document.Root, "Class", compilation, namespaces, diagnostics);
+
+            Walk(document.Root, new BindingContext(viewType, null, null, null), compilation, diagnostics, graph, cancellationToken);
         }
-
-        var namespaces = AxamlNamespaceMap.From(document.Root);
-        var viewType = ResolveTypeFromAttribute(document.Root, "Class", compilation, namespaces, diagnostics);
-
-        Walk(document.Root, new BindingContext(viewType, null, null, null), compilation, diagnostics, graph, cancellationToken);
+        finally
+        {
+            diagnostics.Flush();
+        }
     }
 
     private void Walk(
@@ -708,9 +715,10 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
     {
         private readonly RoslynGraphFactory _graphFactory;
         private readonly GraphBuilder _graph;
+        private readonly List<PendingDiagnostic> _diagnostics = [];
         private readonly HashSet<string> _seen = new(StringComparer.Ordinal);
         private bool _reportedUnscopedBinding;
-        private int _count;
+        private bool _flushed;
 
         public FileDiagnosticSink(string filePath, RoslynGraphFactory graphFactory, GraphBuilder graph)
         {
@@ -734,19 +742,41 @@ internal sealed class AvaloniaAxamlBindingAnalyzer
 
         public void Add(string id, string severity, int? line, string message)
         {
-            if (_count >= MaxDiagnosticsPerFile)
-            {
-                return;
-            }
-
             var key = string.Join('', id, line?.ToString("D10") ?? string.Empty, message);
             if (!_seen.Add(key))
             {
                 return;
             }
 
-            _count++;
-            _graph.AddDiagnostic(_graphFactory.CreateDiagnostic(FilePath, line, id, severity, message));
+            _diagnostics.Add(new PendingDiagnostic(id, severity, line, message));
         }
+
+        public void Flush()
+        {
+            if (_flushed)
+            {
+                return;
+            }
+
+            _flushed = true;
+            var rawLimit = _diagnostics.Count > MaxDiagnosticsPerFile ? MaxDiagnosticsPerFile - 1 : MaxDiagnosticsPerFile;
+            foreach (var diagnostic in _diagnostics.Take(rawLimit))
+            {
+                _graph.AddDiagnostic(_graphFactory.CreateDiagnostic(FilePath, diagnostic.Line, diagnostic.Id, diagnostic.Severity, diagnostic.Message));
+            }
+
+            var suppressedCount = _diagnostics.Count - rawLimit;
+            if (suppressedCount > 0)
+            {
+                _graph.AddDiagnostic(_graphFactory.CreateDiagnostic(
+                    FilePath,
+                    null,
+                    "MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED",
+                    "info",
+                    $"{suppressedCount} additional unique AXAML diagnostic(s) were omitted from the graph for this file after the per-file cap of {MaxDiagnosticsPerFile} was reached."));
+            }
+        }
+
+        private sealed record PendingDiagnostic(string Id, string Severity, int? Line, string Message);
     }
 }

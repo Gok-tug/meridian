@@ -13,17 +13,45 @@ public class McpPayloadBenchmarks
     private static readonly JsonSerializerOptions SerializerOptions = CreateSerializerOptions();
 
     private MeridianGraphToolService service = null!;
+    private MeridianGraphToolService diagnosticService = null!;
+    private MeridianGraphToolService uiBindingService = null!;
 
     [GlobalSetup]
     public void Setup()
     {
         service = CreateService(GraphFixtureFactory.CreateBenchmarkPlanningGraph());
+        diagnosticService = CreateService(GraphFixtureFactory.CreateBenchmarkDiagnosticHeavyGraph());
+        uiBindingService = CreateService(GraphFixtureFactory.CreateBenchmarkUiBindingHeavyGraph());
     }
 
     [Benchmark]
     public int AgentSummaryCompactPayloadBytes()
     {
         return SerializedByteCount(service.GetAgentSummary("compact", maxItemsPerSection: 3));
+    }
+
+    [Benchmark]
+    public int AgentSummaryUiBindingHeavyCompactPayloadBytes()
+    {
+        return SerializedByteCount(uiBindingService.GetAgentSummary("compact", maxItemsPerSection: 3));
+    }
+
+    [Benchmark]
+    public int GraphStatisticsGroupedDiagnosticsPayloadBytes()
+    {
+        return SerializedByteCount(diagnosticService.GetGraphStatistics(maxDiagnostics: 5));
+    }
+
+    [Benchmark]
+    public int DiagnosticsGroupedPayloadBytes()
+    {
+        return SerializedByteCount(diagnosticService.GetDiagnostics(maxResults: 5));
+    }
+
+    [Benchmark]
+    public int DiagnosticsCappedRawPayloadBytes()
+    {
+        return SerializedByteCount(diagnosticService.GetDiagnostics(maxResults: 3, includeGroups: false));
     }
 
     [Benchmark]

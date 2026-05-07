@@ -76,6 +76,19 @@ public sealed class MeridianMcpTools
         return _service.GetGraphStatistics(maxDiagnostics);
     }
 
+    [McpServerTool(Name = "get_diagnostics", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
+    [Description("Return filtered raw graph diagnostics with optional grouped summaries. Use this instead of reading all diagnostics from graph.json. " + SeeSchemaNote)]
+    public GraphDiagnosticsResponse GetDiagnostics(
+        [Description("Optional exact diagnostic id filter, such as MERIDIAN_AXAML_BINDING_UNSUPPORTED.")] string? id = null,
+        [Description("Optional diagnostic severity filter, such as info, warning, or error.")] string? severity = null,
+        [Description("Optional source file substring filter.")] string? sourceFile = null,
+        [Description("Optional text filter over id, severity, message, source file, and source location.")] string? text = null,
+        [Description("Maximum returned raw diagnostics. The server caps this to protect the agent context window.")] int? maxResults = null,
+        [Description("Whether to include grouped summaries for the filtered diagnostics. Defaults to true.")] bool? includeGroups = null)
+    {
+        return _service.GetDiagnostics(id, severity, sourceFile, text, maxResults, includeGroups);
+    }
+
     [McpServerTool(Name = "get_agent_summary", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
     [Description("Return compact graph orientation: central nodes, likely extension points, conservative clusters, limitations, and follow-up queries. " + SeeSchemaNote)]
     public AgentSummaryResponse GetAgentSummary(

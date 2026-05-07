@@ -11,7 +11,7 @@ public sealed record GraphDocument
     public string Generator { get; init; } = "Meridian";
 
     [JsonPropertyName("generator_version")]
-    public string GeneratorVersion { get; init; } = "0.6.0-alpha.2";
+    public string GeneratorVersion { get; init; } = "0.7.0-alpha.1";
 
     [JsonPropertyName("root")]
     public string? Root { get; init; }

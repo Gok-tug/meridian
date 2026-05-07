@@ -82,13 +82,31 @@ public sealed record GraphStatistics(
     IReadOnlyDictionary<string, int> ConfidenceCounts,
     IReadOnlyDictionary<string, int> DiagnosticSeverityCounts,
     IReadOnlyList<GraphDiagnosticSummary> TopDiagnostics,
-    bool DiagnosticsTruncated);
+    bool DiagnosticsTruncated,
+    IReadOnlyList<GraphDiagnosticGroupSummary> DiagnosticGroups,
+    bool DiagnosticGroupsTruncated);
 
 public sealed record GraphDiagnosticSummary(
     string Id,
     string Severity,
     string Message,
     int Count,
+    string? SourceFile,
+    string? SourceLocation);
+
+public sealed record GraphDiagnosticGroupSummary(
+    string Id,
+    string Severity,
+    string Area,
+    int Count,
+    int DistinctMessageCount,
+    int SourceFileCount,
+    IReadOnlyList<string> SampleMessages,
+    IReadOnlyList<GraphDiagnosticSample> SampleLocations,
+    bool Truncated);
+
+public sealed record GraphDiagnosticSample(
+    string Message,
     string? SourceFile,
     string? SourceLocation);
 

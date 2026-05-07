@@ -13,7 +13,8 @@ The MCP server is optimized for agent use:
 - answers over precomputed JSON graph data,
 - uses strongly typed tool parameters instead of a custom query DSL,
 - exposes schema discovery so agents can see available node kinds and relations,
-- provides compact graph statistics and agent summaries before broad traversal,
+- provides compact graph statistics, grouped diagnostics, and agent summaries before broad traversal,
+- returns filtered diagnostics through `get_diagnostics` instead of forcing raw graph dumps,
 - caps broad result sets and marks truncation explicitly,
 - preserves ambiguity handling instead of silently picking a node,
 - reminds callers that graph data is stale until `meridian scan` is rerun and the running MCP server is reloaded or restarted.
@@ -65,12 +66,12 @@ Output includes:
 - known Meridian node-kind constants,
 - known Meridian relation constants,
 - node-kind and relation counts,
-- usage hints for `get_agent_summary`, compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
+- usage hints for `get_agent_summary`, `get_diagnostics`, compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
 - stale graph note.
 
 ### `get_graph_statistics`
 
-Returns compact graph metadata, node-kind counts, relation counts, confidence counts, diagnostic summaries, limitations, and suggested next tools without edge evidence.
+Returns compact graph metadata, node-kind counts, relation counts, confidence counts, exact top diagnostics, grouped diagnostic summaries, limitations, and suggested next tools without edge evidence.
 
 Input:
 
@@ -81,6 +82,27 @@ Input:
 ```
 
 Use this after `get_schema` when an agent needs the loaded graph's size, shape, confidence breakdown, and diagnostic surface without traversing nodes.
+
+Exact top diagnostics are grouped by id, severity, and message. Diagnostic groups are broader summaries by id and severity; they are derived response data and do not replace raw diagnostics in `graph.json`.
+
+### `get_diagnostics`
+
+Returns filtered raw graph diagnostics with optional grouped summaries.
+
+Input parameters:
+
+```json
+{
+  "id": "MERIDIAN_AXAML_BINDING_UNSUPPORTED",
+  "severity": "info",
+  "sourceFile": "Views/Main.axaml",
+  "text": "$parent",
+  "maxResults": 25,
+  "includeGroups": true
+}
+```
+
+All filters are optional and are applied before capping. Use this when a summary indicates diagnostic volume and the agent needs targeted raw messages or source locations. `includeGroups` defaults to `true`; set it to `false` for a capped raw-only response.
 
 ### `get_agent_summary`
 
@@ -95,7 +117,7 @@ Input:
 }
 ```
 
-`budget` can be `compact`, `standard`, or `detailed`. It controls deterministic item caps, not exact tokenizer accounting. Central-node, extension-point, and cluster ranking uses distinct structural non-containment edges by source, target, and relation; graph statistics still report the raw loaded edge count. Clusters are graph-structure hints only; they are not proof of architectural ownership. Use `get_agent_summary` before broad grep/read or broad `get_neighbors` traversal, then narrow with `plan_feature`, `get_symbol_summary`, or exact node queries.
+`budget` can be `compact`, `standard`, or `detailed`. It controls deterministic item caps, not exact tokenizer accounting. Central-node, extension-point, and cluster ranking uses distinct structural non-containment edges by source, target, and relation; graph statistics still report the raw loaded edge count. Clusters are graph-structure hints only; they are not proof of architectural ownership. Use `get_agent_summary` before broad grep/read or broad `get_neighbors` traversal, then narrow with `plan_feature`, `get_symbol_summary`, or exact node queries. When high-volume `binds_to` facts exist, the summary keeps them visible in relation counts and limitations while directing UI questions to `relation:"binds_to"` and non-UI traversal to `excludeRelations:["contains","binds_to"]`.
 
 ### `reload_graph`
 
@@ -143,7 +165,9 @@ Input parameters:
 
 All fields are optional. Agents should combine filters instead of asking broad natural-language questions.
 
-Bulk edge responses omit evidence by default to protect the agent context window. Set `includeEvidence` to `true` when the file, line, symbol, and reason are needed. Use `excludeRelations` to keep structural edges such as `contains` from consuming broad result caps.
+Bulk edge responses omit evidence by default to protect the agent context window. Set `includeEvidence` to `true` when the file, line, symbol, and reason are needed. Use `excludeRelations` to keep structural edges such as `contains` from consuming broad result caps; for non-UI orientation in Avalonia-heavy graphs, prefer `excludeRelations: ["contains", "binds_to"]`.
+
+Search-style responses include compact `summary` metadata with returned node/edge counts, node-kind counts, relation counts, confidence counts, and the effective cap so agents can interpret relation-heavy results without requesting larger payloads.
 
 Unsupported natural-language text returns a limitation with suggested typed parameters rather than trying to guess intent.
 
@@ -187,7 +211,7 @@ Input:
 - `Outgoing`
 - `Both`
 
-The server caps both traversal depth and horizontal result count. Excluded relations are filtered before traversal and capping, so `excludeRelations: ["contains"]` keeps declaration-containment noise from hiding behavioral edges.
+The server caps both traversal depth and horizontal result count. Excluded relations are filtered before traversal and capping, so `excludeRelations: ["contains"]` keeps declaration-containment noise from hiding behavioral edges. Use `excludeRelations: ["contains", "binds_to"]` for non-UI traversal when typed Avalonia binding edges are numerous.
 
 When a cap is reached, responses include:
 
@@ -300,9 +324,9 @@ If endpoint nodes exist, agents can use them as application entrypoints. If not,
 
 ## Result limits
 
-Tools that return node or edge arrays are capped by default. The preview uses conservative limits to avoid poisoning the agent context window with huge JSON payloads.
+Tools that return node or edge arrays are capped by default. The preview uses conservative limits to avoid poisoning the agent context window with huge JSON payloads. Graph search responses include compact summary metadata so agents can see what kinds of nodes and relations were returned without increasing caps.
 
-Summary tools use approximate budget modes and deterministic item caps. They do not perform exact token counting, and their rankings dedupe repeated evidence for identical structural non-containment edges.
+Summary tools use approximate budget modes and deterministic item caps. They do not perform exact token counting, and their rankings dedupe repeated evidence for identical structural non-containment edges. Diagnostic group summaries are capped; use `get_diagnostics` for targeted raw diagnostics.
 
 Agents should respond to truncation by narrowing filters, lowering depth, switching to compact summaries, or querying exact node IDs.
 
@@ -340,4 +364,4 @@ The MCP server should:
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
 - include confidence by default and make detailed evidence available on request so agents do not overstate uncertain links,
-- surface graph-absence limitations when facts have not been emitted, trust CommunityToolkit, conditional-flow, and typed Avalonia AXAML `binds_to` facts only when present in the loaded graph, and avoid inventing unsupported XAML runtime binding, CLI runtime routing, or native interop facts.
+- surface graph-absence limitations when facts have not been emitted, trust CommunityToolkit, conditional-flow, and typed Avalonia AXAML `binds_to` facts only when present in the loaded graph, inspect diagnostics through bounded `get_diagnostics`, and avoid inventing unsupported XAML runtime binding, CLI runtime routing, or native interop facts.

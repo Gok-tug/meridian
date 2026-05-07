@@ -15,9 +15,10 @@ Follow the canonical decision rules in `docs/agent-playbook.md`.
 
 1. If Meridian MCP tools are available and the graph appears fresh, call `get_schema` first.
 2. For broad orientation, call `get_agent_summary` with a compact budget or `get_graph_statistics`.
-3. Resolve ambiguous symbols with `query_graph` or `get_node`; never invent Meridian node IDs.
-4. Use `get_symbol_summary`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, `find_flows_to_symbol`, or `plan_feature` as appropriate.
-5. Verify exact source with normal source-reading/search tools before editing.
+3. Use `get_diagnostics` when grouped diagnostic summaries need bounded raw detail.
+4. Resolve ambiguous symbols with `query_graph` or `get_node`; never invent Meridian node IDs.
+5. Use `get_symbol_summary`, `get_neighbors`, `shortest_path`, `explain_path`, `list_entrypoints`, `find_flows_to_symbol`, or `plan_feature` as appropriate.
+6. Verify exact source with normal source-reading/search tools before editing.
 
 ## Stale graph rule
 

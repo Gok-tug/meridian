@@ -23,6 +23,62 @@ public sealed class GraphSummaryServiceTests
     }
 
     [Fact]
+    public void Statistics_groups_diagnostics_by_id_and_severity()
+    {
+        var graph = new GraphDocument
+        {
+            Diagnostics =
+            [
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported $parent binding.", "Views/Main.axaml", "L10"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported $parent binding.", "Views/Details.axaml", "L12"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported ElementName binding.", "Views/Main.axaml", "L20"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNRESOLVED", "info", "Binding could not be resolved.", "Views/Main.axaml", "L30"),
+                Diagnostic("MERIDIAN_WORKSPACE", "warning", "Project restore warning.")
+            ]
+        };
+
+        var statistics = GraphStatisticsBuilder.Build(graph, maxDiagnostics: 10);
+        var unsupported = Assert.Single(statistics.DiagnosticGroups, group => group.Id == "MERIDIAN_AXAML_BINDING_UNSUPPORTED");
+        var workspace = Assert.Single(statistics.DiagnosticGroups, group => group.Id == "MERIDIAN_WORKSPACE");
+
+        Assert.Equal("AXAML", unsupported.Area);
+        Assert.Equal(3, unsupported.Count);
+        Assert.Equal(2, unsupported.DistinctMessageCount);
+        Assert.Equal(2, unsupported.SourceFileCount);
+        Assert.Equal(2, unsupported.SampleMessages.Count);
+        Assert.Equal(3, unsupported.SampleLocations.Count);
+        Assert.False(unsupported.Truncated);
+        Assert.Equal("WORKSPACE", workspace.Area);
+        Assert.Contains(statistics.TopDiagnostics, diagnostic => diagnostic.Id == "MERIDIAN_AXAML_BINDING_UNSUPPORTED" && diagnostic.Count == 2);
+    }
+
+    [Fact]
+    public void Statistics_caps_diagnostic_groups_and_samples_deterministically()
+    {
+        var graph = new GraphDocument
+        {
+            Diagnostics =
+            [
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported pattern 1.", "Views/Main.axaml", "L1"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported pattern 2.", "Views/Main.axaml", "L2"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported pattern 3.", "Views/Main.axaml", "L3"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNSUPPORTED", "info", "Unsupported pattern 4.", "Views/Main.axaml", "L4"),
+                Diagnostic("MERIDIAN_AXAML_BINDING_UNRESOLVED", "info", "Unresolved binding."),
+                Diagnostic("MERIDIAN_WORKSPACE", "warning", "Workspace warning.")
+            ]
+        };
+
+        var statistics = GraphStatisticsBuilder.Build(graph, maxDiagnostics: 2);
+        var unsupported = Assert.Single(statistics.DiagnosticGroups, group => group.Id == "MERIDIAN_AXAML_BINDING_UNSUPPORTED");
+
+        Assert.Equal(2, statistics.DiagnosticGroups.Count);
+        Assert.True(statistics.DiagnosticGroupsTruncated);
+        Assert.Equal(3, unsupported.SampleMessages.Count);
+        Assert.Equal(3, unsupported.SampleLocations.Count);
+        Assert.True(unsupported.Truncated);
+    }
+
+    [Fact]
     public void Agent_summary_ranks_central_nodes_deterministically()
     {
         var graph = CreatePlanningGraph();
@@ -183,6 +239,42 @@ public sealed class GraphSummaryServiceTests
         Assert.Equal(3, view.RelationCounts[GraphRelations.BindsTo]);
         Assert.DoesNotContain(view.Reasons, reason => reason.Contains("agent-relevant", StringComparison.OrdinalIgnoreCase));
         Assert.Contains(service.Reasons, reason => reason.Contains("agent-relevant", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void High_volume_binds_to_graph_reports_ui_binding_guardrails()
+    {
+        var nodes = new List<GraphNode>
+        {
+            Node("type:SettingsView", "SettingsView", GraphNodeKinds.Type),
+            Node("type:OrderService", "OrderService", GraphNodeKinds.Type),
+            Node("type:OrderRepository", "OrderRepository", GraphNodeKinds.Type)
+        };
+        var edges = new List<GraphEdge>
+        {
+            Edge("type:OrderService", "type:OrderRepository", GraphRelations.Calls)
+        };
+        for (var i = 0; i < 25; i++)
+        {
+            var propertyId = $"property:SettingsViewModel.Property{i}";
+            nodes.Add(Node(propertyId, $"SettingsViewModel.Property{i}", GraphNodeKinds.Property));
+            edges.Add(Edge("type:SettingsView", propertyId, GraphRelations.BindsTo));
+        }
+
+        var graph = new GraphDocument
+        {
+            Nodes = nodes,
+            Edges = edges
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 10 });
+        var view = Assert.Single(summary.CentralNodes, node => node.Node.Id == "type:SettingsView");
+
+        Assert.Equal(25, summary.Statistics.RelationCounts[GraphRelations.BindsTo]);
+        Assert.Contains(summary.Limitations, limitation => limitation.Contains("relation:\"binds_to\"", StringComparison.Ordinal));
+        Assert.Contains(summary.Limitations, limitation => limitation.Contains("excludeRelations:[\"contains\",\"binds_to\"]", StringComparison.Ordinal));
+        Assert.Contains(summary.Limitations, limitation => limitation.Contains("not runtime Avalonia binding coverage", StringComparison.Ordinal));
+        Assert.DoesNotContain(view.Reasons, reason => reason.Contains("agent-relevant", StringComparison.OrdinalIgnoreCase));
     }
 
     [Fact]
@@ -371,6 +463,18 @@ public sealed class GraphSummaryServiceTests
             Relation = relation,
             Confidence = ConfidenceLevels.Extracted,
             Metadata = metadata ?? []
+        };
+    }
+
+    private static GraphDiagnostic Diagnostic(string id, string severity, string message, string? sourceFile = null, string? sourceLocation = null)
+    {
+        return new GraphDiagnostic
+        {
+            Id = id,
+            Severity = severity,
+            Message = message,
+            SourceFile = sourceFile,
+            SourceLocation = sourceLocation
         };
     }
 }

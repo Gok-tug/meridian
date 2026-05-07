@@ -104,9 +104,9 @@ Responsibilities:
 - parse simple `{Binding Property}` / `{Binding Path=Property}` and `{CompiledBinding Property}` expressions,
 - resolve the first path segment to source properties, generated `[ObservableProperty]` properties, and `[RelayCommand]` commands,
 - connect typed views to resolved properties, commands, and static view-model/data-template scopes with `binds_to`,
-- emit diagnostics for unscoped, unresolved, parse-failed, or unsupported binding shapes.
+- emit diagnostics for unscoped, unresolved, parse-failed, or unsupported binding shapes, including `MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED` when unique per-file diagnostics exceed the graph cap.
 
-The analyzer does not execute Avalonia, infer runtime `DataContext`, evaluate ViewLocator conventions, resolve converters, or model `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths.
+The analyzer does not execute Avalonia, infer runtime `DataContext`, evaluate ViewLocator conventions, resolve converters, or model `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths. Per-file diagnostic caps keep pathological AXAML output bounded and add an explicit truncation diagnostic when extra unique diagnostics are omitted.
 
 ## ASP.NET Core analyzer
 

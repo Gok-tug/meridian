@@ -436,32 +436,33 @@ Not in scope:
 - DataContext inference from code-behind, DI, navigation, or ViewLocator execution
 - converter, `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexer, or arbitrary control-tree semantic resolution
 
-## 0.7.0-alpha.1 — Runtime wiring and native boundary preview
+## 0.7.0-alpha.1 — Agent-quality and MCP output polish
 
-Goal: capture common source-visible runtime wiring patterns without executing the app, and expose .NET-side native interop boundaries without claiming native implementation analysis.
+Goal: keep agent-facing outputs compact, bounded, and honest after high-volume Avalonia binding facts, without changing the persisted graph schema or hiding raw graph data.
 
 Scope:
 
-- CLI command/router/handler runtime wiring patterns where registrations are source-visible and deterministic
-- delegate factory resolution for common DI and routing shapes
-- `Func<T>` and `Func<TArg,TResult>` factory patterns when the target is source-resolved without executing a container
-- .NET-side `DllImport` and `LibraryImport` boundary nodes/edges
-- `NativeLibrary.Load` / `NativeLibrary.TryLoad` constant-library hints
-- diagnostics for runtime-only library names, resolver dictionaries, or delegate factories that cannot be resolved statically
+- grouped diagnostic summaries derived from raw graph diagnostics, including diagnostic area, counts, distinct message counts, source file counts, capped sample messages, and capped sample locations
+- bounded MCP `get_diagnostics` tool for filtered raw diagnostic inspection by id, severity, source file, and text
+- compact search response summary metadata for returned node/edge counts, node-kind counts, relation counts, confidence counts, and effective caps
+- high-volume `binds_to` guardrails in agent summaries so UI binding facts remain queryable without dominating non-UI architecture traversal
+- explicit AXAML per-file truncation diagnostics through `MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED` when additional unique diagnostics are omitted after the cap
+- compact CLI `agent-summary` diagnostic group rendering without dumping raw diagnostics
+- payload benchmarks and reports for diagnostic-heavy and UI-binding-heavy MCP responses
 
 Not in scope:
 
-- runtime DI container execution
-- full runtime command dispatch execution
-- full Rust/C/C++ static analysis
-- Cargo workspace graphing in this .NET analyzer pass
-- native implementation call graphs
-- branch-dependent or environment-dependent runtime factory selection
+- graph schema version bump
+- removing or hiding raw diagnostics, raw `binds_to` edges, or evidence-bearing graph facts from `graph.json`
+- default exclusion of `binds_to` from graph query or path tools
+- runtime Avalonia `DataContext`, ViewLocator, converter, or binding-engine evaluation
+- CLI runtime command routing, delegate factory expansion, or native/Rust interop boundary analysis
 
 ## Future
 
 Potential future analyzer packs and integrations:
 
+- source-visible runtime wiring and native boundary preview for CLI routers, delegate factories, `Func<T>` patterns, `DllImport`, `LibraryImport`, and constant native-library hints
 - deeper native interop analyzer packs beyond .NET-side boundary detection
 - messaging analyzers:
   - MassTransit

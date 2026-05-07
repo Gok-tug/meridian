@@ -69,6 +69,56 @@ internal static class GraphFixtureFactory
         return builder.Build(".");
     }
 
+    public static GraphDocument CreateBenchmarkDiagnosticHeavyGraph()
+    {
+        var graph = CreateBenchmarkPlanningGraph(componentCount: 4, methodsPerComponent: 4, duplicateEvidence: false);
+        var diagnostics = new List<GraphDiagnostic>();
+        for (var i = 0; i < 30; i++)
+        {
+            diagnostics.Add(new GraphDiagnostic
+            {
+                Id = "MERIDIAN_AXAML_BINDING_UNSUPPORTED",
+                Severity = "info",
+                Message = $"Unsupported binding pattern {i % 5}.",
+                SourceFile = $"Views/View{i % 4}.axaml",
+                SourceLocation = $"L{i + 1}"
+            });
+        }
+
+        for (var i = 0; i < 12; i++)
+        {
+            diagnostics.Add(new GraphDiagnostic
+            {
+                Id = "MERIDIAN_AXAML_BINDING_UNRESOLVED",
+                Severity = "info",
+                Message = $"Unresolved binding {i % 3}.",
+                SourceFile = $"Views/View{i % 2}.axaml",
+                SourceLocation = $"L{i + 40}"
+            });
+        }
+
+        diagnostics.Add(new GraphDiagnostic { Id = "MERIDIAN_WORKSPACE", Severity = "warning", Message = "Workspace restore warning." });
+        return graph with { Diagnostics = diagnostics };
+    }
+
+    public static GraphDocument CreateBenchmarkUiBindingHeavyGraph(int bindingCount = 80)
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:SettingsView", "SettingsView", "Sample.SettingsView", GraphNodeKinds.Type);
+        AddNode(builder, "type:Sample:SettingsViewModel", "SettingsViewModel", "Sample.SettingsViewModel", GraphNodeKinds.Type);
+        AddNode(builder, "type:Sample:SettingsService", "SettingsService", "Sample.SettingsService", GraphNodeKinds.Type);
+        AddEdge(builder, "type:Sample:SettingsViewModel", "type:Sample:SettingsService", GraphRelations.Uses, 1, "View model uses service.");
+        AddEdge(builder, "type:Sample:SettingsView", "type:Sample:SettingsViewModel", GraphRelations.Uses, 2, "View uses view model.");
+        for (var i = 0; i < bindingCount; i++)
+        {
+            var propertyId = $"property:Sample:SettingsViewModel.Property{i}";
+            AddNode(builder, propertyId, $"SettingsViewModel.Property{i}", $"Sample.SettingsViewModel.Property{i}", GraphNodeKinds.Property);
+            AddEdge(builder, "type:Sample:SettingsView", propertyId, GraphRelations.BindsTo, i + 10, $"View binds to property {i}.");
+        }
+
+        return builder.Build(".");
+    }
+
     private static void AddNode(
         GraphBuilder builder,
         string id,

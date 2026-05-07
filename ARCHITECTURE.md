@@ -227,19 +227,26 @@ query     natural-language or structured graph query, later backed by MCP/agent 
 
 ## MCP layer
 
-Initial MCP tools:
+Current MCP tools include:
 
 ```text
+get_schema
+get_graph_statistics
+get_diagnostics
+get_agent_summary
+reload_graph
 query_graph
 get_node
 get_neighbors
+get_symbol_summary
+plan_feature
 shortest_path
 explain_path
 list_entrypoints
 find_flows_to_symbol
 ```
 
-MCP should read a generated graph and return compact, evidence-bearing answers.
+MCP should read a generated graph and return compact, bounded, evidence-bearing answers. Broad outputs should expose caps, grouped diagnostics, and summary metadata so agents can narrow before requesting more detail.
 
 ## Testing architecture
 

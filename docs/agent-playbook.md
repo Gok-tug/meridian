@@ -42,7 +42,7 @@ Meridian guides where to look; it does not replace source verification before ed
 
 3. Call `get_schema` before using graph tools.
 
-4. For broad orientation, call `get_agent_summary` or `get_graph_statistics` before reading source or traversing neighbors.
+4. For broad orientation, call `get_agent_summary` or `get_graph_statistics` before reading source or traversing neighbors. If diagnostics drive the question, use bounded `get_diagnostics` instead of reading all raw diagnostics from `graph.json`.
 
 5. Use typed tools. Do not send custom query languages or broad natural-language questions to `query_graph`.
 
@@ -110,13 +110,17 @@ Use first. It tells you which tools, node kinds, and relations are available in 
 
 ### `get_graph_statistics`
 
-Use after `get_schema` when you need compact counts, confidence breakdowns, diagnostics, limitations, and suggested next tools without edge payloads.
+Use after `get_schema` when you need compact counts, confidence breakdowns, exact top diagnostics, grouped diagnostic summaries, limitations, and suggested next tools without edge payloads.
+
+### `get_diagnostics`
+
+Use when diagnostic summaries show relevant volume and you need bounded raw diagnostic messages or source locations. Filter by `id`, `severity`, `sourceFile`, or `text`, keep `maxResults` small, and leave `includeGroups` enabled unless you only need raw rows.
 
 ### `get_agent_summary`
 
 Use before broad source reading or neighbor traversal. Start with `budget: "compact"` for orientation, then follow suggested `get_symbol_summary`, `plan_feature`, or exact node queries.
 
-Treat central nodes and clusters as graph-derived navigation hints, not proof of architectural ownership or source-code absence. Summary ranking uses distinct structural non-containment edges so repeated evidence for the same source/relation/target does not dominate orientation, while graph statistics still report raw loaded edge counts.
+Treat central nodes and clusters as graph-derived navigation hints, not proof of architectural ownership or source-code absence. Summary ranking uses distinct structural non-containment edges so repeated evidence for the same source/relation/target does not dominate orientation, while graph statistics still report raw loaded edge counts. In UI-heavy graphs, `binds_to` remains visible in counts and queryable, but high-volume summaries guide UI questions to `relation:"binds_to"` and non-UI traversal to `excludeRelations:["contains","binds_to"]`.
 
 ### `query_graph`
 
@@ -132,7 +136,7 @@ Use typed filters:
 }
 ```
 
-Do not pass a natural-language question as the only input.
+Do not pass a natural-language question as the only input. Read the response `summary` metadata to understand returned node kinds, relation mix, confidence mix, and caps before widening a query.
 
 ### `get_node`
 
@@ -140,7 +144,7 @@ Use for exact resolution by ID, label, or symbol. Treat ambiguity as a request t
 
 ### `get_neighbors`
 
-Use after resolving a node. Prefer exact node IDs. Keep depth and result limits small. For service or type nodes, prefer `excludeRelations: ["contains"]` unless declaration containment is what you need.
+Use after resolving a node. Prefer exact node IDs. Keep depth and result limits small. For service or type nodes, prefer `excludeRelations: ["contains"]` unless declaration containment is what you need. In UI-heavy graphs, use `excludeRelations: ["contains", "binds_to"]` for non-UI architecture traversal.
 
 ### `get_symbol_summary`
 
@@ -170,7 +174,7 @@ Current alpha builds emit:
 - ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - method-level `branches_on` and `switches_on` preview edges for directly resolved simple conditions
 - CommunityToolkit.Mvvm `[ObservableProperty]` and `[RelayCommand]` generated-member preview nodes and `generated_from` edges
-- typed Avalonia AXAML static binding preview edges with `binds_to` for simple bindings, generated Toolkit members, and static template scopes
+- typed Avalonia AXAML static binding preview edges with `binds_to` for simple bindings, generated Toolkit members, and static template scopes; use `relation:"binds_to"` for UI binding questions
 - constructor injection and generic DI registration edges, including narrow direct `new` and direct `GetRequiredService<TImplementation>()` factory lambdas
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types

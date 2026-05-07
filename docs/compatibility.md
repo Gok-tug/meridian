@@ -45,10 +45,10 @@ Later:
 | ASP.NET Core Minimal APIs | Preview for `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple local `MapGroup` prefixes, and endpoint-to-handler or direct mediator edges |
 | FastEndpoints / MinimalApi.Endpoint | Preview for `Configure()` HTTP verbs and `AddRoute` methods that delegate to source handlers |
 | MediatR / Mediator | Preview for source request/command/query/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
-| MCP server | Preview over generated `graph.json` files; no live Roslyn scan during MCP calls; supports `reload_graph` for refreshing the configured graph file in a running server |
+| MCP server | Preview over generated `graph.json` files; no live Roslyn scan during MCP calls; supports grouped diagnostics, bounded `get_diagnostics`, compact search summaries, and `reload_graph` for refreshing the configured graph file in a running server |
 | EF Core | Static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges |
 | Reflection/assembly scanning | Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |
-| Avalonia AXAML bindings | Static typed-scope preview for `x:DataType`, `DataTemplate`, simple bindings, generated Toolkit members, and `binds_to`; runtime binding semantics remain unsupported |
+| Avalonia AXAML bindings | Static typed-scope preview for `x:DataType`, `DataTemplate`, simple bindings, generated Toolkit members, and `binds_to`; runtime binding semantics remain unsupported and capped per-file diagnostic overflow is reported with `MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED` |
 | Rust/native interop boundaries | Planned |
 
 ## Unsupported until documented

@@ -15,6 +15,7 @@ public sealed class MeridianGraphToolService
         "get_node",
         "get_neighbors",
         "get_graph_statistics",
+        "get_diagnostics",
         "get_agent_summary",
         "get_symbol_summary",
         "plan_feature",
@@ -68,7 +69,8 @@ public sealed class MeridianGraphToolService
         "Start with compact bulk calls; includeEvidence defaults to false for query_graph, get_neighbors, and find_flows_to_symbol.",
         "Use includeEvidence:true only when you need evidence file, line, symbol, and reason details.",
         "For broad orientation, use get_agent_summary before reading source or traversing neighbors.",
-        "Use get_graph_statistics when you need compact counts, confidence breakdowns, and diagnostics.",
+        "Use get_graph_statistics when you need compact counts, confidence breakdowns, and grouped diagnostic summaries.",
+        "Use get_diagnostics when you need filtered raw diagnostics instead of broad diagnostic counts.",
         "For get_neighbors on service or type nodes, use excludeRelations:[\"contains\"] to reduce declaration-containment noise.",
         "Use get_symbol_summary before broad neighbor traversal when you need compact symbol context.",
         "Use plan_feature for absent new concepts; it ranks existing extension points instead of pretending the concept exists.",
@@ -328,13 +330,16 @@ public sealed class MeridianGraphToolService
             }
         }
 
+        var nodeDtos = nodes.Select(NodeDto.From).ToArray();
+        var edgeDtos = edges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray();
         return new GraphSearchResponse(
             "ok",
             MeridianMcpMessages.StaleGraphNote,
-            nodes.Select(NodeDto.From).ToArray(),
-            edges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray(),
+            nodeDtos,
+            edgeDtos,
             truncated,
-            truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
+            truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
+            Summary: BuildSearchSummary(nodeDtos, edgeDtos, limit));
     }
 
     public GraphStatisticsResponse GetGraphStatistics(int? maxDiagnostics = null)
@@ -350,6 +355,41 @@ public sealed class MeridianGraphToolService
             ["get_schema", "get_agent_summary budget:\"compact\""],
             statistics.DiagnosticsTruncated,
             statistics.DiagnosticsTruncated ? MeridianMcpMessages.TruncationNote(diagnosticLimit) : null);
+    }
+
+    public GraphDiagnosticsResponse GetDiagnostics(
+        string? id = null,
+        string? severity = null,
+        string? sourceFile = null,
+        string? text = null,
+        int? maxResults = null,
+        bool? includeGroups = null)
+    {
+        var context = _store.Current;
+        var limit = context.ClampMaxResults(maxResults);
+        var diagnostics = context.Graph.Diagnostics
+            .Where(diagnostic => IsBlank(id) || diagnostic.Id.Equals(id, StringComparison.OrdinalIgnoreCase))
+            .Where(diagnostic => IsBlank(severity) || diagnostic.Severity.Equals(severity, StringComparison.OrdinalIgnoreCase))
+            .Where(diagnostic => IsBlank(sourceFile) || diagnostic.SourceFile?.Contains(sourceFile!, StringComparison.OrdinalIgnoreCase) == true)
+            .Where(diagnostic => MatchesDiagnosticText(diagnostic, text))
+            .OrderBy(diagnostic => diagnostic.Id, StringComparer.Ordinal)
+            .ThenBy(diagnostic => diagnostic.Severity, StringComparer.Ordinal)
+            .ThenBy(diagnostic => diagnostic.SourceFile, StringComparer.Ordinal)
+            .ThenBy(diagnostic => diagnostic.SourceLocation, StringComparer.Ordinal)
+            .ThenBy(diagnostic => diagnostic.Message, StringComparer.Ordinal)
+            .ToArray();
+        var capped = Cap(diagnostics.Select(DiagnosticDto.From), limit);
+        var groups = includeGroups.GetValueOrDefault(true)
+            ? GraphStatisticsBuilder.GroupDiagnostics(diagnostics, limit)
+            : null;
+        return new GraphDiagnosticsResponse(
+            "ok",
+            MeridianMcpMessages.StaleGraphNote,
+            capped.Items,
+            groups,
+            ["get_graph_statistics", "get_agent_summary budget:\"compact\""],
+            capped.Truncated,
+            capped.Truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
     }
 
     public AgentSummaryResponse GetAgentSummary(string? budget = null, int? maxItemsPerSection = null)
@@ -542,14 +582,17 @@ public sealed class MeridianGraphToolService
         var upstreamEntrypoints = upstreamNodes.Where(IsEntrypoint).ToArray();
         var graphHasEntrypoints = context.Graph.Nodes.Any(IsEntrypoint);
         var limitation = upstreamEntrypoints.Length == 0 && !graphHasEntrypoints ? MeridianMcpMessages.EndpointAnalyzerLimit : null;
+        var nodeDtos = upstreamNodes.Select(NodeDto.From).ToArray();
+        var edgeDtos = traversalEdges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray();
         return new GraphSearchResponse(
             upstreamEntrypoints.Length == 0 ? "no_entrypoint_flows" : "ok",
             MeridianMcpMessages.StaleGraphNote,
-            upstreamNodes.Select(NodeDto.From).ToArray(),
-            traversalEdges.Select(edge => EdgeDto.From(edge, context.NodesById, includeEvidence.GetValueOrDefault(false))).ToArray(),
+            nodeDtos,
+            edgeDtos,
             truncated,
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
-            limitation);
+            limitation,
+            Summary: BuildSearchSummary(nodeDtos, edgeDtos, limit));
     }
 
     private static IReadOnlyDictionary<string, int> CountRelations(IEnumerable<GraphEdge> edges)
@@ -679,7 +722,28 @@ public sealed class MeridianGraphToolService
             cappedEdges.Items,
             truncated,
             truncated ? MeridianMcpMessages.TruncationNote(limit) : null,
-            limitation);
+            limitation,
+            Summary: BuildSearchSummary(cappedNodes.Items, cappedEdges.Items, limit));
+    }
+
+    private static GraphSearchSummary BuildSearchSummary(IReadOnlyList<NodeDto> nodes, IReadOnlyList<EdgeDto> edges, int limit)
+    {
+        return new GraphSearchSummary(
+            nodes.Count,
+            edges.Count,
+            CountSearchValues(nodes.Select(node => node.Kind)),
+            CountSearchValues(edges.Select(edge => edge.Relation)),
+            CountSearchValues(edges.Select(edge => edge.Confidence)),
+            limit);
+    }
+
+    private static IReadOnlyDictionary<string, int> CountSearchValues(IEnumerable<string> values)
+    {
+        return values
+            .Where(value => !string.IsNullOrWhiteSpace(value))
+            .GroupBy(value => value, StringComparer.Ordinal)
+            .OrderBy(group => group.Key, StringComparer.Ordinal)
+            .ToDictionary(group => group.Key, group => group.Count(), StringComparer.Ordinal);
     }
 
     private static NodeResponse InvalidNodeInput(string parameterName)
@@ -754,6 +818,16 @@ public sealed class MeridianGraphToolService
             node.Id.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
             node.Label.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
             (node.Symbol?.Contains(text!, StringComparison.OrdinalIgnoreCase) == true);
+    }
+
+    private static bool MatchesDiagnosticText(GraphDiagnostic diagnostic, string? text)
+    {
+        return IsBlank(text) ||
+            diagnostic.Id.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
+            diagnostic.Severity.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
+            diagnostic.Message.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
+            diagnostic.SourceFile?.Contains(text!, StringComparison.OrdinalIgnoreCase) == true ||
+            diagnostic.SourceLocation?.Contains(text!, StringComparison.OrdinalIgnoreCase) == true;
     }
 
     private static bool LooksLikeNaturalLanguageQuestion(string? text)

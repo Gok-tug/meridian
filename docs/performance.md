@@ -88,6 +88,8 @@ The benchmark workflow runs manually or weekly, uploads `artifacts/benchmarks`, 
 
 The MCP payload report records tool name, options, status, node/edge counts, truncation state, and UTF-8 serialized byte count for representative compact and evidence-included responses. Use it for trend comparison, not as an exact public contract snapshot.
 
+`0.7.0-alpha.1` extends payload coverage with diagnostic-heavy `get_graph_statistics`, bounded grouped/raw `get_diagnostics`, and compact `get_agent_summary` over UI-binding-heavy graphs so agent-output polish can be tracked without relying on ad hoc context-size checks.
+
 ## Cache-readiness design
 
 Cache and incremental-analysis design work should not imply runtime cache behavior until it is implemented and tested. The design target is a graph that is safe to diff and safe to reuse only when all relevant inputs are known to be unchanged.

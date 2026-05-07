@@ -38,6 +38,8 @@ Central-node and extension-point rankings are deterministic heuristics based on 
 
 Graph clusters use non-containment graph components only when the loaded graph has enough separated structure. A cluster means "these nodes are connected in the graph," not "this is a real subsystem boundary." Summary rankings and clusters score distinct structural non-containment edges by source, target, and relation; raw graph JSON and graph statistics still preserve all evidence-bearing edges. Budget modes cap returned items deterministically; they are not exact token counts.
 
+Diagnostic groups in summaries and MCP statistics are derived, capped overviews for agent orientation. They do not replace raw diagnostics in `graph.json`; use MCP `get_diagnostics` with filters when exact messages or source locations matter. In graphs with many `binds_to` edges, broad summaries keep those UI facts visible but steer non-UI traversal toward `excludeRelations:["contains","binds_to"]`.
+
 ## Member graph limits
 
 Member graph analysis is conservative. Meridian emits source enum, enum member, property, and field declaration nodes, plus ordinary-method references when Roslyn directly resolves the symbol.
@@ -166,7 +168,7 @@ Generated-only members or types may be omitted until Meridian has explicit sourc
 
 Avalonia AXAML support is a static typed-scope preview. Meridian can resolve simple `{Binding ...}` and `{CompiledBinding ...}` paths when `x:Class`, `x:DataType`, `DataTemplate x:DataType`, or `DataTemplate DataType="{x:Type ...}"` gives a source-resolved type.
 
-It does not model Avalonia runtime binding behavior, code-behind `DataContext` assignment, DI or navigation-created view models, ViewLocator conventions, converters, `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths. Unsupported binding shapes produce diagnostics instead of guessed `binds_to` edges.
+It does not model Avalonia runtime binding behavior, code-behind `DataContext` assignment, DI or navigation-created view models, ViewLocator conventions, converters, `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths. Unsupported binding shapes produce diagnostics instead of guessed `binds_to` edges. If one AXAML file produces more unique diagnostics than the per-file cap, Meridian emits `MERIDIAN_AXAML_DIAGNOSTICS_TRUNCATED` to state that additional unique diagnostics were omitted from the graph.
 
 ## Native/Rust interop limits
 
