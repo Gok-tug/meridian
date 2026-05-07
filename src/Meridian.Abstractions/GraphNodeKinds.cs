@@ -9,6 +9,7 @@ public static class GraphNodeKinds
     public const string EnumMember = "enum_member";
     public const string Property = "property";
     public const string Field = "field";
+    public const string MvvmCommand = "mvvm_command";
     public const string Endpoint = "endpoint";
     public const string Diagnostic = "diagnostic";
     public const string DbContext = "dbcontext";

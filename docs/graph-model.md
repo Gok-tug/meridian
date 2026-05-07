@@ -10,7 +10,7 @@ The graph must be deterministic, versioned, and evidence-bearing.
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.5.0-alpha.3",
+  "generator_version": "0.6.0-alpha.1",
   "root": "C:/src/MyApp",
   "nodes": [],
   "edges": [],
@@ -93,6 +93,7 @@ enum
 enum_member
 property
 field
+mvvm_command
 endpoint
 diagnostic
 dbcontext
@@ -112,6 +113,9 @@ contains
 calls
 uses
 reads
+generated_from
+branches_on
+switches_on
 injects
 registered_as
 implemented_by
@@ -131,6 +135,9 @@ Relation meanings:
 | `calls` | Direct method invocation resolved by Roslyn, or endpoint-to-action/handler routing resolved from source metadata |
 | `uses` | Static symbolic usage that is not a read/write, including enum type/member use and `nameof(...)` references |
 | `reads` | Method reads a directly resolved source property or field |
+| `generated_from` | Source-generator-aware synthetic graph fact was generated from a source field or method |
+| `branches_on` | Method-level `if` condition references a source-resolved property, field, enum type, enum member, or simple constant |
+| `switches_on` | Method-level `switch` expression or case label references a source-resolved property, field, enum type, enum member, or simple constant |
 | `sends` | Method or endpoint dispatches a mediator-style request, command, or query |
 | `publishes` | Method or endpoint publishes a mediator-style notification |
 | `handled_by` | Message/request handled by handler type |
@@ -190,7 +197,7 @@ Rules:
 
 ## Graph identity and cache readiness
 
-Node IDs are part of Meridian's graph identity. Source symbol nodes should keep canonical Roslyn-derived IDs such as `type:{assembly}:{symbol}` and `method:{assembly}:{symbol}`. Endpoint nodes are synthetic but should remain based on normalized HTTP method and route template, such as `endpoint:{assembly}:{HTTP}:{route}`.
+Node IDs are part of Meridian's graph identity. Source symbol nodes should keep canonical Roslyn-derived IDs such as `type:{assembly}:{symbol}` and `method:{assembly}:{symbol}`. Endpoint nodes are synthetic but should remain based on normalized HTTP method and route template, such as `endpoint:{assembly}:{HTTP}:{route}`. MVVM command nodes are synthetic source-generator preview nodes and use `mvvm_command:{assembly}:{generatedMemberSymbol}`.
 
 Cache reuse must depend on the inputs that can change graph identity or emitted facts: source content, project/build files, package references, compiler options, analyzer version, graph schema version, Meridian generator version, and enabled analyzer options. If an input cannot be fingerprinted confidently, future cache code should recompute rather than reuse stale graph output.
 

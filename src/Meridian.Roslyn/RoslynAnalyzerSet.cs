@@ -7,6 +7,8 @@ internal sealed record RoslynAnalyzerSet(
     DependencyInjectionAnalyzer DependencyInjectionAnalyzer,
     MediatRDeclarationAnalyzer MediatRDeclarationAnalyzer,
     MediatRCallSiteAnalyzer MediatRCallSiteAnalyzer,
+    CommunityToolkitMvvmAnalyzer CommunityToolkitMvvmAnalyzer,
+    ConditionalFlowAnalyzer ConditionalFlowAnalyzer,
     EfCoreAnalyzer EfCoreAnalyzer,
     ReflectionAnalyzer ReflectionAnalyzer,
     AspNetCoreEndpointAnalyzer AspNetCoreEndpointAnalyzer);

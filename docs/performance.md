@@ -50,7 +50,7 @@ Current `metrics.json` shape:
   "diagnostic_count": 0,
   "dotnet_version": "10.0.0",
   "os_description": "...",
-  "meridian_version": "0.5.0-alpha.3"
+  "meridian_version": "0.6.0-alpha.1"
 }
 ```
 

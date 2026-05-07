@@ -205,7 +205,7 @@ Positive signal:
 Observed recall gaps:
 
 - Avalonia/XAML bindings are not emitted as graph facts yet. Examples include `x:DataType`, `DataContext`, `Binding`, and `Command` markup.
-- CommunityToolkit.Mvvm generated members are not emitted yet. Source methods annotated with `[RelayCommand]` are present, but generated `*Command` properties are absent.
+- Initial `0.6.0-alpha.1` work adds narrow CommunityToolkit.Mvvm generated-member preview facts, but this audit predates that validation and still needs a repeated CrossMacro scan before updating the recall baseline.
 - CLI command/router wiring through resolver dictionaries, delegates, and factories is runtime wiring and remains outside current static graph coverage.
 - Native boundaries such as `DllImport` / `LibraryImport` declarations are not first-class graph facts yet.
 - Advanced DI factories are only partly covered. Direct generic registrations and direct `new Implementation(...)` factories work; delegate factories, `.Create()` factory calls, and `Func<T>` patterns remain planned. A narrow direct `GetRequiredService<TImplementation>()` alias pattern was prioritized for alpha4 hardening because it is source-resolved and common in CrossMacro.

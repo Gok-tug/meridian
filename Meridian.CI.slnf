@@ -4,10 +4,12 @@
     "projects": [
       "samples\\Sample.AspNetCoreFlow\\Sample.AspNetCoreFlow.csproj",
       "samples\\Sample.BasicCalls\\Sample.BasicCalls.csproj",
+      "samples\\Sample.ConditionalFlow\\Sample.ConditionalFlow.csproj",
       "samples\\Sample.DependencyInjection\\Sample.DependencyInjection.csproj",
       "samples\\Sample.DynamicWiring\\Sample.DynamicWiring.csproj",
       "samples\\Sample.EfCore\\Sample.EfCore.csproj",
       "samples\\Sample.MediatR\\Sample.MediatR.csproj",
+      "samples\\Sample.MvvmFlow\\Sample.MvvmFlow.csproj",
       "src\\Meridian.Abstractions\\Meridian.Abstractions.csproj",
       "src\\Meridian.Cli\\Meridian.Cli.csproj",
       "src\\Meridian.Core\\Meridian.Core.csproj",

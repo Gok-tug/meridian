@@ -177,6 +177,56 @@ internal sealed class RoslynGraphFactory
         };
     }
 
+    public GraphNode CreateGeneratedPropertyNode(IFieldSymbol backingFieldSymbol, string propertyName)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(backingFieldSymbol);
+        var containingType = backingFieldSymbol.ContainingType.ToDisplayString(SymbolDisplay.TypeFormat);
+        var symbol = $"{containingType}.{propertyName}";
+        return new GraphNode
+        {
+            Id = $"property:{backingFieldSymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = $"{backingFieldSymbol.ContainingType.Name}.{propertyName}",
+            Kind = GraphNodeKinds.Property,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["accessibility"] = "public",
+                ["containing_type"] = containingType,
+                ["generated_from_attribute"] = "ObservableProperty",
+                ["generated_from_member"] = backingFieldSymbol.ToDisplayString(SymbolDisplay.MemberFormat),
+                ["has_getter"] = "true",
+                ["has_setter"] = "true",
+                ["is_static"] = BoolString(backingFieldSymbol.IsStatic),
+                ["member_type"] = backingFieldSymbol.Type.ToDisplayString(SymbolDisplay.TypeFormat)
+            }
+        };
+    }
+
+    public GraphNode CreateMvvmCommandNode(IMethodSymbol methodSymbol, string commandName, bool isAsyncCommand)
+    {
+        var location = _sourceFilter.FirstAnalyzableSourceLocation(methodSymbol);
+        var containingType = methodSymbol.ContainingType.ToDisplayString(SymbolDisplay.TypeFormat);
+        var symbol = $"{containingType}.{commandName}";
+        return new GraphNode
+        {
+            Id = $"mvvm_command:{methodSymbol.ContainingAssembly.Identity.Name}:{symbol}",
+            Label = $"{methodSymbol.ContainingType.Name}.{commandName}",
+            Kind = GraphNodeKinds.MvvmCommand,
+            Symbol = symbol,
+            SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
+            SourceLocation = SourcePath.SourceLocation(location),
+            Metadata = new SortedDictionary<string, string>(StringComparer.Ordinal)
+            {
+                ["command_type"] = isAsyncCommand ? "IAsyncRelayCommand" : "IRelayCommand",
+                ["containing_type"] = containingType,
+                ["generated_from_attribute"] = "RelayCommand",
+                ["source_method"] = methodSymbol.ToDisplayString(SymbolDisplay.MethodFormat)
+            }
+        };
+    }
+
     public GraphNode CreateEndpointNode(
         string assemblyName,
         string httpMethod,

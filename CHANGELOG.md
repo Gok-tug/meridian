@@ -73,6 +73,9 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Deterministic graph builder guard tests for edge ordering, edge evidence de-duplication, and diagnostic ordering.
 - Repeated analyzer-output stability guard coverage over the BasicCalls fixture.
 - Cache and incremental-analysis design documentation for graph identity, conservative invalidation, and cache-readiness non-goals.
+- CommunityToolkit.Mvvm generated-member preview for `[ObservableProperty]` generated property nodes, `[RelayCommand]` `mvvm_command` nodes, and `generated_from` edges.
+- Method-body conditional-flow preview with `branches_on` and `switches_on` edges for source-resolved properties, fields, enum types, enum members, and simple constants in `if` and `switch` conditions.
+- `Sample.MvvmFlow` and `Sample.ConditionalFlow` with golden-file analyzer coverage for 0.6.0 preview facts.
 
 ### Changed
 
@@ -89,6 +92,7 @@ Meridian follows prerelease SemVer while the project is in alpha.
 - Updated the prototype generator/package version to `0.5.0-alpha.1` for dogfood metrics and performance baseline output.
 - Updated the prototype generator/package version to `0.5.0-alpha.2` for benchmark, payload measurement, and CI hardening output.
 - Updated the prototype generator/package version to `0.5.0-alpha.3` for cache-readiness and graph stability design output.
+- Updated the prototype generator/package version to `0.6.0-alpha.1` for MVVM generated-member and conditional-flow preview output.
 - Updated normal CI and release validation to use `Meridian.CI.slnf`, validate packed CLI artifacts, run local tool smoke tests, and fail on generated non-ignored files.
 - Updated MCP and summary endpoint-absence wording to describe stale, old, non-web, or unsupported graphs instead of implying endpoint analyzers are absent.
 - Updated agent-summary central-node, extension-point, and cluster ranking to score distinct structural non-containment edges while preserving raw graph evidence edges and statistics.

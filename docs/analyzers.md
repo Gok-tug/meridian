@@ -19,7 +19,7 @@ Analyzers should:
 
 Framework-aware analysis should run in deterministic passes:
 
-1. Roslyn foundation facts: symbols, locations, type/method/member nodes, `contains`, direct `calls`, member `reads`/`writes`/`uses`, and interface implementations.
+1. Roslyn foundation facts: symbols, locations, type/method/member nodes, `contains`, direct `calls`, member `reads`/`writes`/`uses`, conditional-flow preview facts, source-generator preview facts, and interface implementations.
 2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and MediatR sends/publishes.
 3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
@@ -39,6 +39,8 @@ Responsibilities:
 - extract ordinary-method static references to source properties, fields, enum types, and enum members,
 - classify direct property/field access in ordinary methods as `reads`, `writes`, or both for assignments, compound assignments, increments, `ref`, and `out`,
 - emit `uses` for enum references and `nameof(...)` references,
+- emit method-level `branches_on` and `switches_on` preview edges for directly resolved symbols in simple `if` and `switch` conditions,
+- synthesize narrow CommunityToolkit.Mvvm generated-member preview facts from `[ObservableProperty]` and `[RelayCommand]` source attributes,
 - skip generated/bin/obj source noise by default,
 - map symbols to source locations,
 - provide shared semantic services to other analyzers.
@@ -50,6 +52,9 @@ GetOrderQueryHandler.Handle --calls--> OrderService.GetByIdAsync
 TaskExecutor.Execute --reads--> MintTask.ExecutionMode
 TaskExecutor.ChangeMode --writes--> MintTask.ExecutionMode
 TaskExecutor.Execute --uses--> ExecutionMode.RuntimeSigning
+RoutingDecider.Decide --branches_on--> RoutingMode.Fast
+RoutingDecider.Decide --switches_on--> RoutingMode.Offline
+RecordingViewModel.ToggleRecordingCommand --generated_from--> RecordingViewModel.ToggleRecording
 ```
 
 Confidence:
@@ -57,7 +62,34 @@ Confidence:
 - `EXTRACTED` when Roslyn resolves the target symbol.
 - `AMBIGUOUS` when overload or dynamic dispatch cannot be resolved precisely.
 
-Member references are intentionally limited to ordinary methods and conservative. Meridian does not extract constructor, accessor, or operator member references, and does not perform path-sensitive control-flow analysis, interprocedural dataflow, runtime dispatch resolution, or XAML binding analysis in this slice.
+Member references and conditional-flow facts are intentionally limited to ordinary methods and conservative. Meridian does not extract constructor, accessor, or operator member references, and conditional edges do not prove branch reachability, path sensitivity, interprocedural dataflow, runtime dispatch resolution, or XAML binding behavior.
+
+## Conditional flow analyzer
+
+Current preview support exists in `0.6.0-alpha.1` for simple method-body conditions.
+
+Responsibilities:
+
+- inspect ordinary method `if` conditions,
+- inspect ordinary method `switch` governing expressions and constant case labels,
+- connect the enclosing method to source-resolved properties, fields, enum types, enum members, and simple constants with `branches_on` or `switches_on`,
+- preserve condition or case text in edge metadata.
+
+Unsupported patterns are skipped rather than guessed. Conditional edges are static source facts; they do not prove runtime reachability or path selection.
+
+## CommunityToolkit.Mvvm analyzer
+
+Current preview support exists in `0.6.0-alpha.1` for source attributes that imply generated members.
+
+Responsibilities:
+
+- detect `[ObservableProperty]` fields from `CommunityToolkit.Mvvm.ComponentModel`,
+- synthesize generated public `property` nodes using standard Toolkit naming,
+- detect `[RelayCommand]` methods from `CommunityToolkit.Mvvm.Input`,
+- synthesize `mvvm_command` nodes with async command metadata when the source method is async,
+- connect generated nodes back to source fields or methods with `generated_from`.
+
+The analyzer does not include generated `.g.cs` files, execute source generators, model command runtime behavior, or resolve XAML bindings.
 
 ## ASP.NET Core analyzer
 

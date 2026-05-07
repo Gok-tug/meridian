@@ -1,7 +1,7 @@
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.5.0-alpha.3",
+  "generator_version": "0.6.0-alpha.1",
   "root": ".",
   "nodes": [
     {
@@ -393,6 +393,23 @@
     {
       "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
       "target": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved conditional expression 'ExecutionMode' to 'Sample.MemberGraph.ExecutionMode'."
+      },
+      "metadata": {
+        "condition_text": "task.ExecutionMode == ExecutionMode.RuntimeSigning",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "enum:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode",
       "relation": "uses",
       "confidence": "EXTRACTED",
       "confidence_score": 1,
@@ -403,6 +420,23 @@
         "reason": "Roslyn resolved member reference 'ExecutionMode' to 'Sample.MemberGraph.ExecutionMode'."
       },
       "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "enum_member:Sample.MemberGraph:Sample.MemberGraph.ExecutionMode.RuntimeSigning",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved conditional expression 'ExecutionMode.RuntimeSigning' to 'Sample.MemberGraph.ExecutionMode.RuntimeSigning'."
+      },
+      "metadata": {
+        "condition_text": "task.ExecutionMode == ExecutionMode.RuntimeSigning",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
     },
     {
       "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
@@ -459,6 +493,23 @@
         "reason": "Roslyn resolved member reference 'task.AttemptCount' to 'Sample.MemberGraph.MintTask.AttemptCount'."
       },
       "metadata": {}
+    },
+    {
+      "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+      "target": "property:Sample.MemberGraph:Sample.MemberGraph.MintTask.ExecutionMode",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ExecutionFlow.cs",
+        "line": 41,
+        "symbol": "Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",
+        "reason": "Roslyn resolved conditional expression 'task.ExecutionMode' to 'Sample.MemberGraph.MintTask.ExecutionMode'."
+      },
+      "metadata": {
+        "condition_text": "task.ExecutionMode == ExecutionMode.RuntimeSigning",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
     },
     {
       "source": "method:Sample.MemberGraph:Sample.MemberGraph.DefaultExecutionStrategy.Execute(Sample.MemberGraph.MintTask task)",

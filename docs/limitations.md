@@ -47,11 +47,11 @@ It does not perform:
 - member-reference extraction from constructors, property/event accessors, operators, or conversion operators,
 - full interprocedural dataflow,
 - runtime dynamic dispatch resolution,
-- path-sensitive control-flow or branch reachability analysis,
+- path-sensitive control-flow or branch reachability analysis beyond conservative `branches_on` and `switches_on` preview edges,
 - XAML/View-ViewModel binding analysis,
 - arbitrary reflection or string-based member resolution.
 
-`reads` and member-level `writes` edges describe direct source member access in an ordinary method body. Entity-level EF Core `writes` edges describe direct static DbSet/DbContext mutation calls when the entity type is known. Neither form proves a runtime path always reads or writes that target.
+`reads` and member-level `writes` edges describe direct source member access in an ordinary method body. `branches_on` and `switches_on` edges describe direct source symbols referenced by conditions and case labels, not which branch executes. Entity-level EF Core `writes` edges describe direct static DbSet/DbContext mutation calls when the entity type is known. None of these forms proves a runtime path always reads, writes, or selects that target.
 
 ## Dependency Injection limits
 
@@ -160,7 +160,7 @@ Source-generator-heavy projects require special care.
 
 The current prototype filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
 
-Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm generated members are a known example: `[RelayCommand]` methods may appear as source methods, but generated `*Command` properties are not emitted yet; `[ObservableProperty]` generated public properties are likewise not graph facts unless visible in analyzable source.
+Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm has narrow preview support in `0.6.0-alpha.1`: `[RelayCommand]` methods can produce synthetic `mvvm_command` nodes and `[ObservableProperty]` fields can produce synthetic public `property` nodes. Other source-generator outputs, Toolkit options, and generated code bodies are still not analyzed.
 
 ## Native/Rust interop limits
 

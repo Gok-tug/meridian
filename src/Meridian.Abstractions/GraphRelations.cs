@@ -6,6 +6,9 @@ public static class GraphRelations
     public const string Calls = "calls";
     public const string Uses = "uses";
     public const string Reads = "reads";
+    public const string GeneratedFrom = "generated_from";
+    public const string BranchesOn = "branches_on";
+    public const string SwitchesOn = "switches_on";
     public const string Injects = "injects";
     public const string RegisteredAs = "registered_as";
     public const string ImplementedBy = "implemented_by";

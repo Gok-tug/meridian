@@ -14,7 +14,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>meridian</PackageId>
-    <Version>0.5.0-alpha.3</Version>
+    <Version>0.6.0-alpha.1</Version>
     <Authors>.FANKI</Authors>
     <Description>Meridian — semantic .NET application-flow graph generator for Roslyn, DI, MediatR, reflection, and AI agents.</Description>
     <PackageTags>dotnet;roslyn;code-analysis;flow-graph;mcp;mediatr;aspnetcore</PackageTags>

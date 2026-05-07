@@ -1,0 +1,453 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.6.0-alpha.1",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "label": "RecordingViewModel._isRecording",
+      "kind": "field",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "source_file": "ViewModels.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "System.Boolean"
+      }
+    },
+    {
+      "id": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "label": "RecordingViewModel.selectedMacroName",
+      "kind": "field",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "source_file": "ViewModels.cs",
+      "source_location": "L12",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "label": "RecordingViewModel.OnExportAsync",
+      "kind": "method",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "source_file": "ViewModels.cs",
+      "source_location": "L28",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveAsync()",
+      "label": "RecordingViewModel.SaveAsync",
+      "kind": "method",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.SaveAsync()",
+      "source_file": "ViewModels.cs",
+      "source_location": "L22",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "label": "RecordingViewModel.ToggleRecording",
+      "kind": "method",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "source_file": "ViewModels.cs",
+      "source_location": "L15",
+      "metadata": {}
+    },
+    {
+      "id": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ExportCommand",
+      "label": "RecordingViewModel.ExportCommand",
+      "kind": "mvvm_command",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.ExportCommand",
+      "source_file": "ViewModels.cs",
+      "source_location": "L28",
+      "metadata": {
+        "command_type": "IAsyncRelayCommand",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "generated_from_attribute": "RelayCommand",
+        "source_method": "Sample.MvvmFlow.RecordingViewModel.OnExportAsync()"
+      }
+    },
+    {
+      "id": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveCommand",
+      "label": "RecordingViewModel.SaveCommand",
+      "kind": "mvvm_command",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.SaveCommand",
+      "source_file": "ViewModels.cs",
+      "source_location": "L22",
+      "metadata": {
+        "command_type": "IAsyncRelayCommand",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "generated_from_attribute": "RelayCommand",
+        "source_method": "Sample.MvvmFlow.RecordingViewModel.SaveAsync()"
+      }
+    },
+    {
+      "id": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand",
+      "label": "RecordingViewModel.ToggleRecordingCommand",
+      "kind": "mvvm_command",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand",
+      "source_file": "ViewModels.cs",
+      "source_location": "L15",
+      "metadata": {
+        "command_type": "IRelayCommand",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "generated_from_attribute": "RelayCommand",
+        "source_method": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()"
+      }
+    },
+    {
+      "id": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.IsRecording",
+      "label": "RecordingViewModel.IsRecording",
+      "kind": "property",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.IsRecording",
+      "source_file": "ViewModels.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "generated_from_attribute": "ObservableProperty",
+        "generated_from_member": "Sample.MvvmFlow.RecordingViewModel._isRecording",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Boolean"
+      }
+    },
+    {
+      "id": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SelectedMacroName",
+      "label": "RecordingViewModel.SelectedMacroName",
+      "kind": "property",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel.SelectedMacroName",
+      "source_file": "ViewModels.cs",
+      "source_location": "L12",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.MvvmFlow.RecordingViewModel",
+        "generated_from_attribute": "ObservableProperty",
+        "generated_from_member": "Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "label": "RecordingViewModel",
+      "kind": "type",
+      "symbol": "Sample.MvvmFlow.RecordingViewModel",
+      "source_file": "ViewModels.cs",
+      "source_location": "L6",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 30,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+        "reason": "Roslyn resolved member reference 'selectedMacroName' to 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 30,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+        "reason": "Roslyn resolved member reference 'selectedMacroName' to 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 17,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+        "reason": "Roslyn resolved member reference '_isRecording' to 'Sample.MvvmFlow.RecordingViewModel._isRecording'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 17,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+        "reason": "Roslyn resolved member reference '_isRecording' to 'Sample.MvvmFlow.RecordingViewModel._isRecording'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 18,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+        "reason": "Roslyn resolved member reference 'selectedMacroName' to 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 18,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+        "reason": "Roslyn resolved member reference 'selectedMacroName' to 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ExportCommand",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 28,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.ExportCommand' from 'Sample.MvvmFlow.RecordingViewModel.OnExportAsync()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveCommand",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveAsync()",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 22,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.SaveAsync()",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.SaveCommand' from 'Sample.MvvmFlow.RecordingViewModel.SaveAsync()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 15,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand' from 'Sample.MvvmFlow.RecordingViewModel.ToggleRecording()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.IsRecording",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel._isRecording",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.IsRecording' from 'Sample.MvvmFlow.RecordingViewModel._isRecording'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SelectedMacroName",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 12,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.SelectedMacroName' from 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel._isRecording",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "Roslyn declared field 'Sample.MvvmFlow.RecordingViewModel._isRecording' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "field:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.selectedMacroName",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 12,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "Roslyn declared field 'Sample.MvvmFlow.RecordingViewModel.selectedMacroName' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.OnExportAsync()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 28,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "Roslyn declared method 'Sample.MvvmFlow.RecordingViewModel.OnExportAsync()' in type 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveAsync()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 22,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "Roslyn declared method 'Sample.MvvmFlow.RecordingViewModel.SaveAsync()' in type 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "method:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecording()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 15,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "Roslyn declared method 'Sample.MvvmFlow.RecordingViewModel.ToggleRecording()' in type 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ExportCommand",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 28,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.ExportCommand' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SaveCommand",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 22,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.SaveCommand' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "mvvm_command:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 15,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.ToggleRecordingCommand' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.IsRecording",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.IsRecording' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel",
+      "target": "property:Sample.MvvmFlow:Sample.MvvmFlow.RecordingViewModel.SelectedMacroName",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 12,
+        "symbol": "Sample.MvvmFlow.RecordingViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.MvvmFlow.RecordingViewModel.SelectedMacroName' in 'Sample.MvvmFlow.RecordingViewModel'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

@@ -2,7 +2,7 @@
 
 MCP support is a core Meridian use case.
 
-The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. `0.4.0-alpha.2` adds compact symbol summaries and deterministic feature-planning navigation over the loaded graph. `0.4.0-alpha.3` adds compact graph statistics and agent summaries for broad orientation. `0.4.0-alpha.4` adds ASP.NET endpoint facts when they are present in the precomputed graph. MCP does not load or analyze the solution live.
+The first MCP preview is part of `0.3.0-alpha.1` and reads generated `graph.json` files. `0.3.0-alpha.2` adds explicit `reload_graph` support for refreshing a running MCP server after the graph file changes. `0.4.0-alpha.2` adds compact symbol summaries and deterministic feature-planning navigation over the loaded graph. `0.4.0-alpha.3` adds compact graph statistics and agent summaries for broad orientation. `0.4.0-alpha.4` adds ASP.NET endpoint facts when they are present in the precomputed graph. `0.6.0-alpha.1` exposes MVVM generated-member and conditional-flow node/relation vocabulary when those facts are present in the precomputed graph. MCP does not load or analyze the solution live.
 
 ## Purpose
 
@@ -340,4 +340,4 @@ The MCP server should:
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
 - include confidence by default and make detailed evidence available on request so agents do not overstate uncertain links,
-- surface endpoint and graph-absence limitations when facts have not been emitted, and avoid inventing endpoint, XAML, CommunityToolkit-generated member, CLI runtime routing, conditional-flow, or native interop facts until those analyzers exist.
+- surface graph-absence limitations when facts have not been emitted, trust CommunityToolkit and conditional-flow facts only when present in the loaded graph, and avoid inventing unsupported XAML binding, CLI runtime routing, or native interop facts.

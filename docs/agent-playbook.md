@@ -168,6 +168,8 @@ Current alpha builds emit:
 
 - direct method calls, type/member containment, enum/property/field nodes, and interface implementation edges
 - ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
+- method-level `branches_on` and `switches_on` preview edges for directly resolved simple conditions
+- CommunityToolkit.Mvvm `[ObservableProperty]` and `[RelayCommand]` generated-member preview nodes and `generated_from` edges
 - constructor injection and generic DI registration edges, including narrow direct `new` and direct `GetRequiredService<TImplementation>()` factory lambdas
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types
@@ -180,6 +182,6 @@ Current alpha builds do not yet emit:
 - CLI/runtime command routing through resolver dictionaries, delegates, or factories
 - native/Rust interop boundary detection
 - XAML/View-ViewModel binding analysis
-- CommunityToolkit.Mvvm generated command/property members
+- full CommunityToolkit.Mvvm source-generator behavior beyond the narrow generated-member preview
 
 When a Meridian tool reports a limitation, do not fill the gap by guessing. Use normal code inspection separately and label those findings as outside Meridian's graph facts.

@@ -1,0 +1,732 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.6.0-alpha.1",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "label": "RoutingMode",
+      "kind": "enum",
+      "symbol": "Sample.ConditionalFlow.RoutingMode",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L3",
+      "metadata": {
+        "accessibility": "public",
+        "type_kind": "enum",
+        "underlying_type": "System.Int32"
+      }
+    },
+    {
+      "id": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "label": "RoutingMode.Fast",
+      "kind": "enum_member",
+      "symbol": "Sample.ConditionalFlow.RoutingMode.Fast",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L6",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "1",
+        "containing_enum": "Sample.ConditionalFlow.RoutingMode",
+        "member_type": "Sample.ConditionalFlow.RoutingMode"
+      }
+    },
+    {
+      "id": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Offline",
+      "label": "RoutingMode.Offline",
+      "kind": "enum_member",
+      "symbol": "Sample.ConditionalFlow.RoutingMode.Offline",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L7",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "2",
+        "containing_enum": "Sample.ConditionalFlow.RoutingMode",
+        "member_type": "Sample.ConditionalFlow.RoutingMode"
+      }
+    },
+    {
+      "id": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Standard",
+      "label": "RoutingMode.Standard",
+      "kind": "enum_member",
+      "symbol": "Sample.ConditionalFlow.RoutingMode.Standard",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L5",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "0",
+        "containing_enum": "Sample.ConditionalFlow.RoutingMode",
+        "member_type": "Sample.ConditionalFlow.RoutingMode"
+      }
+    },
+    {
+      "id": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.EmergencyRegion",
+      "label": "RoutingDecider.EmergencyRegion",
+      "kind": "field",
+      "symbol": "Sample.ConditionalFlow.RoutingDecider.EmergencyRegion",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L21",
+      "metadata": {
+        "accessibility": "private",
+        "constant_value": "emergency",
+        "containing_type": "Sample.ConditionalFlow.RoutingDecider",
+        "is_const": "true",
+        "is_readonly": "false",
+        "is_static": "true",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.CanaryRegion",
+      "label": "RoutingRequest.CanaryRegion",
+      "kind": "field",
+      "symbol": "Sample.ConditionalFlow.RoutingRequest.CanaryRegion",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L12",
+      "metadata": {
+        "accessibility": "public",
+        "constant_value": "canary",
+        "containing_type": "Sample.ConditionalFlow.RoutingRequest",
+        "is_const": "true",
+        "is_readonly": "false",
+        "is_static": "true",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "label": "RoutingDecider.Decide",
+      "kind": "method",
+      "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L23",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "label": "RoutingDecider.DecideByMode",
+      "kind": "method",
+      "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L51",
+      "metadata": {}
+    },
+    {
+      "id": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "label": "RoutingRequest.Mode",
+      "kind": "property",
+      "symbol": "Sample.ConditionalFlow.RoutingRequest.Mode",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L14",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.ConditionalFlow.RoutingRequest",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "Sample.ConditionalFlow.RoutingMode"
+      }
+    },
+    {
+      "id": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Region",
+      "label": "RoutingRequest.Region",
+      "kind": "property",
+      "symbol": "Sample.ConditionalFlow.RoutingRequest.Region",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L16",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.ConditionalFlow.RoutingRequest",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider",
+      "label": "RoutingDecider",
+      "kind": "type",
+      "symbol": "Sample.ConditionalFlow.RoutingDecider",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L19",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest",
+      "label": "RoutingRequest",
+      "kind": "type",
+      "symbol": "Sample.ConditionalFlow.RoutingRequest",
+      "source_file": "RoutingDecisions.cs",
+      "source_location": "L10",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 6,
+        "symbol": "Sample.ConditionalFlow.RoutingMode",
+        "reason": "Roslyn declared enum member 'Sample.ConditionalFlow.RoutingMode.Fast' in 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Offline",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 7,
+        "symbol": "Sample.ConditionalFlow.RoutingMode",
+        "reason": "Roslyn declared enum member 'Sample.ConditionalFlow.RoutingMode.Offline' in 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Standard",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 5,
+        "symbol": "Sample.ConditionalFlow.RoutingMode",
+        "reason": "Roslyn declared enum member 'Sample.ConditionalFlow.RoutingMode.Standard' in 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "condition_text": "request.Mode == RoutingMode.Fast",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 40,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'request.Mode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "switch_expression": "request.Mode",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 42,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Offline",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 44,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Standard",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 42,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 44,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode.Fast' to 'Sample.ConditionalFlow.RoutingMode.Fast'."
+      },
+      "metadata": {
+        "condition_text": "request.Mode == RoutingMode.Fast",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode.Fast' to 'Sample.ConditionalFlow.RoutingMode.Fast'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Offline",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 42,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode.Offline' to 'Sample.ConditionalFlow.RoutingMode.Offline'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Offline",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Offline",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 42,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode.Offline' to 'Sample.ConditionalFlow.RoutingMode.Offline'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Standard",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 44,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode.Standard' to 'Sample.ConditionalFlow.RoutingMode.Standard'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Standard",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Standard",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 44,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingMode.Standard' to 'Sample.ConditionalFlow.RoutingMode.Standard'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.EmergencyRegion",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 37,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'EmergencyRegion' to 'Sample.ConditionalFlow.RoutingDecider.EmergencyRegion'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.EmergencyRegion",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 47,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'EmergencyRegion' to 'Sample.ConditionalFlow.RoutingDecider.EmergencyRegion'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.CanaryRegion",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 30,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'RoutingRequest.CanaryRegion' to 'Sample.ConditionalFlow.RoutingRequest.CanaryRegion'."
+      },
+      "metadata": {
+        "condition_text": "request.Region == RoutingRequest.CanaryRegion",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.CanaryRegion",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 30,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'RoutingRequest.CanaryRegion' to 'Sample.ConditionalFlow.RoutingRequest.CanaryRegion'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'request.Mode' to 'Sample.ConditionalFlow.RoutingRequest.Mode'."
+      },
+      "metadata": {
+        "condition_text": "request.Mode == RoutingMode.Fast",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 25,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'request.Mode' to 'Sample.ConditionalFlow.RoutingRequest.Mode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 40,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'request.Mode' to 'Sample.ConditionalFlow.RoutingRequest.Mode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 40,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'request.Mode' to 'Sample.ConditionalFlow.RoutingRequest.Mode'."
+      },
+      "metadata": {
+        "switch_expression": "request.Mode",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Region",
+      "relation": "branches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 30,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved conditional expression 'request.Region' to 'Sample.ConditionalFlow.RoutingRequest.Region'."
+      },
+      "metadata": {
+        "condition_text": "request.Region == RoutingRequest.CanaryRegion",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Region",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 30,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+        "reason": "Roslyn resolved member reference 'request.Region' to 'Sample.ConditionalFlow.RoutingRequest.Region'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 53,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+        "reason": "Roslyn resolved conditional expression 'mode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "switch_expression": "mode",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 55,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Fast",
+        "syntax_kind": "IdentifierName"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "target": "enum:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 55,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+        "reason": "Roslyn resolved member reference 'RoutingMode' to 'Sample.ConditionalFlow.RoutingMode'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "relation": "switches_on",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 55,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+        "reason": "Roslyn resolved conditional expression 'RoutingMode.Fast' to 'Sample.ConditionalFlow.RoutingMode.Fast'."
+      },
+      "metadata": {
+        "case_text": "RoutingMode.Fast",
+        "syntax_kind": "SimpleMemberAccessExpression"
+      }
+    },
+    {
+      "source": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "target": "enum_member:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingMode.Fast",
+      "relation": "uses",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 55,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+        "reason": "Roslyn resolved member reference 'RoutingMode.Fast' to 'Sample.ConditionalFlow.RoutingMode.Fast'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.EmergencyRegion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 21,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider",
+        "reason": "Roslyn declared field 'Sample.ConditionalFlow.RoutingDecider.EmergencyRegion' in 'Sample.ConditionalFlow.RoutingDecider'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider",
+      "target": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 23,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider",
+        "reason": "Roslyn declared method 'Sample.ConditionalFlow.RoutingDecider.Decide(Sample.ConditionalFlow.RoutingRequest request)' in type 'Sample.ConditionalFlow.RoutingDecider'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider",
+      "target": "method:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 51,
+        "symbol": "Sample.ConditionalFlow.RoutingDecider",
+        "reason": "Roslyn declared method 'Sample.ConditionalFlow.RoutingDecider.DecideByMode(Sample.ConditionalFlow.RoutingMode mode)' in type 'Sample.ConditionalFlow.RoutingDecider'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest",
+      "target": "field:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.CanaryRegion",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 12,
+        "symbol": "Sample.ConditionalFlow.RoutingRequest",
+        "reason": "Roslyn declared field 'Sample.ConditionalFlow.RoutingRequest.CanaryRegion' in 'Sample.ConditionalFlow.RoutingRequest'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Mode",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 14,
+        "symbol": "Sample.ConditionalFlow.RoutingRequest",
+        "reason": "Roslyn declared property 'Sample.ConditionalFlow.RoutingRequest.Mode' in 'Sample.ConditionalFlow.RoutingRequest'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest",
+      "target": "property:Sample.ConditionalFlow:Sample.ConditionalFlow.RoutingRequest.Region",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "RoutingDecisions.cs",
+        "line": 16,
+        "symbol": "Sample.ConditionalFlow.RoutingRequest",
+        "reason": "Roslyn declared property 'Sample.ConditionalFlow.RoutingRequest.Region' in 'Sample.ConditionalFlow.RoutingRequest'."
+      },
+      "metadata": {}
+    }
+  ],
+  "diagnostics": []
+}

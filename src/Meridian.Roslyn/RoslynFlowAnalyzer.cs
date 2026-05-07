@@ -62,6 +62,8 @@ public sealed class RoslynFlowAnalyzer
             new DependencyInjectionAnalyzer(sourceFilter, graphFactory),
             new MediatRDeclarationAnalyzer(sourceFilter, graphFactory, mediatrClassifier),
             new MediatRCallSiteAnalyzer(sourceFilter, graphFactory, mediatrClassifier),
+            new CommunityToolkitMvvmAnalyzer(sourceFilter, graphFactory),
+            new ConditionalFlowAnalyzer(sourceFilter, graphFactory),
             new EfCoreAnalyzer(sourceFilter, graphFactory, efCoreClassifier),
             new ReflectionAnalyzer(sourceFilter, graphFactory),
             new AspNetCoreEndpointAnalyzer(sourceFilter, graphFactory, mediatrClassifier));
@@ -134,6 +136,7 @@ public sealed class RoslynFlowAnalyzer
             {
                 analyzers.DependencyInjectionAnalyzer.AnalyzeConstructorInjection(result, graph);
                 analyzers.MediatRDeclarationAnalyzer.Analyze(result, semanticModel, graph, cancellationToken);
+                analyzers.CommunityToolkitMvvmAnalyzer.Analyze(result, graph);
                 analyzers.EfCoreAnalyzer.AnalyzeType(result, graph);
                 analyzers.AspNetCoreEndpointAnalyzer.AnalyzeType(typeDeclaration, result, semanticModel, graph, cancellationToken);
             }
@@ -172,6 +175,18 @@ public sealed class RoslynFlowAnalyzer
         {
             cancellationToken.ThrowIfCancellationRequested();
             analyzers.ReflectionAnalyzer.AnalyzeTypeOf(typeOfExpression, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var ifStatement in root.DescendantNodes().OfType<IfStatementSyntax>().OrderBy(ifStatement => ifStatement.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            analyzers.ConditionalFlowAnalyzer.AnalyzeIf(ifStatement, semanticModel, graph, cancellationToken);
+        }
+
+        foreach (var switchStatement in root.DescendantNodes().OfType<SwitchStatementSyntax>().OrderBy(switchStatement => switchStatement.SpanStart))
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            analyzers.ConditionalFlowAnalyzer.AnalyzeSwitch(switchStatement, semanticModel, graph, cancellationToken);
         }
 
         foreach (var referenceNode in root.DescendantNodes()
