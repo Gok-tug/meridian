@@ -3,6 +3,7 @@
     "path": "Meridian.sln",
     "projects": [
       "samples\\Sample.AspNetCoreFlow\\Sample.AspNetCoreFlow.csproj",
+      "samples\\Sample.AvaloniaBindings\\Sample.AvaloniaBindings.csproj",
       "samples\\Sample.BasicCalls\\Sample.BasicCalls.csproj",
       "samples\\Sample.ConditionalFlow\\Sample.ConditionalFlow.csproj",
       "samples\\Sample.DependencyInjection\\Sample.DependencyInjection.csproj",

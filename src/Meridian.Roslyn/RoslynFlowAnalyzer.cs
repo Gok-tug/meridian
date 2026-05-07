@@ -64,6 +64,7 @@ public sealed class RoslynFlowAnalyzer
             new MediatRCallSiteAnalyzer(sourceFilter, graphFactory, mediatrClassifier),
             new CommunityToolkitMvvmAnalyzer(sourceFilter, graphFactory),
             new ConditionalFlowAnalyzer(sourceFilter, graphFactory),
+            new AvaloniaAxamlBindingAnalyzer(sourceFilter, graphFactory),
             new EfCoreAnalyzer(sourceFilter, graphFactory, efCoreClassifier),
             new ReflectionAnalyzer(sourceFilter, graphFactory),
             new AspNetCoreEndpointAnalyzer(sourceFilter, graphFactory, mediatrClassifier));
@@ -111,6 +112,8 @@ public sealed class RoslynFlowAnalyzer
                 analyzers,
                 cancellationToken);
         }
+
+        analyzers.AvaloniaAxamlBindingAnalyzer.AnalyzeProject(project, compilation, graph, cancellationToken);
     }
 
     private static async Task AnalyzeDocumentAsync(

@@ -48,7 +48,7 @@ It does not perform:
 - full interprocedural dataflow,
 - runtime dynamic dispatch resolution,
 - path-sensitive control-flow or branch reachability analysis beyond conservative `branches_on` and `switches_on` preview edges,
-- XAML/View-ViewModel binding analysis,
+- UI binding behavior beyond conservative typed Avalonia AXAML preview facts,
 - arbitrary reflection or string-based member resolution.
 
 `reads` and member-level `writes` edges describe direct source member access in an ordinary method body. `branches_on` and `switches_on` edges describe direct source symbols referenced by conditions and case labels, not which branch executes. Entity-level EF Core `writes` edges describe direct static DbSet/DbContext mutation calls when the entity type is known. None of these forms proves a runtime path always reads, writes, or selects that target.
@@ -161,6 +161,12 @@ Source-generator-heavy projects require special care.
 Meridian filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
 
 Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm has narrow preview support: `[RelayCommand]` methods can produce synthetic `mvvm_command` nodes and `[ObservableProperty]` fields can produce synthetic public `property` nodes. Other source-generator outputs, Toolkit options, and generated code bodies are still not analyzed.
+
+## Avalonia AXAML binding limits
+
+Avalonia AXAML support is a static typed-scope preview. Meridian can resolve simple `{Binding ...}` and `{CompiledBinding ...}` paths when `x:Class`, `x:DataType`, `DataTemplate x:DataType`, or `DataTemplate DataType="{x:Type ...}"` gives a source-resolved type.
+
+It does not model Avalonia runtime binding behavior, code-behind `DataContext` assignment, DI or navigation-created view models, ViewLocator conventions, converters, `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths. Unsupported binding shapes produce diagnostics instead of guessed `binds_to` edges.
 
 ## Native/Rust interop limits
 

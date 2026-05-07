@@ -390,18 +390,12 @@ Not in scope:
 - turning cache or incremental analysis on by default before correctness and stale-graph behavior are proven
 - adding cache storage, cache lookup paths, scan flags, cache-hit metrics, or graph schema changes
 
-## 0.6.0-alpha.1 — UI bindings, source-generator graph preview, and conditional flow research
+## 0.6.0-alpha.1 — Source-generator graph preview and conditional flow research
 
-Goal: close major blind spots that matter for desktop/UI-heavy .NET applications, generated MVVM members, and static conditions that select a route.
+Goal: close major blind spots around generated MVVM members and static conditions that select a route.
 
 Scope:
 
-- XAML/View-ViewModel binding analyzer research:
-  - Avalonia and WPF view-to-ViewModel association patterns
-  - bindings from XAML properties to ViewModel properties
-  - command bindings to ViewModel methods or command properties
-  - command bindings to CommunityToolkit.Mvvm generated command properties
-  - diagnostics when bindings cannot be resolved statically
 - CommunityToolkit.Mvvm source-generator-aware graph preview:
   - `[RelayCommand]` generated command property awareness
   - `[ObservableProperty]` generated public property awareness
@@ -412,15 +406,35 @@ Scope:
   - method-level `switches_on` or `branches_on` edges to properties, fields, enum types, and enum members
   - conservative branch metadata that records the condition text and source location
   - no inferred runtime path when a condition cannot be statically tied to known symbols
-- golden-file samples for UI binding and conditional routing patterns
+- golden-file samples for generated MVVM member and conditional routing patterns
 
 Not in scope:
 
-- complete XAML runtime behavior
-- arbitrary binding converters, reflection-heavy bindings, or dynamic DataContext inference
 - full source-generator execution or generated-code inclusion by default
 - full symbolic execution or path-sensitive dataflow
 - proving that a branch is reachable at runtime
+
+## 0.6.0-alpha.2 — Avalonia AXAML typed binding preview
+
+Goal: add conservative static UI binding facts for Avalonia apps without claiming full XAML runtime behavior.
+
+Scope:
+
+- Avalonia AXAML file discovery under each analyzed project with generated/bin/obj exclusions
+- `x:Class`, `x:DataType`, `DataTemplate x:DataType`, and `DataTemplate DataType="{x:Type ...}"` resolution through XML namespace aliases
+- simple `{Binding Property}`, `{Binding Path=Property}`, and `{CompiledBinding Property}` path parsing
+- `Command="{Binding SaveCommand}"` resolution to source command properties or generated CommunityToolkit.Mvvm `[RelayCommand]` nodes
+- generated `[ObservableProperty]` property resolution through the same Toolkit naming helper as the C# analyzer
+- `binds_to` edges from typed views to ViewModel properties, generated commands, and static template scopes
+- low-noise diagnostics for parse failures, unresolved types, unscoped bindings, unresolved members, and unsupported runtime/dynamic shapes
+- `Sample.AvaloniaBindings` golden coverage
+
+Not in scope:
+
+- complete Avalonia or XAML runtime behavior
+- WPF binding claims
+- DataContext inference from code-behind, DI, navigation, or ViewLocator execution
+- converter, `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexer, or arbitrary control-tree semantic resolution
 
 ## 0.7.0-alpha.1 — Runtime wiring and native boundary preview
 

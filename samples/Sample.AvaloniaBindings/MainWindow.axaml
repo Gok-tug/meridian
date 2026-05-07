@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Sample.AvaloniaBindings.ViewModels"
+        x:Class="Sample.AvaloniaBindings.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel">
+  <StackPanel>
+    <TextBlock Text="{Binding Title}" />
+    <TextBox Text="{Binding SearchText, Converter={StaticResource TrimConverter}}" />
+    <Button Command="{Binding SaveCommand}" />
+    <ItemsControl ItemsSource="{Binding Expansions}">
+      <ItemsControl.ItemTemplate>
+        <DataTemplate x:DataType="vm:TextExpansionItem">
+          <StackPanel>
+            <TextBlock Text="{CompiledBinding Name}" />
+            <TextBlock Text="{Binding Replacement}" />
+            <CheckBox IsChecked="{Binding IsEnabled}" />
+            <Button Command="{Binding #Root.((vm:MainWindowViewModel)DataContext).RemoveExpansionCommand}"
+                    CommandParameter="{Binding}" />
+            <TextBlock Text="{Binding $parent[Window].DataContext.Title}" />
+          </StackPanel>
+        </DataTemplate>
+      </ItemsControl.ItemTemplate>
+    </ItemsControl>
+  </StackPanel>
+</Window>

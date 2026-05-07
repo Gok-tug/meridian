@@ -206,8 +206,8 @@ Positive signal:
 
 Observed recall gaps:
 
-- Avalonia/XAML bindings are not emitted as graph facts yet. Examples include `x:DataType`, `DataContext`, `Binding`, and `Command` markup.
-- Initial `0.6.0-alpha.1` work adds narrow CommunityToolkit.Mvvm generated-member preview facts, but this audit predates that validation and still needs a repeated CrossMacro scan before updating the recall baseline.
+- `0.6.0-alpha.2` adds a narrow Avalonia AXAML static binding preview for typed scopes. A 2026-05-07 local smoke scan of CrossMacro UI produced 384 `binds_to` edges with 25 diagnostics; a Quasarr smoke scan produced 634 `binds_to` edges with 234 diagnostics.
+- Runtime Avalonia binding behavior remains outside graph coverage: code-behind/DI `DataContext`, ViewLocator conventions, converters, `RelativeSource`, `ElementName`, `MultiBinding`, untyped `$parent[...]`, and arbitrary control-tree paths are diagnostics or source-inspection work.
 - CLI command/router wiring through resolver dictionaries, delegates, and factories is runtime wiring and remains outside current static graph coverage.
 - Native boundaries such as `DllImport` / `LibraryImport` declarations are not first-class graph facts yet.
 - Advanced DI factories are only partly covered. Direct generic registrations and direct `new Implementation(...)` factories work; delegate factories, `.Create()` factory calls, and `Func<T>` patterns remain planned. A narrow direct `GetRequiredService<TImplementation>()` alias pattern was prioritized for alpha4 hardening because it is source-resolved and common in CrossMacro.

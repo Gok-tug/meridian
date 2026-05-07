@@ -340,4 +340,4 @@ The MCP server should:
 - not expose source file contents,
 - avoid returning huge graph payloads by default,
 - include confidence by default and make detailed evidence available on request so agents do not overstate uncertain links,
-- surface graph-absence limitations when facts have not been emitted, trust CommunityToolkit and conditional-flow facts only when present in the loaded graph, and avoid inventing unsupported XAML binding, CLI runtime routing, or native interop facts.
+- surface graph-absence limitations when facts have not been emitted, trust CommunityToolkit, conditional-flow, and typed Avalonia AXAML `binds_to` facts only when present in the loaded graph, and avoid inventing unsupported XAML runtime binding, CLI runtime routing, or native interop facts.

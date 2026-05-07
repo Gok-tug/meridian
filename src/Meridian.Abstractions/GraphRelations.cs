@@ -9,6 +9,7 @@ public static class GraphRelations
     public const string GeneratedFrom = "generated_from";
     public const string BranchesOn = "branches_on";
     public const string SwitchesOn = "switches_on";
+    public const string BindsTo = "binds_to";
     public const string Injects = "injects";
     public const string RegisteredAs = "registered_as";
     public const string ImplementedBy = "implemented_by";

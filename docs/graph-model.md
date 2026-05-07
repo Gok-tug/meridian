@@ -116,6 +116,7 @@ reads
 generated_from
 branches_on
 switches_on
+binds_to
 injects
 registered_as
 implemented_by
@@ -138,6 +139,7 @@ Relation meanings:
 | `generated_from` | Source-generator-aware synthetic graph fact was generated from a source field or method |
 | `branches_on` | Method-level `if` condition references a source-resolved property, field, enum type, enum member, or simple constant |
 | `switches_on` | Method-level `switch` expression or case label references a source-resolved property, field, enum type, enum member, or simple constant |
+| `binds_to` | Typed Avalonia AXAML binding or static template scope resolves from a view to a ViewModel type, property, or generated command |
 | `sends` | Method or endpoint dispatches a mediator-style request, command, or query |
 | `publishes` | Method or endpoint publishes a mediator-style notification |
 | `handled_by` | Message/request handled by handler type |

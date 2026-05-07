@@ -14,7 +14,12 @@ internal sealed class RoslynSourceFilter
 
     public bool IsAnalyzableDocument(Document document)
     {
-        return IsAnalyzablePath(document.FilePath);
+        return IsAnalyzableFilePath(document.FilePath);
+    }
+
+    public bool IsAnalyzableFilePath(string? filePath)
+    {
+        return !string.IsNullOrWhiteSpace(filePath) && !IsGeneratedPath(filePath);
     }
 
     public bool HasAnalyzableSourceLocation(ISymbol symbol)
@@ -46,12 +51,7 @@ internal sealed class RoslynSourceFilter
 
     private bool IsAnalyzableSourceLocation(Location location)
     {
-        return location.IsInSource && IsAnalyzablePath(location.SourceTree?.FilePath);
-    }
-
-    private bool IsAnalyzablePath(string? filePath)
-    {
-        return !string.IsNullOrWhiteSpace(filePath) && !IsGeneratedPath(filePath);
+        return location.IsInSource && IsAnalyzableFilePath(location.SourceTree?.FilePath);
     }
 
     private bool IsGeneratedPath(string filePath)

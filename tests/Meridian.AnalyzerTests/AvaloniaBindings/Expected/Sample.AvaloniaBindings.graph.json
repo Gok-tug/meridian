@@ -1,0 +1,740 @@
+{
+  "schema_version": "0.1",
+  "generator": "Meridian",
+  "generator_version": "0.6.0-alpha.2",
+  "root": ".",
+  "nodes": [
+    {
+      "id": "field:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "label": "MainWindowViewModel._searchText",
+      "kind": "field",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "source_file": "ViewModels.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "private",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "is_const": "false",
+        "is_readonly": "false",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+      "label": "MainWindowViewModel.OnRemoveExpansion",
+      "kind": "method",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+      "source_file": "ViewModels.cs",
+      "source_location": "L25",
+      "metadata": {}
+    },
+    {
+      "id": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "label": "MainWindowViewModel.SaveAsync",
+      "kind": "method",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "source_file": "ViewModels.cs",
+      "source_location": "L18",
+      "metadata": {}
+    },
+    {
+      "id": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand",
+      "label": "MainWindowViewModel.RemoveExpansionCommand",
+      "kind": "mvvm_command",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand",
+      "source_file": "ViewModels.cs",
+      "source_location": "L25",
+      "metadata": {
+        "command_type": "IRelayCommand",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "generated_from_attribute": "RelayCommand",
+        "source_method": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()"
+      }
+    },
+    {
+      "id": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand",
+      "label": "MainWindowViewModel.SaveCommand",
+      "kind": "mvvm_command",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand",
+      "source_file": "ViewModels.cs",
+      "source_location": "L18",
+      "metadata": {
+        "command_type": "IAsyncRelayCommand",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "generated_from_attribute": "RelayCommand",
+        "source_method": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions",
+      "label": "MainWindowViewModel.Expansions",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions",
+      "source_file": "ViewModels.cs",
+      "source_location": "L15",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "System.Collections.Generic.IReadOnlyList<Sample.AvaloniaBindings.ViewModels.TextExpansionItem>"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy",
+      "label": "MainWindowViewModel.IsBusy",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy",
+      "source_file": "ViewModels.cs",
+      "source_location": "L13",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Boolean"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText",
+      "label": "MainWindowViewModel.SearchText",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText",
+      "source_file": "ViewModels.cs",
+      "source_location": "L9",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "generated_from_attribute": "ObservableProperty",
+        "generated_from_member": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title",
+      "label": "MainWindowViewModel.Title",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title",
+      "source_file": "ViewModels.cs",
+      "source_location": "L11",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_getter": "true",
+        "has_setter": "false",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled",
+      "label": "TextExpansionItem.IsEnabled",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled",
+      "source_file": "ViewModels.cs",
+      "source_location": "L37",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.Boolean"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name",
+      "label": "TextExpansionItem.Name",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name",
+      "source_file": "ViewModels.cs",
+      "source_location": "L33",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement",
+      "label": "TextExpansionItem.Replacement",
+      "kind": "property",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement",
+      "source_file": "ViewModels.cs",
+      "source_location": "L35",
+      "metadata": {
+        "accessibility": "public",
+        "containing_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_getter": "true",
+        "has_setter": "true",
+        "is_static": "false",
+        "member_type": "System.String"
+      }
+    },
+    {
+      "id": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "label": "MainWindowViewModel",
+      "kind": "type",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "source_file": "ViewModels.cs",
+      "source_location": "L6",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "label": "TextExpansionItem",
+      "kind": "type",
+      "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "source_file": "ViewModels.cs",
+      "source_location": "L31",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "label": "MainWindow",
+      "kind": "type",
+      "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+      "source_file": "Views.cs",
+      "source_location": "L3",
+      "metadata": {
+        "type_kind": "class"
+      }
+    },
+    {
+      "id": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.TextExpansionView",
+      "label": "TextExpansionView",
+      "kind": "type",
+      "symbol": "Sample.AvaloniaBindings.Views.TextExpansionView",
+      "source_file": "Views.cs",
+      "source_location": "L5",
+      "metadata": {
+        "type_kind": "class"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "source": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 27,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+        "reason": "Roslyn resolved member reference 'IsBusy' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "target": "field:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 20,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+        "reason": "Roslyn resolved member reference '_searchText' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "target": "field:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "relation": "writes",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 20,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+        "reason": "Roslyn resolved member reference '_searchText' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title",
+      "relation": "reads",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 20,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+        "reason": "Roslyn resolved member reference 'Title' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand",
+      "target": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 25,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand' from 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand",
+      "target": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 18,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand' from 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText",
+      "target": "field:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "relation": "generated_from",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText' from 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "field:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared field 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel._searchText' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 25,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared method 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.OnRemoveExpansion()' in type 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "method:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 18,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared method 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveAsync()' in type 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 25,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 18,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 15,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 13,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.IsBusy' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText",
+      "relation": "contains",
+      "confidence": "INFERRED",
+      "confidence_score": 0.9,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 9,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "CommunityToolkit.Mvvm source generator creates 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 11,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title' in 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 37,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled' in 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 33,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name' in 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement",
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "ViewModels.cs",
+        "line": 35,
+        "symbol": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "reason": "Roslyn declared property 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement' in 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem'."
+      },
+      "metadata": {}
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 17,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'RemoveExpansionCommand' on 'Command' resolved to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.RemoveExpansionCommand'."
+      },
+      "metadata": {
+        "axaml_element": "Button",
+        "binding_attribute": "Command",
+        "binding_kind": "binding",
+        "binding_path": "RemoveExpansionCommand",
+        "binding_scope": "typed_datacontext_cast",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_converter": "false",
+        "resolved_path_segment": "RemoveExpansionCommand"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "mvvm_command:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 9,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'SaveCommand' on 'Command' resolved to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SaveCommand'."
+      },
+      "metadata": {
+        "axaml_element": "Button",
+        "binding_attribute": "Command",
+        "binding_kind": "binding",
+        "binding_path": "SaveCommand",
+        "binding_scope": "x_data_type",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_converter": "false",
+        "resolved_path_segment": "SaveCommand"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 10,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'Expansions' on 'ItemsSource' resolved to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Expansions'."
+      },
+      "metadata": {
+        "axaml_element": "ItemsControl",
+        "binding_attribute": "ItemsSource",
+        "binding_kind": "binding",
+        "binding_path": "Expansions",
+        "binding_scope": "x_data_type",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_converter": "false",
+        "resolved_path_segment": "Expansions"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 8,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'SearchText' on 'Text' resolved to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.SearchText'."
+      },
+      "metadata": {
+        "axaml_element": "TextBox",
+        "binding_attribute": "Text",
+        "binding_kind": "binding",
+        "binding_path": "SearchText",
+        "binding_scope": "x_data_type",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_converter": "true",
+        "resolved_path_segment": "SearchText"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 7,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'Title' on 'Text' resolved to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel.Title'."
+      },
+      "metadata": {
+        "axaml_element": "TextBlock",
+        "binding_attribute": "Text",
+        "binding_kind": "binding",
+        "binding_path": "Title",
+        "binding_scope": "x_data_type",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+        "has_converter": "false",
+        "resolved_path_segment": "Title"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 16,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'IsEnabled' on 'IsChecked' resolved to 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.IsEnabled'."
+      },
+      "metadata": {
+        "axaml_element": "CheckBox",
+        "binding_attribute": "IsChecked",
+        "binding_kind": "binding",
+        "binding_path": "IsEnabled",
+        "binding_scope": "data_template",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_converter": "false",
+        "resolved_path_segment": "IsEnabled"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 14,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML compiled_binding binding 'Name' on 'Text' resolved to 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Name'."
+      },
+      "metadata": {
+        "axaml_element": "TextBlock",
+        "binding_attribute": "Text",
+        "binding_kind": "compiled_binding",
+        "binding_path": "Name",
+        "binding_scope": "data_template",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_converter": "false",
+        "resolved_path_segment": "Name"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "property:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 15,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML binding binding 'Replacement' on 'Text' resolved to 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem.Replacement'."
+      },
+      "metadata": {
+        "axaml_element": "TextBlock",
+        "binding_attribute": "Text",
+        "binding_kind": "binding",
+        "binding_path": "Replacement",
+        "binding_scope": "data_template",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+        "has_converter": "false",
+        "resolved_path_segment": "Replacement"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 5,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML static binding scope 'x_data_type' connects view 'Sample.AvaloniaBindings.Views.MainWindow' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {
+        "binding_scope": "x_data_type",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.MainWindow",
+      "target": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.TextExpansionItem",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "MainWindow.axaml",
+        "line": 12,
+        "symbol": "Sample.AvaloniaBindings.Views.MainWindow",
+        "reason": "AXAML static binding scope 'data_template' connects view 'Sample.AvaloniaBindings.Views.MainWindow' to 'Sample.AvaloniaBindings.ViewModels.TextExpansionItem'."
+      },
+      "metadata": {
+        "binding_scope": "data_template",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.TextExpansionItem"
+      }
+    },
+    {
+      "source": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.Views.TextExpansionView",
+      "target": "type:Sample.AvaloniaBindings:Sample.AvaloniaBindings.ViewModels.MainWindowViewModel",
+      "relation": "binds_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1,
+      "evidence": {
+        "file": "DataTemplates.axaml",
+        "line": 5,
+        "symbol": "Sample.AvaloniaBindings.Views.TextExpansionView",
+        "reason": "AXAML static binding scope 'data_template' connects view 'Sample.AvaloniaBindings.Views.TextExpansionView' to 'Sample.AvaloniaBindings.ViewModels.MainWindowViewModel'."
+      },
+      "metadata": {
+        "binding_scope": "data_template",
+        "binding_scope_type": "Sample.AvaloniaBindings.ViewModels.MainWindowViewModel"
+      }
+    }
+  ],
+  "diagnostics": [
+    {
+      "id": "MERIDIAN_AXAML_BINDING_UNSUPPORTED",
+      "severity": "info",
+      "message": "AXAML binding '$parent[Window].DataContext.Title' uses unsupported runtime or control-tree binding features.",
+      "source_file": "MainWindow.axaml",
+      "source_location": "L19"
+    }
+  ]
+}

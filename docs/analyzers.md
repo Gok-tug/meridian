@@ -19,7 +19,7 @@ Analyzers should:
 
 Framework-aware analysis should run in deterministic passes:
 
-1. Roslyn foundation facts: symbols, locations, type/method/member nodes, `contains`, direct `calls`, member `reads`/`writes`/`uses`, conditional-flow preview facts, source-generator preview facts, and interface implementations.
+1. Roslyn foundation facts: symbols, locations, type/method/member nodes, `contains`, direct `calls`, member `reads`/`writes`/`uses`, conditional-flow preview facts, source-generator preview facts, typed Avalonia AXAML binding preview facts, and interface implementations.
 2. Framework facts: DI registrations, constructor injection, endpoints, MediatR request/handler declarations, and MediatR sends/publishes.
 3. Cross-framework linking: combine facts into higher-level flow paths such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, sort deterministically, and report unsupported or ambiguous behavior.
@@ -41,6 +41,7 @@ Responsibilities:
 - emit `uses` for enum references and `nameof(...)` references,
 - emit method-level `branches_on` and `switches_on` preview edges for directly resolved symbols in simple `if` and `switch` conditions,
 - synthesize narrow CommunityToolkit.Mvvm generated-member preview facts from `[ObservableProperty]` and `[RelayCommand]` source attributes,
+- resolve conservative typed Avalonia AXAML binding preview facts after C# symbol analysis,
 - skip generated/bin/obj source noise by default,
 - map symbols to source locations,
 - provide shared semantic services to other analyzers.
@@ -55,6 +56,7 @@ TaskExecutor.Execute --uses--> ExecutionMode.RuntimeSigning
 RoutingDecider.Decide --branches_on--> RoutingMode.Fast
 RoutingDecider.Decide --switches_on--> RoutingMode.Offline
 RecordingViewModel.ToggleRecordingCommand --generated_from--> RecordingViewModel.ToggleRecording
+MainWindow --binds_to--> RecordingViewModel.ToggleRecordingCommand
 ```
 
 Confidence:
@@ -62,7 +64,7 @@ Confidence:
 - `EXTRACTED` when Roslyn resolves the target symbol.
 - `AMBIGUOUS` when overload or dynamic dispatch cannot be resolved precisely.
 
-Member references and conditional-flow facts are intentionally limited to ordinary methods and conservative. Meridian does not extract constructor, accessor, or operator member references, and conditional edges do not prove branch reachability, path sensitivity, interprocedural dataflow, runtime dispatch resolution, or XAML binding behavior.
+Member references and conditional-flow facts are intentionally limited to ordinary methods and conservative. Meridian does not extract constructor, accessor, or operator member references, and conditional edges do not prove branch reachability, path sensitivity, interprocedural dataflow, runtime dispatch resolution, or UI binding behavior.
 
 ## Conditional flow analyzer
 
@@ -89,7 +91,22 @@ Responsibilities:
 - synthesize `mvvm_command` nodes with async command metadata when the source method is async,
 - connect generated nodes back to source fields or methods with `generated_from`.
 
-The analyzer does not include generated `.g.cs` files, execute source generators, model command runtime behavior, or resolve XAML bindings.
+The analyzer does not include generated `.g.cs` files, execute source generators, or model command runtime behavior.
+
+## Avalonia AXAML binding analyzer
+
+Preview support is implemented for static AXAML binding facts when a binding scope is typed.
+
+Responsibilities:
+
+- discover project-local `.axaml` files while reusing generated/bin/obj source filters,
+- resolve `x:Class`, `x:DataType`, `DataTemplate x:DataType`, and `DataTemplate DataType="{x:Type ...}"` through XML namespace aliases,
+- parse simple `{Binding Property}` / `{Binding Path=Property}` and `{CompiledBinding Property}` expressions,
+- resolve the first path segment to source properties, generated `[ObservableProperty]` properties, and `[RelayCommand]` commands,
+- connect typed views to resolved properties, commands, and static view-model/data-template scopes with `binds_to`,
+- emit diagnostics for unscoped, unresolved, parse-failed, or unsupported binding shapes.
+
+The analyzer does not execute Avalonia, infer runtime `DataContext`, evaluate ViewLocator conventions, resolve converters, or model `MultiBinding`, `RelativeSource`, `ElementName`, `Source`, untyped `$parent[...]`, indexers, or arbitrary control-tree paths.
 
 ## ASP.NET Core analyzer
 

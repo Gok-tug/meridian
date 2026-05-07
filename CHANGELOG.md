@@ -8,6 +8,14 @@ Meridian follows prerelease SemVer while the project is in alpha.
 
 No unreleased changes.
 
+## 0.6.0-alpha.2 — Avalonia AXAML typed binding preview
+
+### Added
+
+- Avalonia AXAML static binding preview for typed scopes with `binds_to` edges from views to ViewModel properties, generated Toolkit commands, and static template ViewModel types.
+- `Sample.AvaloniaBindings` with golden-file coverage for `x:DataType`, simple `{Binding ...}` / `{CompiledBinding ...}` paths, generated `[ObservableProperty]` properties, generated `[RelayCommand]` commands, nested `DataTemplate` scopes, typed DataContext casts, and unsupported dynamic binding diagnostics.
+- MCP schema and graph summary relation awareness for the new `binds_to` relation.
+
 ## 0.6.0-alpha.1 — MVVM generated members and conditional flow
 
 ### Added

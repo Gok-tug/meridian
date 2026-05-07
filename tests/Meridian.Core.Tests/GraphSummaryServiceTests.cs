@@ -151,6 +151,41 @@ public sealed class GraphSummaryServiceTests
     }
 
     [Fact]
+    public void Agent_summary_counts_binds_to_without_marking_it_agent_relevant()
+    {
+        var graph = new GraphDocument
+        {
+            Nodes =
+            [
+                Node("type:SettingsView", "SettingsView", GraphNodeKinds.Type),
+                Node("property:SettingsViewModel.Title", "SettingsViewModel.Title", GraphNodeKinds.Property),
+                Node("property:SettingsViewModel.SearchText", "SettingsViewModel.SearchText", GraphNodeKinds.Property),
+                Node("mvvm_command:SettingsViewModel.SaveCommand", "SettingsViewModel.SaveCommand", GraphNodeKinds.MvvmCommand),
+                Node("type:OrderService", "OrderService", GraphNodeKinds.Type),
+                Node("type:OrderRepository", "OrderRepository", GraphNodeKinds.Type)
+            ],
+            Edges =
+            [
+                Edge("type:SettingsView", "property:SettingsViewModel.Title", GraphRelations.BindsTo),
+                Edge("type:SettingsView", "property:SettingsViewModel.SearchText", GraphRelations.BindsTo),
+                Edge("type:SettingsView", "mvvm_command:SettingsViewModel.SaveCommand", GraphRelations.BindsTo),
+                Edge("type:OrderService", "type:OrderRepository", GraphRelations.Calls)
+            ]
+        };
+
+        var summary = new GraphSummaryService().Summarize(graph, new GraphSummaryOptions { MaxItemsPerSection = 10 });
+        var view = Assert.Single(summary.CentralNodes, node => node.Node.Id == "type:SettingsView");
+        var service = Assert.Single(summary.CentralNodes, node => node.Node.Id == "type:OrderService");
+
+        Assert.Equal(3, summary.Statistics.RelationCounts[GraphRelations.BindsTo]);
+        Assert.Equal(3, view.NonContainmentDegree);
+        Assert.Equal(1, view.RelationDiversity);
+        Assert.Equal(3, view.RelationCounts[GraphRelations.BindsTo]);
+        Assert.DoesNotContain(view.Reasons, reason => reason.Contains("agent-relevant", StringComparison.OrdinalIgnoreCase));
+        Assert.Contains(service.Reasons, reason => reason.Contains("agent-relevant", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
     public void Agent_summary_compact_budget_caps_sections_and_reports_truncation()
     {
         var graph = CreateLargeSummaryGraph();

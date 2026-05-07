@@ -170,6 +170,7 @@ Current alpha builds emit:
 - ordinary-method `reads`, `writes`, and `uses` edges for directly resolved source members and enum references
 - method-level `branches_on` and `switches_on` preview edges for directly resolved simple conditions
 - CommunityToolkit.Mvvm `[ObservableProperty]` and `[RelayCommand]` generated-member preview nodes and `generated_from` edges
+- typed Avalonia AXAML static binding preview edges with `binds_to` for simple bindings, generated Toolkit members, and static template scopes
 - constructor injection and generic DI registration edges, including narrow direct `new` and direct `GetRequiredService<TImplementation>()` factory lambdas
 - MediatR declaration, `sends`, `publishes`, and `handled_by` edges
 - EF Core `DbContext` containment, `queries`, and `writes` edges for statically resolved entity types
@@ -181,7 +182,7 @@ Current alpha builds do not yet emit:
 - broad DI dataflow beyond direct generic registrations and narrow factory aliases
 - CLI/runtime command routing through resolver dictionaries, delegates, or factories
 - native/Rust interop boundary detection
-- XAML/View-ViewModel binding analysis
+- XAML runtime binding behavior beyond conservative typed Avalonia AXAML scopes
 - full CommunityToolkit.Mvvm source-generator behavior beyond the narrow generated-member preview
 
 When a Meridian tool reports a limitation, do not fill the gap by guessing. Use normal code inspection separately and label those findings as outside Meridian's graph facts.

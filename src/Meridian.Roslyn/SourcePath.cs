@@ -11,6 +11,11 @@ internal static class SourcePath
             return null;
         }
 
+        return RelativeFile(filePath, rootDirectory);
+    }
+
+    public static string RelativeFile(string filePath, string rootDirectory)
+    {
         return Normalize(Path.GetRelativePath(rootDirectory, filePath));
     }
 

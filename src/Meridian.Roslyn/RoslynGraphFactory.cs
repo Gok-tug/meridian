@@ -289,6 +289,17 @@ internal sealed class RoslynGraphFactory
         };
     }
 
+    public GraphEvidence CreateEvidence(string filePath, int? line, string? symbol, string reason)
+    {
+        return new GraphEvidence
+        {
+            File = SourcePath.RelativeFile(filePath, _rootDirectory),
+            Line = line,
+            Symbol = symbol,
+            Reason = reason
+        };
+    }
+
     public GraphDiagnostic CreateDiagnostic(Location location, string id, string severity, string message)
     {
         return new GraphDiagnostic
@@ -298,6 +309,18 @@ internal sealed class RoslynGraphFactory
             Message = message,
             SourceFile = SourcePath.RelativeFile(location, _rootDirectory),
             SourceLocation = SourcePath.SourceLocation(location)
+        };
+    }
+
+    public GraphDiagnostic CreateDiagnostic(string filePath, int? line, string id, string severity, string message)
+    {
+        return new GraphDiagnostic
+        {
+            Id = id,
+            Severity = severity,
+            Message = message,
+            SourceFile = SourcePath.RelativeFile(filePath, _rootDirectory),
+            SourceLocation = line is null ? null : $"L{line}"
         };
     }
 }

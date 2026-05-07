@@ -6,9 +6,6 @@ namespace Meridian.Roslyn;
 
 internal sealed class CommunityToolkitMvvmAnalyzer
 {
-    private const string ComponentModelNamespace = "CommunityToolkit.Mvvm.ComponentModel";
-    private const string InputNamespace = "CommunityToolkit.Mvvm.Input";
-
     private readonly RoslynSourceFilter _sourceFilter;
     private readonly RoslynGraphFactory _graphFactory;
 
@@ -26,7 +23,7 @@ internal sealed class CommunityToolkitMvvmAnalyzer
             .OfType<IFieldSymbol>()
             .Where(field => !field.IsImplicitlyDeclared &&
                 _sourceFilter.HasAnalyzableSourceLocation(field) &&
-                HasAttribute(field, "ObservablePropertyAttribute", ComponentModelNamespace))
+                CommunityToolkitMvvmGeneratedMemberResolver.HasObservablePropertyAttribute(field))
             .OrderBy(field => field.ToDisplayString(SymbolDisplay.MemberFormat), StringComparer.Ordinal))
         {
             AnalyzeObservableProperty(typeResult.Node, field, graph);
@@ -37,7 +34,7 @@ internal sealed class CommunityToolkitMvvmAnalyzer
             .Where(method => method.MethodKind == MethodKind.Ordinary &&
                 !method.IsImplicitlyDeclared &&
                 _sourceFilter.HasAnalyzableSourceLocation(method) &&
-                HasAttribute(method, "RelayCommandAttribute", InputNamespace))
+                CommunityToolkitMvvmGeneratedMemberResolver.HasRelayCommandAttribute(method))
             .OrderBy(method => method.ToDisplayString(SymbolDisplay.MethodFormat), StringComparer.Ordinal))
         {
             AnalyzeRelayCommand(typeResult.Node, method, graph);
@@ -46,7 +43,7 @@ internal sealed class CommunityToolkitMvvmAnalyzer
 
     private void AnalyzeObservableProperty(GraphNode typeNode, IFieldSymbol fieldSymbol, GraphBuilder graph)
     {
-        var propertyName = GeneratedPropertyName(fieldSymbol.Name);
+        var propertyName = CommunityToolkitMvvmGeneratedMemberResolver.GeneratedPropertyName(fieldSymbol.Name);
         if (string.IsNullOrWhiteSpace(propertyName) || HasSourceProperty(fieldSymbol.ContainingType, propertyName))
         {
             return;
@@ -63,14 +60,14 @@ internal sealed class CommunityToolkitMvvmAnalyzer
 
     private void AnalyzeRelayCommand(GraphNode typeNode, IMethodSymbol methodSymbol, GraphBuilder graph)
     {
-        var commandName = GeneratedCommandName(methodSymbol.Name);
+        var commandName = CommunityToolkitMvvmGeneratedMemberResolver.GeneratedCommandName(methodSymbol.Name);
         if (string.IsNullOrWhiteSpace(commandName))
         {
             return;
         }
 
         var methodNode = _graphFactory.CreateMethodNode(methodSymbol);
-        var commandNode = _graphFactory.CreateMvvmCommandNode(methodSymbol, commandName, IsAsyncCommand(methodSymbol));
+        var commandNode = _graphFactory.CreateMvvmCommandNode(methodSymbol, commandName, CommunityToolkitMvvmGeneratedMemberResolver.IsAsyncCommand(methodSymbol));
         var location = _sourceFilter.FirstAnalyzableSourceLocation(methodSymbol);
         graph.AddNode(methodNode);
         graph.AddNode(commandNode);
@@ -115,48 +112,5 @@ internal sealed class CommunityToolkitMvvmAnalyzer
         return typeSymbol.GetMembers(propertyName)
             .OfType<IPropertySymbol>()
             .Any(property => !property.IsImplicitlyDeclared && _sourceFilter.HasAnalyzableSourceLocation(property));
-    }
-
-    private static bool HasAttribute(ISymbol symbol, string metadataName, string namespaceName)
-    {
-        var shortName = metadataName.EndsWith("Attribute", StringComparison.Ordinal)
-            ? metadataName[..^9]
-            : metadataName;
-        return symbol.GetAttributes().Any(attribute =>
-        {
-            var attributeClass = attribute.AttributeClass;
-            if (attributeClass is null)
-            {
-                return false;
-            }
-
-            var nameMatches = attributeClass.Name.Equals(metadataName, StringComparison.Ordinal) ||
-                attributeClass.Name.Equals(shortName, StringComparison.Ordinal);
-            return nameMatches && attributeClass.ContainingNamespace.ToDisplayString().Equals(namespaceName, StringComparison.Ordinal);
-        });
-    }
-
-    private static string? GeneratedPropertyName(string fieldName)
-    {
-        var trimmed = fieldName.StartsWith("m_", StringComparison.Ordinal) ? fieldName[2..] : fieldName.TrimStart('_');
-        return trimmed.Length == 0 ? null : char.ToUpperInvariant(trimmed[0]) + trimmed[1..];
-    }
-
-    private static string GeneratedCommandName(string methodName)
-    {
-        var baseName = methodName.EndsWith("Async", StringComparison.Ordinal) ? methodName[..^"Async".Length] : methodName;
-        if (baseName.StartsWith("On", StringComparison.Ordinal) && baseName.Length > 2 && char.IsUpper(baseName[2]))
-        {
-            baseName = baseName[2..];
-        }
-
-        return baseName + "Command";
-    }
-
-    private static bool IsAsyncCommand(IMethodSymbol methodSymbol)
-    {
-        return methodSymbol.ReturnType is INamedTypeSymbol returnType &&
-            returnType.Name is "Task" or "ValueTask" &&
-            returnType.ContainingNamespace.ToDisplayString().Equals("System.Threading.Tasks", StringComparison.Ordinal);
     }
 }

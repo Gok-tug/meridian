@@ -48,6 +48,7 @@ Later:
 | MCP server | Preview over generated `graph.json` files; no live Roslyn scan during MCP calls; supports `reload_graph` for refreshing the configured graph file in a running server |
 | EF Core | Static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges |
 | Reflection/assembly scanning | Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |
+| Avalonia AXAML bindings | Static typed-scope preview for `x:DataType`, `DataTemplate`, simple bindings, generated Toolkit members, and `binds_to`; runtime binding semantics remain unsupported |
 | Rust/native interop boundaries | Planned |
 
 ## Unsupported until documented

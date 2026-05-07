@@ -9,6 +9,7 @@ internal sealed record RoslynAnalyzerSet(
     MediatRCallSiteAnalyzer MediatRCallSiteAnalyzer,
     CommunityToolkitMvvmAnalyzer CommunityToolkitMvvmAnalyzer,
     ConditionalFlowAnalyzer ConditionalFlowAnalyzer,
+    AvaloniaAxamlBindingAnalyzer AvaloniaAxamlBindingAnalyzer,
     EfCoreAnalyzer EfCoreAnalyzer,
     ReflectionAnalyzer ReflectionAnalyzer,
     AspNetCoreEndpointAnalyzer AspNetCoreEndpointAnalyzer);

@@ -51,6 +51,7 @@ public sealed class MeridianGraphToolService
         GraphRelations.GeneratedFrom,
         GraphRelations.BranchesOn,
         GraphRelations.SwitchesOn,
+        GraphRelations.BindsTo,
         GraphRelations.Injects,
         GraphRelations.RegisteredAs,
         GraphRelations.ImplementedBy,
