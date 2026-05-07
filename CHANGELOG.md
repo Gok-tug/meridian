@@ -6,7 +6,17 @@ Meridian follows prerelease SemVer while the project is in alpha.
 
 ## Unreleased
 
-No unreleased changes.
+### Added
+
+- `query_graph` now accepts `matchKind` (`Contains` default, `Exact`, `Prefix`, `Suffix`, `Token`) and `excludeAnonymousTypes` (default `true`) so substring noise such as `User` matching `UserAgent`, and C# compiler-synthesized `<>f__AnonymousType*` nodes from LINQ projections, no longer drown the agent context window. `Token` mode treats matches as whole identifier words bounded by non-identifier characters.
+- `plan_feature` now returns a deterministic `ScoreBreakdown` per ranked edit point with `TermMatch`, `ExtensionPoint`, `KindBoost`, `Centrality`, `SeedDistance`, and per-term `TermMatchContribution` strengths (`exact`, `token`, `substring`, `metadata`), so agents can explain why a candidate ranked instead of trusting an opaque score.
+- `plan_feature` accepts a `verbosity` parameter (`compact`, `standard`, `detailed`); `compact` omits per-candidate reasons and follow-up queries to fit large solutions in tighter token budgets.
+- `plan_feature` surfaces filename-based `docHints` from well-known repository locations (`docs/`, `.agent/`, `.cursor/rules/`, `.github/`, `AGENTS.md`, `CONTRIBUTING.md`, `ARCHITECTURE.md`, `ROADMAP.md`, `CLAUDE.md`, `README.md`) when filenames overlap goal terms, including a stale-document warning when files have not been modified for over six months. Filename-only matching keeps the feature indexless and zero-overhead; agents decide whether to read the hinted path.
+- `meridian scan` records repository provenance (`generated_at`, `git_commit`, `git_branch`, `git_dirty`) into `graph.json`, and `get_schema` exposes a `freshness` block (`fresh`, `fresh_dirty`, `stale`, `unknown_provenance`, `unknown_repository`, `unknown`) by comparing the recorded commit against the current `.git/HEAD`. Stale graphs are now flagged automatically without re-running Roslyn.
+
+### Changed
+
+- `plan_feature` term scoring is now token-aware: whole-name matches outrank camelCase token matches, which outrank plain substrings, which outrank metadata-only matches. This eliminates the prior failure mode where a substring match (`User` → `UserAgent`) ranked equally with a true name match (`User`).
 
 ## 0.7.0-alpha.1 — Agent-quality and MCP output polish
 

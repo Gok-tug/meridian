@@ -32,7 +32,7 @@ public sealed class MeridianMcpTools
     }
 
     [McpServerTool(Name = "query_graph", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
-    [Description("Typed graph search; do not pass a custom DSL or natural-language question. Use JSON parameters such as text, nodeKind, relation, direction, source, target, and maxResults. " + SeeSchemaNote)]
+    [Description("Typed graph search; do not pass a custom DSL or natural-language question. Use JSON parameters such as text, nodeKind, relation, direction, source, target, matchKind, excludeAnonymousTypes, and maxResults. " + SeeSchemaNote)]
     public GraphSearchResponse QueryGraph(
         [Description("Optional text contained in node id, label, or symbol. This is not a query language.")] string? text = null,
         [Description("Optional node kind filter. Use get_schema first to see values present in this graph.")] string? nodeKind = null,
@@ -42,9 +42,11 @@ public sealed class MeridianMcpTools
         [Description("Optional target node id, label, or symbol for edge filtering.")] string? target = null,
         [Description("Maximum returned nodes and edges. The server caps this to protect the agent context window.")] int? maxResults = null,
         [Description("Include evidence file, line, symbol, and reason for returned edges. Defaults to false for compact bulk responses.")] bool? includeEvidence = null,
-        [Description("Optional edge relations to exclude, such as contains, before result capping.")] string[]? excludeRelations = null)
+        [Description("Optional edge relations to exclude, such as contains, before result capping.")] string[]? excludeRelations = null,
+        [Description("How the text parameter is matched against node id, label, and symbol: Contains (default), Exact, Prefix, Suffix, or Token (whole word, camelCase aware). Use Exact or Token to avoid substring noise such as 'User' matching 'UserAgent'.")] QueryGraphMatchKind matchKind = QueryGraphMatchKind.Contains,
+        [Description("Exclude C# compiler-synthesized anonymous types (for example, '<>f__AnonymousType...') from results. Defaults to true; LINQ projections never need to surface here.")] bool? excludeAnonymousTypes = null)
     {
-        return _service.QueryGraphWithOptions(text, nodeKind, relation, direction, source, target, maxResults, includeEvidence, excludeRelations);
+        return _service.QueryGraphWithOptions(text, nodeKind, relation, direction, source, target, maxResults, includeEvidence, excludeRelations, matchKind, excludeAnonymousTypes);
     }
 
     [McpServerTool(Name = "get_node", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
@@ -108,14 +110,15 @@ public sealed class MeridianMcpTools
     }
 
     [McpServerTool(Name = "plan_feature", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]
-    [Description("Rank likely existing edit points for adding a feature, especially when the new concept is absent from the graph. This is deterministic graph navigation, not an LLM-generated implementation plan. " + SeeSchemaNote)]
+    [Description("Rank likely existing edit points for adding a feature, especially when the new concept is absent from the graph. This is deterministic graph navigation, not an LLM-generated implementation plan. Each ranked edit point includes a ScoreBreakdown explaining its score. " + SeeSchemaNote)]
     public FeaturePlanResponse PlanFeature(
         [Description("Feature goal in natural language, such as 'add a new execution mode'.")] string goal,
         [Description("Optional seed node ids, labels, or symbols that should influence ranking.")] string[]? seedSymbols = null,
         [Description("Optional extra search terms when the goal uses domain vocabulary not yet represented in the graph.")] string[]? terms = null,
-        [Description("Maximum returned ranked edit points. The server caps this to protect the agent context window.")] int? maxResults = null)
+        [Description("Maximum returned ranked edit points. The server caps this to protect the agent context window.")] int? maxResults = null,
+        [Description("Response budget: compact, standard (default), or detailed. compact omits per-candidate reasons and follow-up queries; detailed returns the full reasons. This controls deterministic content shape, not exact token counts.")] string? verbosity = null)
     {
-        return _service.PlanFeature(goal, seedSymbols, terms, maxResults);
+        return _service.PlanFeature(goal, seedSymbols, terms, maxResults, verbosity);
     }
 
     [McpServerTool(Name = "shortest_path", ReadOnly = true, Destructive = false, Idempotent = true, OpenWorld = false, UseStructuredContent = true)]

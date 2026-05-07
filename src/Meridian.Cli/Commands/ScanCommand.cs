@@ -74,6 +74,9 @@ internal static class ScanCommand
             });
             analyzeStopwatch.Stop();
 
+            var provenance = GitProvenanceProbe.Capture(graph.Root ?? inputPath, startedUtc);
+            graph = graph with { Provenance = provenance };
+
             var outputPath = Path.Combine(outputDirectory, "graph.json");
             var exportStopwatch = Stopwatch.StartNew();
             await JsonGraphExporter.WriteAsync(graph, outputPath);

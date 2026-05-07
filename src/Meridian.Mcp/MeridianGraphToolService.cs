@@ -73,25 +73,44 @@ public sealed class MeridianGraphToolService
         "Use get_diagnostics when you need filtered raw diagnostics instead of broad diagnostic counts.",
         "For get_neighbors on service or type nodes, use excludeRelations:[\"contains\"] to reduce declaration-containment noise.",
         "Use get_symbol_summary before broad neighbor traversal when you need compact symbol context.",
-        "Use plan_feature for absent new concepts; it ranks existing extension points instead of pretending the concept exists.",
+        "For query_graph text searches, prefer matchKind:\"Exact\" or matchKind:\"Token\" over the default Contains to avoid substring noise such as 'User' matching 'UserAgent'.",
+        "query_graph excludes anonymous types by default; set excludeAnonymousTypes:false only if you genuinely need LINQ projection types.",
+        "Use plan_feature for absent new concepts; it ranks existing extension points instead of pretending the concept exists. Set verbosity:\"compact\" for minimal context-window usage.",
+        "Each plan_feature edit point includes a deterministic ScoreBreakdown explaining why it ranked; trust the breakdown rather than inferring intent from labels.",
         "No node, edge, or path result means the fact is absent from the loaded Meridian graph, not proof of absence in source code.",
-        "If source changed, run meridian scan and reload_graph before concluding."
+        "If source changed, run meridian scan and reload_graph before concluding.",
+        "Compare get_schema.git.head against the current repository HEAD; if they differ, treat answers about changed files as stale."
     ];
 
     private const char EdgeKeySeparator = '\u001f';
 
     private readonly McpGraphStore _store;
-    private readonly FeaturePlanner _featurePlanner = new();
+    private readonly FeaturePlanner _featurePlanner;
     private readonly GraphSummaryService _summaryService = new();
 
     public MeridianGraphToolService(McpGraphStore store)
+        : this(store, CreateDefaultDocHintProvider(store.Current))
     {
+    }
+
+    public MeridianGraphToolService(McpGraphStore store, IDocHintProvider docHintProvider)
+    {
+        ArgumentNullException.ThrowIfNull(store);
+        ArgumentNullException.ThrowIfNull(docHintProvider);
         _store = store;
+        _featurePlanner = new FeaturePlanner(docHintProvider);
     }
 
     public MeridianGraphToolService(McpGraphContext context)
         : this(new McpGraphStore(context))
     {
+    }
+
+    private static IDocHintProvider CreateDefaultDocHintProvider(McpGraphContext context)
+    {
+        return string.IsNullOrWhiteSpace(context.Graph.Root)
+            ? NullDocHintProvider.Instance
+            : new FilesystemDocHintProvider(context.Graph.Root!);
     }
 
     public SchemaResponse GetSchema()
@@ -116,10 +135,64 @@ public sealed class MeridianGraphToolService
             KnownNodeKinds,
             KnownRelations,
             statistics.NodeKindCounts,
-            statistics.RelationCounts)
+            statistics.RelationCounts,
+            BuildFreshness(graph))
         {
             UsageHints = SchemaUsageHints
         };
+    }
+
+    private static GraphFreshnessDto BuildFreshness(GraphDocument graph)
+    {
+        var provenance = graph.Provenance;
+        var graphCommit = provenance?.GitCommit;
+        var graphDirty = provenance?.GitDirty;
+        var branch = provenance?.GitBranch;
+        var generatedAt = provenance?.GeneratedAt;
+        var currentCommit = GitHeadReader.TryReadHead(graph.Root);
+
+        if (graphCommit is null && currentCommit is null)
+        {
+            return new GraphFreshnessDto(
+                "unknown",
+                GeneratedAt: generatedAt,
+                Note: "Graph has no recorded git provenance and the working tree is not a git repository or is unreadable. Stale-graph detection is unavailable.");
+        }
+
+        if (graphCommit is null)
+        {
+            return new GraphFreshnessDto(
+                "unknown_provenance",
+                CurrentCommit: currentCommit,
+                Branch: branch,
+                GeneratedAt: generatedAt,
+                Note: "Graph predates provenance support. Rerun meridian scan to enable git-based freshness comparison.");
+        }
+
+        if (currentCommit is null)
+        {
+            return new GraphFreshnessDto(
+                "unknown_repository",
+                GraphCommit: graphCommit,
+                Branch: branch,
+                GraphDirty: graphDirty,
+                GeneratedAt: generatedAt,
+                Note: "Graph records a git commit but the current repository state is unreadable. Stale-graph detection is unavailable.");
+        }
+
+        var matches = string.Equals(graphCommit, currentCommit, StringComparison.OrdinalIgnoreCase);
+        return new GraphFreshnessDto(
+            matches ? (graphDirty == true ? "fresh_dirty" : "fresh") : "stale",
+            graphCommit,
+            currentCommit,
+            branch,
+            graphDirty,
+            generatedAt,
+            matches
+                ? graphDirty == true
+                    ? "Graph commit matches current HEAD. Working tree was dirty when scanned, so uncommitted changes may have shifted; re-scan if needed."
+                    : "Graph commit matches current HEAD. Run git status to confirm working tree is clean before fully trusting graph answers about changed files."
+                : "Graph commit does not match current HEAD. Treat answers about changed files as stale until meridian scan and reload_graph are rerun.");
     }
 
     public async Task<ReloadGraphResponse> ReloadGraphAsync(CancellationToken cancellationToken = default)
@@ -162,11 +235,14 @@ public sealed class MeridianGraphToolService
         string? target = null,
         int? maxResults = null,
         bool? includeEvidence = null,
-        string[]? excludeRelations = null)
+        string[]? excludeRelations = null,
+        QueryGraphMatchKind matchKind = QueryGraphMatchKind.Contains,
+        bool? excludeAnonymousTypes = null)
     {
         var context = _store.Current;
         var limit = context.ClampMaxResults(maxResults);
         var excludedRelations = CreateRelationSet(excludeRelations);
+        var skipAnonymous = excludeAnonymousTypes.GetValueOrDefault(true);
         if (LooksLikeNaturalLanguageQuestion(text) && IsBlank(nodeKind) && IsBlank(relation) && IsBlank(source) && IsBlank(target))
         {
             return EmptySearch(
@@ -187,7 +263,8 @@ public sealed class MeridianGraphToolService
         }
 
         var filteredNodes = context.Graph.Nodes
-            .Where(node => MatchesText(node, text))
+            .Where(node => !skipAnonymous || !NodeTextMatcher.IsAnonymousTypeNode(node))
+            .Where(node => NodeTextMatcher.MatchesText(node, text, matchKind))
             .Where(node => IsBlank(nodeKind) || node.Kind.Equals(nodeKind, StringComparison.OrdinalIgnoreCase))
             .OrderBy(node => node.Label, StringComparer.Ordinal)
             .ThenBy(node => node.Id, StringComparer.Ordinal)
@@ -221,7 +298,8 @@ public sealed class MeridianGraphToolService
             .Distinct(StringComparer.Ordinal);
         var edgeEndpointNodes = endpointNodeIds
             .Select(id => context.NodesById.GetValueOrDefault(id))
-            .OfType<GraphNode>();
+            .OfType<GraphNode>()
+            .Where(node => !skipAnonymous || !NodeTextMatcher.IsAnonymousTypeNode(node));
         var nodes = (hasPositiveEdgeFilters ? edgeEndpointNodes : filteredNodes.Concat(edgeEndpointNodes))
             .DistinctBy(node => node.Id)
             .OrderBy(node => node.Label, StringComparer.Ordinal)
@@ -481,9 +559,9 @@ public sealed class MeridianGraphToolService
             TruncationNote: truncated ? MeridianMcpMessages.TruncationNote(limit) : null);
     }
 
-    public FeaturePlanResponse PlanFeature(string? goal, string[]? seedSymbols = null, string[]? terms = null, int? maxResults = null)
+    public FeaturePlanResponse PlanFeature(string? goal, string[]? seedSymbols = null, string[]? terms = null, int? maxResults = null, string? verbosity = null)
     {
-        return _featurePlanner.Plan(_store.Current, goal, seedSymbols, terms, maxResults);
+        return _featurePlanner.Plan(_store.Current, goal, seedSymbols, terms, maxResults, verbosity);
     }
 
     public PathResponse ShortestPath(string? source, string? target)
@@ -810,14 +888,6 @@ public sealed class MeridianGraphToolService
     {
         return node.Kind == GraphNodeKinds.Endpoint ||
             (node.Metadata.TryGetValue("entrypoint", out var value) && value.Equals("true", StringComparison.OrdinalIgnoreCase));
-    }
-
-    private static bool MatchesText(GraphNode node, string? text)
-    {
-        return IsBlank(text) ||
-            node.Id.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
-            node.Label.Contains(text!, StringComparison.OrdinalIgnoreCase) ||
-            (node.Symbol?.Contains(text!, StringComparison.OrdinalIgnoreCase) == true);
     }
 
     private static bool MatchesDiagnosticText(GraphDiagnostic diagnostic, string? text)

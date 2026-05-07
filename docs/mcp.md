@@ -67,7 +67,17 @@ Output includes:
 - known Meridian relation constants,
 - node-kind and relation counts,
 - usage hints for `get_agent_summary`, `get_diagnostics`, compact responses, evidence opt-in, relation exclusions, and graph-absence interpretation,
+- a `freshness` block comparing the recorded `git_commit` from the graph against the current `.git/HEAD` (`fresh`, `fresh_dirty`, `stale`, `unknown_provenance`, `unknown_repository`, `unknown`),
 - stale graph note.
+
+Freshness statuses:
+
+- `fresh`: graph commit equals current HEAD and the working tree was clean when scanned.
+- `fresh_dirty`: graph commit equals current HEAD, but the working tree was dirty when scanned; uncommitted edits may have shifted.
+- `stale`: graph commit differs from current HEAD; rerun `meridian scan` and `reload_graph` before trusting answers about changed files.
+- `unknown_provenance`: the loaded graph has no provenance recorded; rerun `meridian scan` to enable comparison.
+- `unknown_repository`: the working tree is not a readable git repository.
+- `unknown`: neither side can be determined.
 
 ### `get_graph_statistics`
 
@@ -159,11 +169,22 @@ Input parameters:
   "target": "GetOrderQueryHandler",
   "maxResults": 50,
   "includeEvidence": false,
-  "excludeRelations": ["contains"]
+  "excludeRelations": ["contains"],
+  "matchKind": "Token",
+  "excludeAnonymousTypes": true
 }
 ```
 
 All fields are optional. Agents should combine filters instead of asking broad natural-language questions.
+
+`matchKind` controls how `text` is matched against node id, label, and symbol:
+
+- `Contains` (default): substring match. Useful when the agent does not yet know the exact identifier shape, but produces noise such as `User` matching `UserAgent`.
+- `Exact`: full-string match against id, label, or symbol. Use when the agent already knows the precise node name.
+- `Prefix` / `Suffix`: anchored substring match. Useful for `*.Handler`-style queries.
+- `Token`: whole-word match where the substring must be bounded by non-identifier characters (`.`, `(`, `<`, whitespace) on both sides. `User` matches `Sample.User` but not `UserAgent`.
+
+`excludeAnonymousTypes` defaults to `true`. C# compiler-synthesized anonymous types (for example, `<>f__AnonymousType*` from LINQ projections) are dropped from results. Set to `false` only if the agent genuinely needs the projection types.
 
 Bulk edge responses omit evidence by default to protect the agent context window. Set `includeEvidence` to `true` when the file, line, symbol, and reason are needed. Use `excludeRelations` to keep structural edges such as `contains` from consuming broad result caps; for non-UI orientation in Avalonia-heavy graphs, prefer `excludeRelations: ["contains", "binds_to"]`.
 
@@ -255,13 +276,42 @@ Input:
   "goal": "add Flashbot execution mode",
   "seedSymbols": ["ModuleExecutionStrategy"],
   "terms": ["relay", "bundle"],
-  "maxResults": 10
+  "maxResults": 10,
+  "verbosity": "standard"
 }
 ```
 
 The tool tokenizes the goal and terms, resolves seed symbols, boosts nearby graph nodes, and ranks existing abstractions and extension-point names such as `Mode`, `Strategy`, `Policy`, `Factory`, `Registry`, `Resolver`, `Selector`, `Executor`, `Orchestrator`, `Dispatcher`, and `Handler`.
 
-It returns ranked edit points, reasons, seed resolution details, and follow-up queries. It does not read source live, generate an implementation plan, or prove absence from source when a term is missing from the loaded graph.
+Term scoring is token-aware. A whole-name match (`User` against label `User`) outranks a camelCase token match (`User` inside `UserAgent`), which outranks a plain substring match, which outranks a metadata-only match. Each ranked edit point therefore includes a `scoreBreakdown`:
+
+```json
+{
+  "rank": 1,
+  "score": 67,
+  "scoreBreakdown": {
+    "termMatch": 24,
+    "extensionPoint": 16,
+    "kindBoost": 24,
+    "centrality": 4,
+    "seedDistance": 0,
+    "termMatches": [
+      { "term": "execution", "strength": 3, "score": 12 },
+      { "term": "mode", "strength": 4, "score": 18 }
+    ]
+  }
+}
+```
+
+`verbosity` controls deterministic content shape, not exact tokenizer accounting:
+
+- `compact`: drops per-candidate `reasons` and `suggestedQueries` and uses a smaller default cap; ideal for large solutions in tight token budgets.
+- `standard` (default): returns reasons and suggested queries.
+- `detailed`: returns reasons, suggested queries, and additional doc hints.
+
+When the repository contains documentation files whose names overlap goal terms (for example, `docs/add-module.md`, `.agent/workflows/feature-x.md`, `AGENTS.md`, `CONTRIBUTING.md`), the response includes a `docHints` array with the relative path, filename overlap score, last-modified timestamp, and a stale warning when the file has not been touched for over six months. `docHints` is filename-based only — Meridian never indexes or reads document contents, so the hints add no graph-build overhead and the agent decides whether to read each file.
+
+It returns ranked edit points, score breakdowns, reasons (in `standard`/`detailed`), seed resolution details, doc hints, and follow-up queries. It does not read source live, generate an implementation plan, or prove absence from source when a term is missing from the loaded graph.
 
 ### `shortest_path`
 

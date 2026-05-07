@@ -24,4 +24,7 @@ public sealed record GraphDocument
 
     [JsonPropertyName("diagnostics")]
     public IReadOnlyList<GraphDiagnostic> Diagnostics { get; init; } = [];
+
+    [JsonPropertyName("provenance")]
+    public GraphProvenance? Provenance { get; init; }
 }

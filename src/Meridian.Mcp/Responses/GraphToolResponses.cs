@@ -14,10 +14,20 @@ public sealed record SchemaResponse(
     IReadOnlyList<string> KnownNodeKinds,
     IReadOnlyList<string> KnownRelations,
     IReadOnlyDictionary<string, int>? NodeKindCounts = null,
-    IReadOnlyDictionary<string, int>? RelationCounts = null)
+    IReadOnlyDictionary<string, int>? RelationCounts = null,
+    GraphFreshnessDto? Freshness = null)
 {
     public IReadOnlyList<string> UsageHints { get; init; } = [];
 }
+
+public sealed record GraphFreshnessDto(
+    string Status,
+    string? GraphCommit = null,
+    string? CurrentCommit = null,
+    string? Branch = null,
+    bool? GraphDirty = null,
+    DateTimeOffset? GeneratedAt = null,
+    string? Note = null);
 
 public sealed record NodeResponse(
     string Status,
@@ -137,7 +147,16 @@ public sealed record FeaturePlanResponse(
     string Limitation,
     bool Truncated = false,
     string? TruncationNote = null,
-    string? Message = null);
+    string? Message = null,
+    string? Verbosity = null,
+    IReadOnlyList<DocHintDto>? DocHints = null);
+
+public sealed record DocHintDto(
+    string Path,
+    string Reason,
+    double MatchScore,
+    DateTimeOffset? LastModifiedUtc = null,
+    int? AgeDays = null);
 
 public sealed record SeedResolutionDto(
     string Query,
@@ -153,7 +172,21 @@ public sealed record FeaturePlanCandidateDto(
     int Score,
     NodeDto Node,
     IReadOnlyList<string> Reasons,
-    IReadOnlyList<string> SuggestedQueries);
+    IReadOnlyList<string> SuggestedQueries,
+    FeaturePlanScoreBreakdownDto? ScoreBreakdown = null);
+
+public sealed record FeaturePlanScoreBreakdownDto(
+    int TermMatch,
+    int ExtensionPoint,
+    int KindBoost,
+    int Centrality,
+    int SeedDistance,
+    IReadOnlyList<TermMatchContributionDto> TermMatches);
+
+public sealed record TermMatchContributionDto(
+    string Term,
+    int Strength,
+    int Score);
 
 public sealed record GraphMetadataDto(
     string SchemaVersion,

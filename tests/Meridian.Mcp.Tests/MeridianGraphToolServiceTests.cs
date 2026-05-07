@@ -863,6 +863,221 @@ public sealed class MeridianGraphToolServiceTests
     }
 
     [Fact]
+    public void QueryGraph_matchKind_exact_only_matches_exact_label_or_symbol()
+    {
+        var service = CreateService(CreateGraph());
+
+        var contains = service.QueryGraphWithOptions(text: "Run", matchKind: QueryGraphMatchKind.Contains);
+        var exact = service.QueryGraphWithOptions(text: "Run", matchKind: QueryGraphMatchKind.Exact);
+
+        Assert.Contains(contains.Nodes, node => node.Label == "Start.Run");
+        Assert.Contains(contains.Nodes, node => node.Label == "Middle.Run");
+        Assert.True(exact.Nodes.Count < contains.Nodes.Count);
+        Assert.All(exact.Nodes, node => Assert.Equal("Run", node.Label));
+    }
+
+    [Fact]
+    public void QueryGraph_matchKind_token_avoids_substring_noise()
+    {
+        var graph = CreateTokenContrastGraph();
+        var service = CreateService(graph);
+
+        var contains = service.QueryGraphWithOptions(text: "User", matchKind: QueryGraphMatchKind.Contains);
+        var token = service.QueryGraphWithOptions(text: "User", matchKind: QueryGraphMatchKind.Token);
+
+        Assert.Contains(contains.Nodes, node => node.Label == "User");
+        Assert.Contains(contains.Nodes, node => node.Label == "UserAgent");
+        Assert.Contains(token.Nodes, node => node.Label == "User");
+        Assert.DoesNotContain(token.Nodes, node => node.Label == "UserAgent");
+    }
+
+    [Fact]
+    public void QueryGraph_excludes_anonymous_types_by_default()
+    {
+        var service = CreateService(CreateAnonymousTypeNoiseGraph());
+
+        var defaultResult = service.QueryGraphWithOptions(text: "User");
+        var includingAnon = service.QueryGraphWithOptions(text: "User", excludeAnonymousTypes: false);
+
+        Assert.DoesNotContain(defaultResult.Nodes, node => node.Symbol?.Contains("AnonymousType", StringComparison.Ordinal) == true);
+        Assert.Contains(includingAnon.Nodes, node => node.Symbol?.Contains("AnonymousType", StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public void PlanFeature_emits_score_breakdown_with_term_match_strengths()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.PlanFeature(
+            "add Flashbot execution mode",
+            seedSymbols: ["ModuleExecutionStrategy"],
+            maxResults: 3);
+
+        Assert.Equal("ok", result.Status);
+        var top = result.EditPoints[0];
+        Assert.NotNull(top.ScoreBreakdown);
+        Assert.True(top.ScoreBreakdown!.SeedDistance > 0);
+        Assert.True(top.ScoreBreakdown.TermMatch + top.ScoreBreakdown.ExtensionPoint + top.ScoreBreakdown.KindBoost + top.ScoreBreakdown.Centrality + top.ScoreBreakdown.SeedDistance == top.Score);
+        Assert.Contains(top.ScoreBreakdown.TermMatches, contribution => contribution.Term == "execution");
+    }
+
+    [Fact]
+    public void PlanFeature_token_aware_match_ranks_whole_word_above_substring()
+    {
+        var graph = CreateTokenContrastGraph();
+        var service = CreateService(graph);
+
+        var result = service.PlanFeature("add user authentication", maxResults: 5);
+
+        Assert.Equal("ok", result.Status);
+        var byLabel = result.EditPoints.ToDictionary(point => point.Node.Label, StringComparer.Ordinal);
+        Assert.True(byLabel["User"].Score > byLabel["UserAgent"].Score);
+        var userBreakdown = byLabel["User"].ScoreBreakdown!;
+        var userAgentBreakdown = byLabel["UserAgent"].ScoreBreakdown!;
+        Assert.Contains(userBreakdown.TermMatches, contribution => contribution.Term == "user" && contribution.Strength >= 3);
+        Assert.Contains(userAgentBreakdown.TermMatches, contribution => contribution.Term == "user" && contribution.Strength <= 3);
+    }
+
+    [Fact]
+    public void PlanFeature_compact_verbosity_omits_reasons_and_suggested_queries()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var compact = service.PlanFeature(
+            "add execution mode",
+            seedSymbols: ["ModuleExecutionStrategy"],
+            verbosity: "compact");
+        var standard = service.PlanFeature(
+            "add execution mode",
+            seedSymbols: ["ModuleExecutionStrategy"]);
+
+        Assert.Equal("compact", compact.Verbosity);
+        Assert.Equal("standard", standard.Verbosity);
+        Assert.All(compact.EditPoints, point => Assert.Empty(point.Reasons));
+        Assert.All(compact.EditPoints, point => Assert.Empty(point.SuggestedQueries));
+        Assert.Contains(standard.EditPoints, point => point.Reasons.Count > 0);
+        Assert.True(SerializedByteCount(compact) < SerializedByteCount(standard));
+    }
+
+    [Fact]
+    public void PlanFeature_rejects_unknown_verbosity()
+    {
+        var service = CreateService(CreateMemberPlanningGraph());
+
+        var result = service.PlanFeature("add execution mode", verbosity: "huge");
+
+        Assert.Equal("invalid_input", result.Status);
+        Assert.Contains("compact, standard, or detailed", result.Message);
+    }
+
+    [Fact]
+    public void GetSchema_returns_unknown_freshness_when_graph_lacks_provenance()
+    {
+        var service = CreateService(CreateGraph());
+
+        var schema = service.GetSchema();
+
+        Assert.NotNull(schema.Freshness);
+        Assert.StartsWith("unknown", schema.Freshness!.Status);
+        Assert.Null(schema.Freshness.GraphCommit);
+    }
+
+    [Fact]
+    public void GetSchema_reports_stale_when_graph_commit_differs_from_repository_head()
+    {
+        var fixture = CreateGitFixture("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        try
+        {
+            var graph = CreateGraphWithProvenance(fixture, "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb");
+            var service = CreateService(graph, new MeridianMcpServerOptions { GraphPath = "fixture.graph.json" });
+
+            var schema = service.GetSchema();
+
+            Assert.NotNull(schema.Freshness);
+            Assert.Equal("stale", schema.Freshness!.Status);
+            Assert.Equal("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", schema.Freshness.CurrentCommit);
+            Assert.Equal("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb", schema.Freshness.GraphCommit);
+        }
+        finally
+        {
+            DeleteFixture(fixture);
+        }
+    }
+
+    [Fact]
+    public void GetSchema_reports_fresh_when_graph_commit_matches_repository_head()
+    {
+        var fixture = CreateGitFixture("ccccccccccccccccccccccccccccccccccccccccc");
+        try
+        {
+            var graph = CreateGraphWithProvenance(fixture, "ccccccccccccccccccccccccccccccccccccccccc");
+            var service = CreateService(graph, new MeridianMcpServerOptions { GraphPath = "fixture.graph.json" });
+
+            var schema = service.GetSchema();
+
+            Assert.NotNull(schema.Freshness);
+            Assert.StartsWith("fresh", schema.Freshness!.Status);
+        }
+        finally
+        {
+            DeleteFixture(fixture);
+        }
+    }
+
+    private static string CreateGitFixture(string commitSha)
+    {
+        var directory = Path.Combine(Path.GetTempPath(), "Meridian.Mcp.Tests.Git", Guid.NewGuid().ToString("N"));
+        var gitDirectory = Path.Combine(directory, ".git");
+        Directory.CreateDirectory(gitDirectory);
+        File.WriteAllText(Path.Combine(gitDirectory, "HEAD"), commitSha + Environment.NewLine);
+        return directory;
+    }
+
+    private static void DeleteFixture(string directory)
+    {
+        try
+        {
+            Directory.Delete(directory, recursive: true);
+        }
+        catch (IOException)
+        {
+        }
+    }
+
+    private static GraphDocument CreateGraphWithProvenance(string root, string commit)
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "method:Sample:Start.Run()", "Start.Run", "Sample.Start.Run()");
+        var graph = builder.Build(root);
+        return graph with
+        {
+            Provenance = new GraphProvenance
+            {
+                GitCommit = commit,
+                GitBranch = "main",
+                GitDirty = false,
+                GeneratedAt = DateTimeOffset.UtcNow
+            }
+        };
+    }
+
+    private static GraphDocument CreateAnonymousTypeNoiseGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:User", "User", "Sample.User", GraphNodeKinds.Type);
+        AddNode(builder, "type:Sample:<>f__AnonymousType0`2", "<>f__AnonymousType0", "<>f__AnonymousType0<UserId, UserName>", GraphNodeKinds.Type);
+        return builder.Build(".");
+    }
+
+    private static GraphDocument CreateTokenContrastGraph()
+    {
+        var builder = new GraphBuilder();
+        AddNode(builder, "type:Sample:User", "User", "Sample.User", GraphNodeKinds.Type);
+        AddNode(builder, "type:Sample:UserAgent", "UserAgent", "Sample.UserAgent", GraphNodeKinds.Type);
+        return builder.Build(".");
+    }
+
+    [Fact]
     public void Agent_and_symbol_summary_payloads_stay_bounded_by_caps()
     {
         var service = CreateService(CreateMemberPlanningGraph());

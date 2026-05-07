@@ -101,9 +101,121 @@ public static class GraphSummaryHeuristics
 
     public static bool TermMatchesNode(GraphNode node, string term)
     {
-        return NodeContains(node, term) ||
-            node.SourceFile?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
-            node.Metadata.Values.Any(value => value.Contains(term, StringComparison.OrdinalIgnoreCase));
+        return ScoreTermMatch(node, term) > 0;
+    }
+
+    /// <summary>
+    /// Returns a deterministic match strength for the term against the node identifiers, label, symbol,
+    /// source file, and metadata. Higher values mean the term aligns with whole-word identifier tokens
+    /// rather than coincidental substrings (for example, "User" matching "UserAgent").
+    /// </summary>
+    /// <returns>
+    /// 0 = no match, 1 = metadata or source-file substring, 2 = identifier substring, 3 = identifier
+    /// token boundary (whole word or camelCase part), 4 = exact label, symbol, or terminal segment.
+    /// </returns>
+    public static int ScoreTermMatch(GraphNode node, string term)
+    {
+        if (string.IsNullOrWhiteSpace(term))
+        {
+            return 0;
+        }
+
+        if (EqualsLastSegmentOrLabel(node, term))
+        {
+            return 4;
+        }
+
+        if (HasIdentifierTokenBoundary(node.Label, term) ||
+            HasIdentifierTokenBoundary(node.Symbol, term) ||
+            HasIdentifierTokenBoundary(node.Id, term))
+        {
+            return 3;
+        }
+
+        if (NodeContains(node, term))
+        {
+            return 2;
+        }
+
+        if (node.SourceFile?.Contains(term, StringComparison.OrdinalIgnoreCase) == true ||
+            node.Metadata.Values.Any(value => value.Contains(term, StringComparison.OrdinalIgnoreCase)))
+        {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private static bool EqualsLastSegmentOrLabel(GraphNode node, string term)
+    {
+        if (node.Label.Equals(term, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        if (LastIdentifierSegment(node.Symbol).Equals(term, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private static string LastIdentifierSegment(string? symbol)
+    {
+        if (string.IsNullOrEmpty(symbol))
+        {
+            return string.Empty;
+        }
+
+        var dotIndex = symbol.LastIndexOf('.');
+        var parenIndex = symbol.IndexOf('(', StringComparison.Ordinal);
+        var end = parenIndex < 0 ? symbol.Length : parenIndex;
+        var start = dotIndex < 0 || dotIndex >= end ? 0 : dotIndex + 1;
+        return start < end ? symbol[start..end] : string.Empty;
+    }
+
+    private static bool HasIdentifierTokenBoundary(string? source, string term)
+    {
+        if (string.IsNullOrEmpty(source))
+        {
+            return false;
+        }
+
+        var index = 0;
+        while (index <= source.Length - term.Length)
+        {
+            var hit = source.IndexOf(term, index, StringComparison.OrdinalIgnoreCase);
+            if (hit < 0)
+            {
+                return false;
+            }
+
+            if (IsIdentifierTokenBoundary(source, hit, hit + term.Length))
+            {
+                return true;
+            }
+
+            index = hit + 1;
+        }
+
+        return false;
+    }
+
+    private static bool IsIdentifierTokenBoundary(string source, int start, int end)
+    {
+        var leftBoundary = start == 0 ||
+            !IsIdentifierPart(source[start - 1]) ||
+            (char.IsLower(source[start - 1]) && char.IsUpper(source[start]));
+        var rightBoundary = end >= source.Length ||
+            !IsIdentifierPart(source[end]) ||
+            (char.IsLower(source[end - 1]) && char.IsUpper(source[end]));
+        return leftBoundary && rightBoundary;
+    }
+
+    private static bool IsIdentifierPart(char c)
+    {
+        return char.IsLetterOrDigit(c) || c == '_';
     }
 
     public static int FeaturePlanningKindBoost(GraphNode node, out string? reason)
