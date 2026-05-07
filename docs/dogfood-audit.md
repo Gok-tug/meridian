@@ -2,11 +2,13 @@
 
 Date: 2026-05-06
 
+This is a historical audit snapshot. Use it as dogfood evidence for the recorded versions and commits, not as the current product status.
+
 This audit checks whether Meridian is useful against real open-source .NET repositories, not only against curated samples.
 
 ## Scope
 
-Repositories were cloned shallowly under `.dogfood/` and scanned with the current Release build of `src/Meridian.Cli`.
+Repositories were cloned shallowly under `.dogfood/` and scanned with the Release build of `src/Meridian.Cli` available at the audit date.
 
 | Repository | Commit | Target | Notes |
 | --- | --- | --- | --- |

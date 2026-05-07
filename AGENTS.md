@@ -28,3 +28,10 @@ Canonical workflow docs:
 - `docs/mcp.md`
 
 Meridian MCP answers from a precomputed graph. If source changes, graph answers are stale until the user reruns `meridian scan` and the MCP server reloads or restarts.
+
+Versioning and changelog policy:
+
+- Do not bump `src/Meridian.Cli/Meridian.Cli.csproj` version unless the user explicitly asks for release preparation or a version bump.
+- For ordinary unreleased work, add changelog entries under `## Unreleased`; do not open a new release section proactively.
+- Only move `Unreleased` entries into `## <version> — <title>` during explicit release preparation, and the section version must match the package version being released.
+- `CHANGELOG.md` is completed release history; `ROADMAP.md` is milestone planning. Do not duplicate roadmap plans into changelog release sections.

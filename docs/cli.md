@@ -22,7 +22,7 @@ Builds a Meridian graph from a solution or project.
 meridian scan MyApp.sln
 ```
 
-Current options:
+Implemented options:
 
 ```bash
 meridian scan MyApp.sln --output meridian-out
@@ -33,7 +33,7 @@ meridian scan MyApp.sln --metrics
 
 `scan` uses Roslyn `MSBuildWorkspace`, which evaluates project and solution files. By default Meridian prints an MSBuild trust-boundary warning and records a warning diagnostic in `graph.json`. Pass `--trust-project` only for repositories you trust, or run scans inside an external sandbox.
 
-Planned options:
+Future options:
 
 ```bash
 meridian scan MyApp.sln --format json
@@ -41,7 +41,7 @@ meridian scan MyApp.sln --analyzers aspnetcore,di,mediatr  # planned
 meridian scan MyApp.sln --no-restore                       # planned
 ```
 
-Current default output:
+Default output:
 
 ```text
 meridian-out/
@@ -58,13 +58,13 @@ meridian-out/
 
 `metrics.json` includes CLI-level timings, best-effort peak working set, graph counts, target path, trust/test flags, .NET/OS metadata, and the Meridian generator version. Treat memory values as same-runner trend data, not cross-platform absolutes.
 
-`agent-summary` is a current derived view over `graph.json`. Planned human-readable outputs such as `tree` and `report` are not emitted by the current scan command.
+`agent-summary` is an implemented derived view over `graph.json`. Future human-readable outputs such as `tree` and `report` are not emitted by `scan`.
 
-Current ASP.NET Core support emits endpoint nodes for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` calls, simple local `MapGroup` prefixes, FastEndpoints route verbs, and MinimalApi.Endpoint-style `AddRoute` methods when source patterns are statically visible.
+ASP.NET Core preview support emits endpoint nodes for MVC route attributes, Minimal API `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch` calls, simple local `MapGroup` prefixes, FastEndpoints route verbs, and MinimalApi.Endpoint-style `AddRoute` methods when source patterns are statically visible.
 
-Current EF Core support is static graph extraction for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, and `_context.Set<TEntity>()` patterns. Meridian emits entity access edges but does not reconstruct SQL, model provider behavior, migrations, or full LINQ expression semantics.
+EF Core preview support is static graph extraction for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, and `_context.Set<TEntity>()` patterns. Meridian emits entity access edges but does not reconstruct SQL, model provider behavior, migrations, or full LINQ expression semantics.
 
-Current reflection support covers static `typeof(T)` and `Activator.CreateInstance` targets. Runtime strings, runtime `Type` variables, Scrutor-style scanning, and assembly-load/type-scan inference are reported as limitations or diagnostics rather than guessed edges.
+Reflection preview support covers static `typeof(T)` and `Activator.CreateInstance` targets. Runtime strings, runtime `Type` variables, Scrutor-style scanning, and assembly-load/type-scan inference are reported as limitations or diagnostics rather than guessed edges.
 
 ## `meridian explain`
 
@@ -88,7 +88,7 @@ Outgoing:
   GetOrderQuery --handled_by--> GetOrderQueryHandler
 ```
 
-Current behavior reads an existing graph file, defaulting to `meridian-out/graph.json`:
+Implemented behavior reads an existing graph file, defaulting to `meridian-out/graph.json`:
 
 ```bash
 meridian explain "GetOrderQuery" --graph meridian-out/graph.json
@@ -112,7 +112,7 @@ meridian explain "GetOrderQuery" --format json
 
 ## `meridian path`
 
-Finds and explains an application-flow path between two nodes, symbols, routes, or labels. In the current prototype, this traverses every graph edge present in `graph.json`, including endpoint `calls`, direct `calls`, `contains`, initial DI relations, mediator `sends`, `publishes`, and `handled_by`, EF Core `queries` and `writes`, and reflection `reflects` edges when they have been emitted.
+Finds and explains an application-flow path between two nodes, symbols, routes, or labels. This traverses every graph edge present in `graph.json`, including endpoint `calls`, direct `calls`, `contains`, initial DI relations, mediator `sends`, `publishes`, and `handled_by`, EF Core `queries` and `writes`, and reflection `reflects` edges when they have been emitted.
 
 ```bash
 meridian path "GET /orders/{id}" "OrderDbContext"

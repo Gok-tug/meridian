@@ -1,8 +1,8 @@
 # Example: MediatR Flow
 
-MediatR declaration analysis is available as a preview in `0.2.0-alpha.1`. Method-level `Send` and `Publish` call-site analysis is available as a preview in `0.2.0-alpha.2`. `Mediator.SourceGenerator`-style `Mediator` namespace support is available as a preview in `0.4.0-alpha.4`.
+MediatR declaration analysis, method-level `Send`/`Publish` call-site analysis, and `Mediator.SourceGenerator`-style `Mediator` namespace support are available as previews.
 
-The current prototype connects source request, command, query, stream request, and notification types to source handler types through generic MediatR or `Mediator` interfaces. It also connects supported source methods and endpoints that dispatch mediator messages to the resolved request, command, query, or notification type. Handled message nodes can come from generated or referenced code, though their graph nodes may not have source metadata.
+Meridian connects source request, command, query, stream request, and notification types to source handler types through generic MediatR or `Mediator` interfaces. It also connects supported source methods and endpoints that dispatch mediator messages to the resolved request, command, query, or notification type. Handled message nodes can come from generated or referenced code, though their graph nodes may not have source metadata.
 
 ## Source pattern
 
@@ -37,7 +37,7 @@ public sealed class OrderDispatchSamples
 }
 ```
 
-## Current graph
+## Graph output
 
 ```text
 OrderDispatchSamples.DispatchInlineRequest
@@ -49,7 +49,7 @@ OrderDispatchSamples.PublishInlineNotification
   --handled_by--> OrderUpdatedNotificationHandler
 ```
 
-## Current edges
+## Edge output
 
 Conceptual edge shape; real node IDs include the assembly name and fully qualified symbol.
 

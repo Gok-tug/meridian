@@ -4,28 +4,9 @@ Meridian should use explicit prerelease versions until the analyzer pipeline and
 
 ## Versioning
 
-Use SemVer prerelease versions:
+Use SemVer prerelease versions such as `0.6.0-alpha.1`.
 
-```text
-0.1.0-alpha.1
-0.1.0-alpha.2
-0.2.0-alpha.1
-0.2.0-alpha.2
-0.2.0-alpha.3
-0.3.0-alpha.1
-0.3.0-alpha.2
-0.4.0-alpha.1
-0.4.0-alpha.2
-0.4.0-alpha.3
-0.4.0-alpha.4
-0.5.0-alpha.1
-0.5.0-alpha.2
-0.5.0-alpha.3
-0.6.0-alpha.1
-0.7.0-alpha.1
-```
-
-Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.
+The intended milestone sequence is tracked in [ROADMAP.md](../ROADMAP.md). Completed release history is tracked in [CHANGELOG.md](../CHANGELOG.md). Avoid publishing stable-looking versions such as `0.1.0` while the project is still alpha.
 
 ## Package metadata
 
@@ -53,14 +34,15 @@ The preferred release path is the manually triggered `Release` workflow in `.git
 Before running the workflow:
 
 1. Update and commit the intended version in `src/Meridian.Cli/Meridian.Cli.csproj`.
-2. Update `CHANGELOG.md`, README/docs, and roadmap status as needed.
-3. Configure the GitHub repository secret `NUGET_API_KEY`.
-4. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
-5. Run the `Release` workflow manually with the exact version input, for example `0.6.0-alpha.1`.
+2. Move release-ready entries from `Unreleased` into a matching `CHANGELOG.md` section such as `## 0.6.0-alpha.1 — ...`.
+3. Update README/docs and roadmap status as needed.
+4. Configure the GitHub repository secret `NUGET_API_KEY`.
+5. Optionally configure the GitHub environment `nuget-release` with required reviewers for manual approval.
+6. Run the `Release` workflow manually with the exact version input, for example `0.6.0-alpha.1`.
 
-The workflow validates that the input version matches the project file, restores/builds/tests the PR-safe `Meridian.CI.slnf` filter with warnings as errors, checks formatting, checks vulnerable packages, packs the CLI tool, validates the package artifact, installs it locally as a tool, runs `meridian --help` and `meridian mcp --help`, checks that generated artifacts did not dirty the working tree, and then publishes the package to NuGet. BenchmarkDotNet and dogfood evidence are produced by the separate manual/scheduled `Benchmarks` workflow, not by release publish.
+The workflow validates that the input version matches the project file, restores/builds/tests the PR-safe `Meridian.CI.slnf` filter with warnings as errors, checks formatting, checks vulnerable packages, packs the CLI tool, validates the package artifact, installs it locally as a tool, runs `meridian --help` and `meridian mcp --help`, checks that generated artifacts did not dirty the working tree, prepares GitHub release notes from the single matching `CHANGELOG.md` version section when requested, and then publishes the package to NuGet. BenchmarkDotNet and dogfood evidence are produced by the separate manual/scheduled `Benchmarks` workflow, not by release publish.
 
-The workflow intentionally does not use `--skip-duplicate`; rerunning a published version should fail visibly.
+The workflow intentionally does not use `--skip-duplicate`; rerunning a published version should fail visibly. If optional GitHub release creation is enabled, the workflow fails before publishing when the matching changelog section is missing or empty.
 
 By default, create the Git tag manually after NuGet publish succeeds:
 
@@ -69,7 +51,7 @@ git tag v<version>
 git push origin v<version>
 ```
 
-The workflow has an optional `create_github_release` input. Leave it false unless you want the workflow to create `v<version>` and attach the package artifact as a GitHub release after NuGet publish.
+The workflow has an optional `create_github_release` input. Leave it false unless you want the workflow to create `v<version>` and attach the package artifact as a GitHub release after NuGet publish. When this is enabled, release notes come from only the matching `CHANGELOG.md` version section, not from the full changelog.
 
 ## Local fallback release flow
 
@@ -104,7 +86,7 @@ The actual API key should never be committed.
 Before publishing:
 
 - version updated in project files,
-- changelog updated,
+- matching changelog section exists for the release version,
 - README status accurate,
 - roadmap updated,
 - CLI docs match implementation,
@@ -128,7 +110,9 @@ dotnet tool uninstall --global meridian
 
 ## Changelog policy
 
-Each release should include:
+`CHANGELOG.md` is the release-notes source of truth. Keep `Unreleased` for work that is not release-ready yet, and move entries into a `## <version> — <title>` section before publishing that version.
+
+Each release section should include relevant:
 
 - added analyzers,
 - CLI changes,

@@ -86,7 +86,7 @@ services.AddScoped<IOrderRepository>(sp =>
 services.Scan(scan => scan.FromAssemblies(...));
 ```
 
-The current prototype only emits constructor injection edges for unambiguous source class constructors. Multiple unmarked constructors and record constructors are not treated as extracted DI facts yet.
+Meridian only emits constructor injection edges for unambiguous source class constructors. Multiple unmarked constructors and record constructors are not treated as extracted DI facts yet.
 
 Meridian should not claim exact DI behavior when registration depends on runtime assembly contents, `Func<T>` factories, nested delegate invocation, `GetService<T>()`, factory `.Create()` calls, resolver dictionaries, complex factory delegates, ambiguous constructor selection, or external configuration.
 
@@ -108,9 +108,9 @@ Known routes with unresolved handlers produce warnings instead of guessed handle
 
 ## MediatR limits
 
-The current prototype emits declaration facts for source-resolved MediatR or `Mediator` namespace requests, commands, queries, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
+Meridian emits declaration facts for source-resolved MediatR or `Mediator` namespace requests, commands, queries, stream requests, notifications, and handlers. Generic handler relationships are reliable when the handler is available in analyzable source; handled message nodes may omit source metadata when the message type comes from generated or referenced code.
 
-The current prototype also emits method-level `sends` and `publishes` edges for supported `IMediator`, `ISender`, and `IPublisher` call sites in either namespace. Supported message resolution is intentionally conservative: inline object creation, in-scope local object creation before the dispatch call, and concrete method parameter static type fallback.
+Meridian also emits method-level `sends` and `publishes` edges for supported `IMediator`, `ISender`, and `IPublisher` call sites in either namespace. Supported message resolution is intentionally conservative: inline object creation, in-scope local object creation before the dispatch call, and concrete method parameter static type fallback.
 
 Runtime-created requests remain ambiguous:
 
@@ -158,9 +158,9 @@ It may not know:
 
 Source-generator-heavy projects require special care.
 
-The current prototype filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
+Meridian filters generated source by default to reduce graph noise and keep golden output stable. Default filters include `obj`, `bin`, `*.g.cs`, `*.generated.cs`, and `*.designer.cs`.
 
-Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm has narrow preview support in `0.6.0-alpha.1`: `[RelayCommand]` methods can produce synthetic `mvvm_command` nodes and `[ObservableProperty]` fields can produce synthetic public `property` nodes. Other source-generator outputs, Toolkit options, and generated code bodies are still not analyzed.
+Generated-only members or types may be omitted until Meridian has explicit source-generator support or an include-generated option. CommunityToolkit.Mvvm has narrow preview support: `[RelayCommand]` methods can produce synthetic `mvvm_command` nodes and `[ObservableProperty]` fields can produce synthetic public `property` nodes. Other source-generator outputs, Toolkit options, and generated code bodies are still not analyzed.
 
 ## Native/Rust interop limits
 

@@ -1,6 +1,6 @@
 # Example: ASP.NET Core Endpoints
 
-ASP.NET Core endpoint analysis is available as a preview in `0.4.0-alpha.4`. Meridian emits synthetic `endpoint` nodes when route patterns are statically visible, then connects them to source handlers or directly to mediator messages when supported endpoint lambdas dispatch messages inline.
+ASP.NET Core endpoint analysis is available as a preview. Meridian emits synthetic `endpoint` nodes when route patterns are statically visible, then connects them to source handlers or directly to mediator messages when supported endpoint lambdas dispatch messages inline.
 
 ## MVC controller
 

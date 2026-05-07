@@ -2,15 +2,15 @@
 
 Meridian compatibility must be documented honestly because Roslyn and MSBuild behavior depends on SDK, project type, and language version.
 
-## Current prototype
+## Runtime target
 
-The current package prototype targets `net10.0`.
+The package currently targets `net10.0`.
 
 Before a stable release, Meridian should decide whether the distributed global tool targets `net8.0`, `net10.0`, or another supported runtime based on Roslyn/MSBuildWorkspace package compatibility and user reach.
 
-## Planned compatibility matrix
+## Compatibility matrix
 
-| Area | Initial target |
+| Area | Target |
 | --- | --- |
 | .NET SDK | current supported SDK used by the tool |
 | C# language versions | compiler-supported versions loaded by Roslyn |
@@ -37,18 +37,18 @@ Later:
 
 ## Framework support
 
-| Framework/pattern | Current status |
+| Framework/pattern | Status |
 | --- | --- |
-| Direct C# calls | Current prototype |
-| Microsoft.Extensions.DependencyInjection | Current prototype for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations; broader coverage planned for later alpha work |
-| ASP.NET Core MVC | Current preview for controller route/action attributes, common route tokens, and endpoint-to-action `calls` edges |
-| ASP.NET Core Minimal APIs | Current preview for `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple local `MapGroup` prefixes, and endpoint-to-handler or direct mediator edges |
-| FastEndpoints / MinimalApi.Endpoint | Current preview for `Configure()` HTTP verbs and `AddRoute` methods that delegate to source handlers |
-| MediatR / Mediator | Current preview for source request/command/query/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
-| MCP server | Current preview over generated `graph.json` files; no live Roslyn scan during MCP calls; `0.3.0-alpha.2` adds `reload_graph` for refreshing the configured graph file in a running server |
-| EF Core | Current static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges |
-| Reflection/assembly scanning | Current static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |
-| Rust/native interop boundaries | Future |
+| Direct C# calls | Implemented |
+| Microsoft.Extensions.DependencyInjection | Preview for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations; broader coverage planned |
+| ASP.NET Core MVC | Preview for controller route/action attributes, common route tokens, and endpoint-to-action `calls` edges |
+| ASP.NET Core Minimal APIs | Preview for `MapGet`/`MapPost`/`MapPut`/`MapDelete`/`MapPatch`, simple local `MapGroup` prefixes, and endpoint-to-handler or direct mediator edges |
+| FastEndpoints / MinimalApi.Endpoint | Preview for `Configure()` HTTP verbs and `AddRoute` methods that delegate to source handlers |
+| MediatR / Mediator | Preview for source request/command/query/notification/handler declarations, `handled_by`, and method-level `Send`/`Publish` call-site flow |
+| MCP server | Preview over generated `graph.json` files; no live Roslyn scan during MCP calls; supports `reload_graph` for refreshing the configured graph file in a running server |
+| EF Core | Static preview for source `DbContext`, `DbSet<TEntity>`, `_context.Entities`, `_context.Set<TEntity>()`, method-level `queries` edges, and direct method-level `writes` edges |
+| Reflection/assembly scanning | Static reflection preview for `typeof(T)` and `Activator.CreateInstance` targets; assembly scanning remains planned |
+| Rust/native interop boundaries | Planned |
 
 ## Unsupported until documented
 

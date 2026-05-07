@@ -16,7 +16,7 @@ Early benchmark targets:
 
 These are targets, not guarantees for early alpha builds.
 
-## Current scan metrics
+## Scan metrics
 
 `meridian scan` can write a sidecar metrics file without changing the graph schema:
 
@@ -32,7 +32,7 @@ meridian-out/
   metrics.json
 ```
 
-Current `metrics.json` shape:
+`metrics.json` shape:
 
 ```json
 {
@@ -50,7 +50,7 @@ Current `metrics.json` shape:
   "diagnostic_count": 0,
   "dotnet_version": "10.0.0",
   "os_description": "...",
-  "meridian_version": "0.6.0-alpha.1"
+  "meridian_version": "<meridian-version>"
 }
 ```
 
@@ -88,9 +88,9 @@ The benchmark workflow runs manually or weekly, uploads `artifacts/benchmarks`, 
 
 The MCP payload report records tool name, options, status, node/edge counts, truncation state, and UTF-8 serialized byte count for representative compact and evidence-included responses. Use it for trend comparison, not as an exact public contract snapshot.
 
-## 0.5.0-alpha.3 cache-readiness design
+## Cache-readiness design
 
-`0.5.0-alpha.3` should prepare cache and incremental-analysis work without adding runtime cache behavior yet. The design target is a graph that is safe to diff and safe to reuse only when all relevant inputs are known to be unchanged.
+Cache and incremental-analysis design work should not imply runtime cache behavior until it is implemented and tested. The design target is a graph that is safe to diff and safe to reuse only when all relevant inputs are known to be unchanged.
 
 Cache keys should include at least:
 

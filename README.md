@@ -10,26 +10,7 @@ Meridian is not intended to be a generic C# call graph visualizer. The goal is t
 
 Meridian is in early alpha design/prototype stage.
 
-The NuGet package is published as prerelease alpha builds, but the analyzer implementation is not stable yet. Public releases should use prerelease SemVer versions such as:
-
-```text
-0.1.0-alpha.1
-0.1.0-alpha.2
-0.2.0-alpha.1
-0.2.0-alpha.2
-0.2.0-alpha.3
-0.3.0-alpha.1
-0.3.0-alpha.2
-0.4.0-alpha.1
-0.4.0-alpha.2
-0.4.0-alpha.3
-0.4.0-alpha.4
-0.5.0-alpha.1
-0.5.0-alpha.2
-0.5.0-alpha.3
-0.6.0-alpha.1
-0.7.0-alpha.1
-```
+The NuGet package is published as prerelease alpha builds, but the analyzer implementation is not stable yet. The current package version is set in `src/Meridian.Cli/Meridian.Cli.csproj`; completed release history is tracked in [CHANGELOG.md](CHANGELOG.md), and upcoming milestones are tracked in [ROADMAP.md](ROADMAP.md).
 
 Do not treat `0.x` alpha releases as production-ready or schema-stable.
 
@@ -92,11 +73,11 @@ GET /orders/{id}
 
 See [docs/cli.md](docs/cli.md) for the command contract. See [docs/agent-quickstart.md](docs/agent-quickstart.md) for connecting Meridian to MCP-enabled coding agents.
 
-## Initial analyzer scope
+## Analyzer scope
 
 The first useful version should focus on application flow, not every possible C# construct.
 
-Current prototype support:
+Implemented preview support:
 
 - Roslyn solution/project loading
 - Type, method, enum, enum member, property, and field nodes with `contains` edges
@@ -126,7 +107,7 @@ Planned follow-up work:
 - CLI/runtime command routing and delegate factory patterns
 - Rust/native interop boundary detection
 
-Not currently implemented: full ASP.NET Core routing precedence, authorization/filter/middleware graphing, model binding, runtime route discovery, arbitrary endpoint delegate dataflow, mediator `CreateStream`, interprocedural/runtime mediator dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, XAML binding analysis, full CommunityToolkit.Mvvm source-generator behavior beyond `[ObservableProperty]`/`[RelayCommand]` hints, path-sensitive conditional analysis, CLI runtime/delegate routing, automatic watch/hot-reload, planned `tree`/`report` views, and incremental/cached analysis.
+Known limitations: full ASP.NET Core routing precedence, authorization/filter/middleware graphing, model binding, runtime route discovery, arbitrary endpoint delegate dataflow, mediator `CreateStream`, interprocedural/runtime mediator dispatch tracking, full EF Core query semantics, full reflection resolution, assembly scanning, broad DI factory/dataflow analysis, XAML binding analysis, full CommunityToolkit.Mvvm source-generator behavior beyond `[ObservableProperty]`/`[RelayCommand]` hints, path-sensitive conditional analysis, CLI runtime/delegate routing, automatic watch/hot-reload, planned `tree`/`report` views, and incremental/cached analysis.
 
 Rust support is not part of the .NET MVP as a full Rust static analyzer. It is planned first as .NET-to-native/Rust interop detection for applications that cross FFI boundaries through `DllImport`, `LibraryImport`, native DLLs, or generated bindings.
 
@@ -138,7 +119,7 @@ Meridian produces a versioned graph document:
 {
   "schema_version": "0.1",
   "generator": "Meridian",
-  "generator_version": "0.6.0-alpha.1",
+  "generator_version": "<meridian-version>",
   "nodes": [],
   "edges": []
 }
@@ -179,20 +160,35 @@ See [docs/performance.md](docs/performance.md).
 
 ## Documentation
 
-- [ARCHITECTURE.md](ARCHITECTURE.md)
-- [ROADMAP.md](ROADMAP.md)
-- [docs/vision.md](docs/vision.md)
-- [docs/cli.md](docs/cli.md)
-- [docs/graph-model.md](docs/graph-model.md)
-- [docs/analyzers.md](docs/analyzers.md)
-- [docs/confidence-model.md](docs/confidence-model.md)
-- [docs/testing.md](docs/testing.md)
-- [docs/performance.md](docs/performance.md)
-- [docs/mcp.md](docs/mcp.md)
-- [docs/agent-quickstart.md](docs/agent-quickstart.md)
-- [docs/agent-playbook.md](docs/agent-playbook.md)
-- [docs/rust-interop.md](docs/rust-interop.md)
-- [docs/limitations.md](docs/limitations.md)
+Start here:
+
+- [Architecture](ARCHITECTURE.md)
+- [Vision](docs/vision.md)
+- [Roadmap](ROADMAP.md)
+- [Changelog](CHANGELOG.md)
+
+Using Meridian:
+
+- [CLI](docs/cli.md)
+- [MCP server](docs/mcp.md)
+- [Agent quickstart](docs/agent-quickstart.md)
+- [Agent playbook](docs/agent-playbook.md)
+
+Reference:
+
+- [Graph model](docs/graph-model.md)
+- [Analyzer coverage](docs/analyzers.md)
+- [Confidence model](docs/confidence-model.md)
+- [Compatibility](docs/compatibility.md)
+- [Known limitations](docs/limitations.md)
+
+Project process:
+
+- [Testing](docs/testing.md)
+- [Performance](docs/performance.md)
+- [Releasing](docs/releasing.md)
+- [Rust/native interop scope](docs/rust-interop.md)
+- [Dogfood audit](docs/dogfood-audit.md)
 
 ## License
 

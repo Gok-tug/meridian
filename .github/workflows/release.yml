@@ -141,6 +141,46 @@ jobs:
           }
           Write-Host "Working tree stayed clean."
 
+      - name: Prepare GitHub release notes
+        if: ${{ inputs.create_github_release }}
+        shell: pwsh
+        run: |
+          $version = "${{ inputs.version }}"
+          $escapedVersion = [regex]::Escape($version)
+          $headingPattern = "^##\s+v?$escapedVersion(\s|$|—|-)"
+          $lines = @(Get-Content "CHANGELOG.md")
+          $start = -1
+
+          for ($i = 0; $i -lt $lines.Count; $i++) {
+            if ($lines[$i] -match $headingPattern) {
+              $start = $i
+              break
+            }
+          }
+
+          if ($start -lt 0) {
+            Write-Error "CHANGELOG.md does not contain a release section for version '$version'."
+            exit 1
+          }
+
+          $end = $lines.Count
+          for ($i = $start + 1; $i -lt $lines.Count; $i++) {
+            if ($lines[$i] -match '^##\s+') {
+              $end = $i
+              break
+            }
+          }
+
+          $content = (($lines[$start..($end - 1)]) -join [Environment]::NewLine).Trim()
+          if ([string]::IsNullOrWhiteSpace($content)) {
+            Write-Error "Release notes for version '$version' are empty."
+            exit 1
+          }
+
+          New-Item -ItemType Directory -Force -Path "artifacts" | Out-Null
+          Set-Content -Path "artifacts/release-notes.md" -Value $content -Encoding utf8
+          Write-Host "Prepared release notes for $version."
+
       - name: Publish to NuGet
         run: dotnet nuget push "artifacts/package/meridian.${{ inputs.version }}.nupkg" --api-key "${{ secrets.NUGET_API_KEY }}" --source "https://api.nuget.org/v3/index.json"
 
@@ -148,4 +188,4 @@ jobs:
         if: ${{ inputs.create_github_release }}
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v${{ inputs.version }}" "artifacts/package/meridian.${{ inputs.version }}.nupkg" --title "v${{ inputs.version }}" --notes-file CHANGELOG.md
+        run: gh release create "v${{ inputs.version }}" "artifacts/package/meridian.${{ inputs.version }}.nupkg" --title "v${{ inputs.version }}" --notes-file artifacts/release-notes.md

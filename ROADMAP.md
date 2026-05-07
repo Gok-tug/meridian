@@ -1,27 +1,6 @@
 # Meridian Roadmap
 
-Meridian uses prerelease SemVer during early development.
-
-Valid alpha versions:
-
-```text
-0.1.0-alpha.1
-0.1.0-alpha.2
-0.2.0-alpha.1
-0.2.0-alpha.2
-0.2.0-alpha.3
-0.3.0-alpha.1
-0.3.0-alpha.2
-0.4.0-alpha.1
-0.4.0-alpha.2
-0.4.0-alpha.3
-0.4.0-alpha.4
-0.5.0-alpha.1
-0.5.0-alpha.2
-0.5.0-alpha.3
-0.6.0-alpha.1
-0.7.0-alpha.1
-```
+Meridian uses prerelease SemVer during early development. This file is the canonical milestone sequence for planned and in-progress work; completed release history belongs in [CHANGELOG.md](CHANGELOG.md).
 
 Stable versions such as `0.1.0` should not be published until the package has a tested analyzer pipeline and documented graph contract.
 

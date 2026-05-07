@@ -47,7 +47,7 @@ Recommended pass order:
 3. Flow linking: combine framework facts into user-facing paths, such as endpoint -> request -> handler -> injected service -> implementation.
 4. Normalization and diagnostics: merge duplicates, apply stable ordering, validate evidence, and report ambiguous or unsupported behavior.
 
-The current prototype can keep Roslyn and initial DI support in `Meridian.Roslyn`, but the internal passes should remain separable so future analyzer packs can consume earlier facts without re-parsing source or depending on graph insertion order.
+The implementation can keep Roslyn and initial DI support in `Meridian.Roslyn`, but the internal passes should remain separable so future analyzer packs can consume earlier facts without re-parsing source or depending on graph insertion order.
 
 ## Proposed project layout
 
@@ -146,7 +146,7 @@ Exporters convert the graph into external formats:
 
 ### Meridian.Mcp
 
-Provides MCP tools over a generated Meridian graph. The `0.3.0-alpha.1` preview reads precomputed `graph.json` files and exposes agent-safe graph queries without running Roslyn live during tool calls. The `0.3.0-alpha.2` hardening work keeps graph state as reloadable immutable snapshots so `reload_graph` can refresh a running MCP server after `meridian scan` updates the configured file.
+Provides MCP tools over a generated Meridian graph. The server reads precomputed `graph.json` files and exposes agent-safe graph queries without running Roslyn live during tool calls. Graph state is kept as reloadable immutable snapshots so `reload_graph` can refresh a running MCP server after `meridian scan` updates the configured file.
 
 ## Analyzer contract
 

@@ -28,7 +28,7 @@ DI facts are expected to be consumed by later ASP.NET Core and MediatR linking. 
 
 ## Roslyn base analyzer
 
-Implemented in the current prototype for project loading, type/method/member nodes, `contains`, direct `calls`, and conservative member-reference edges.
+Implemented for project loading, type/method/member nodes, `contains`, direct `calls`, and conservative member-reference edges.
 
 Responsibilities:
 
@@ -66,7 +66,7 @@ Member references and conditional-flow facts are intentionally limited to ordina
 
 ## Conditional flow analyzer
 
-Current preview support exists in `0.6.0-alpha.1` for simple method-body conditions.
+Preview support is implemented for simple method-body conditions.
 
 Responsibilities:
 
@@ -79,7 +79,7 @@ Unsupported patterns are skipped rather than guessed. Conditional edges are stat
 
 ## CommunityToolkit.Mvvm analyzer
 
-Current preview support exists in `0.6.0-alpha.1` for source attributes that imply generated members.
+Preview support is implemented for source attributes that imply generated members.
 
 Responsibilities:
 
@@ -93,7 +93,7 @@ The analyzer does not include generated `.g.cs` files, execute source generators
 
 ## ASP.NET Core analyzer
 
-Current preview support exists in `0.4.0-alpha.4` for source-resolved endpoint entrypoints.
+Preview support is implemented for source-resolved endpoint entrypoints.
 
 Responsibilities:
 
@@ -141,7 +141,7 @@ endpoint --publishes--> mediatr_notification
 
 ## Dependency Injection analyzer
 
-Current prototype support exists for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned for later alpha versions.
+Preview support is implemented for direct generic registrations, narrow direct-`new` factory registrations, direct `GetRequiredService<TImplementation>()` factory aliases, constructor injection, and source interface implementations. Convention-based registration and assembly scanning remain planned.
 
 Responsibilities:
 
@@ -184,9 +184,9 @@ Confidence:
 
 ## MediatR analyzer
 
-Declaration support exists in `0.2.0-alpha.1`; method-level `Send` and `Publish` call-site support exists in `0.2.0-alpha.2`; `0.4.0-alpha.4` extends the same graph contract to `Mediator.SourceGenerator`-style `Mediator` namespace interfaces.
+Preview support covers declarations, method-level `Send` and `Publish` call sites, and `Mediator.SourceGenerator`-style `Mediator` namespace interfaces.
 
-Current responsibilities:
+Implemented responsibilities:
 
 - discover source request, command, query, stream request, and notification types,
 - discover source handlers,
@@ -195,7 +195,7 @@ Current responsibilities:
 - detect supported `Send` and `Publish` calls on `IMediator`, `ISender`, and `IPublisher` in either `MediatR` or `Mediator` namespaces,
 - connect enclosing source methods to resolved request or notification types.
 
-Planned responsibilities:
+Planned extensions:
 
 - broader endpoint delegate and mediator dataflow beyond direct source-resolved cases,
 - `CreateStream` call-site detection,
